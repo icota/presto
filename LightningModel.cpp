@@ -1,0 +1,57 @@
+#include "LightningModel.h"
+
+// TODO: Add all the strings to a namespaces
+//namespace CLightningJson {
+//static QString
+//}
+
+PeersModel *LightningModel::peersModel() const
+{
+    return m_peersModel;
+}
+
+LightningModel::LightningModel(QObject *parent) {
+    {
+        Q_UNUSED(parent);
+        m_unixSocket = new QLocalSocket();
+        m_rpcSocket = new QJsonRpcSocket(m_unixSocket);
+
+        QObject::connect(m_unixSocket, &QLocalSocket::connected,
+                         this, &LightningModel::rpcConnected);
+
+        QObject::connect(m_unixSocket, SIGNAL(error(QLocalSocket::LocalSocketError)),
+                         this, SLOT(unixSocketError(QLocalSocket::LocalSocketError)));
+
+        QObject::connect(m_rpcSocket, SIGNAL(messageReceived(QJsonRpcMessage)), this, SLOT(rpcMessageReceived(QJsonRpcMessage)));
+
+        m_unixSocket->connectToServer("/home/igor/.lightning/lightning-rpc");
+    }
+}
+
+void LightningModel::rpcConnected()
+{
+    m_peersModel = new PeersModel(m_rpcSocket);
+}
+
+void LightningModel::rpcMessageReceived(QJsonRpcMessage message)
+{
+    qDebug() << message.toJson();
+    if (message.type() == QJsonRpcMessage::Response)
+    {
+        QJsonObject jsonObject = message.toObject();
+
+        if (jsonObject.contains("result"))
+        {
+            QJsonObject resultObject = jsonObject.value("result").toObject();
+            if (resultObject.contains("peers"))
+            {
+                m_peersModel->populatePeersFromJson(resultObject);
+            }
+        }
+    }
+}
+
+void LightningModel::unixSocketError(QLocalSocket::LocalSocketError socketError)
+{
+    qDebug() << socketError;
+}
