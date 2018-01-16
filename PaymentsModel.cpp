@@ -1,4 +1,5 @@
 #include "PaymentsModel.h"
+#include "qjsonrpc/qjsonrpcservicereply.h"
 
 QHash<int, QByteArray> PaymentsModel::roleNames() const {
     QHash<int, QByteArray> roles;
@@ -20,8 +21,9 @@ PaymentsModel::PaymentsModel(QJsonRpcSocket *rpcSocket)
 
 void PaymentsModel::fetchPayments()
 {
-    QJsonRpcMessage message = QJsonRpcMessage::createRequest("getPayments", QJsonValue());
-    /*QJsonRpcServiceReply* reply = */m_rpcSocket->sendMessage(message);
+    QJsonRpcMessage message = QJsonRpcMessage::createRequest("listpayments", QJsonValue());
+    QJsonRpcServiceReply* reply = m_rpcSocket->sendMessage(message);
+    QObject::connect(reply, SIGNAL(finished()), this, SLOT(requestFinished()));
 }
 
 int PaymentsModel::rowCount(const QModelIndex & parent) const
@@ -53,21 +55,38 @@ QVariant PaymentsModel::data(const QModelIndex &index, int role) const
     return QVariant();
 }
 
-void PaymentsModel::populatePaymentsFromJson(QJsonObject jsonObject)
+void PaymentsModel::requestFinished()
 {
-    foreach (const QJsonValue &v, jsonObject)
+    QJsonRpcServiceReply *reply = static_cast<QJsonRpcServiceReply *>(sender());
+    QJsonRpcMessage message = reply->response();
+
+    if (message.type() == QJsonRpcMessage::Response)
+    {
+        QJsonObject jsonObject = message.toObject();
+
+        if (jsonObject.contains("result"))
+        {
+            QJsonArray resultArray = jsonObject.value("result").toArray();
+            populatePaymentsFromJson(resultArray);
+        }
+    }
+}
+
+void PaymentsModel::populatePaymentsFromJson(QJsonArray jsonArray)
+{
+    foreach (const QJsonValue &v, jsonArray)
     {
         beginInsertRows(QModelIndex(), rowCount(), rowCount());
 
-        QJsonObject PaymentJsonObject = v.toArray()[0].toObject(); // TODO: Fix
+        QJsonObject PaymentJsonObject = v.toObject();
         Payment Payment;
-        Payment.setId(PaymentJsonObject.value("channel").toString());
-        Payment.setIncoming(PaymentJsonObject.value("connected").toBool());
-        Payment.setMsatoshi(PaymentJsonObject.value("msatoshi_to_us").toInt());
-        Payment.setTimestamp(PaymentJsonObject.value("msatoshi_total").toInt());
-        Payment.setDestination(PaymentJsonObject.value("netaddr").toString()); // TODO: Figure out why addresses are in an array
-        Payment.setHash(PaymentJsonObject.value("Paymentid").toString());
-        Payment.setStatus((Payment::PaymentStatus)PaymentJsonObject.value("state").toInt()); // TODO: Fix this
+        Payment.setId(PaymentJsonObject.value("id").toString());
+        Payment.setIncoming(PaymentJsonObject.value("incoming").toBool());
+        Payment.setMsatoshi(PaymentJsonObject.value("msatoshi").toInt());
+        Payment.setTimestamp(PaymentJsonObject.value("timestamp").toInt());
+        Payment.setDestination(PaymentJsonObject.value("destination").toString()); // TODO: Figure out why addresses are in an array
+        Payment.setHash(PaymentJsonObject.value("payment_hash").toString());
+        Payment.setStatus((Payment::PaymentStatus)PaymentJsonObject.value("status").toInt()); // TODO: Fix this
         m_payments.append(Payment);
 
         endInsertRows();

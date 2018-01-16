@@ -70,11 +70,14 @@ public:
 
 
     PaymentsModel(QJsonRpcSocket* rpcSocket = 0);
-    void populatePaymentsFromJson(QJsonObject jsonObject);
+    void populatePaymentsFromJson(QJsonArray jsonObject);
 
     int rowCount(const QModelIndex & parent = QModelIndex()) const;
 
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
+
+private slots:
+    void requestFinished();
 
 private:
     void fetchPayments();

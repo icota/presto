@@ -1,4 +1,5 @@
 #include "PeersModel.h"
+#include "qjsonrpc/qjsonrpcservicereply.h"
 
 QHash<int, QByteArray> PeersModel::roleNames() const {
     QHash<int, QByteArray> roles;
@@ -21,7 +22,28 @@ PeersModel::PeersModel(QJsonRpcSocket *rpcSocket)
 void PeersModel::fetchPeers()
 {
     QJsonRpcMessage message = QJsonRpcMessage::createRequest("getpeers", QJsonValue());
-    /*QJsonRpcServiceReply* reply = */m_rpcSocket->sendMessage(message);
+    QJsonRpcServiceReply* reply = m_rpcSocket->sendMessage(message);
+    QObject::connect(reply, SIGNAL(finished()), this, SLOT(requestFinished()));
+}
+
+void PeersModel::requestFinished()
+{
+    QJsonRpcServiceReply *reply = static_cast<QJsonRpcServiceReply *>(sender());
+    QJsonRpcMessage message = reply->response();
+
+    if (message.type() == QJsonRpcMessage::Response)
+    {
+        QJsonObject jsonObject = message.toObject();
+
+        if (jsonObject.contains("result"))
+        {
+            QJsonObject resultObject = jsonObject.value("result").toObject();
+            if (resultObject.contains("peers"))
+            {
+                populatePeersFromJson(resultObject);
+            }
+        }
+    }
 }
 
 int PeersModel::rowCount(const QModelIndex & parent) const

@@ -10,6 +10,11 @@ PeersModel *LightningModel::peersModel() const
     return m_peersModel;
 }
 
+PaymentsModel *LightningModel::paymentsModel() const
+{
+    return m_paymentsModel;
+}
+
 LightningModel::LightningModel(QObject *parent) {
     {
         Q_UNUSED(parent);
@@ -31,24 +36,12 @@ LightningModel::LightningModel(QObject *parent) {
 void LightningModel::rpcConnected()
 {
     m_peersModel = new PeersModel(m_rpcSocket);
+    m_paymentsModel = new PaymentsModel(m_rpcSocket);
 }
 
 void LightningModel::rpcMessageReceived(QJsonRpcMessage message)
 {
     qDebug() << message.toJson();
-    if (message.type() == QJsonRpcMessage::Response)
-    {
-        QJsonObject jsonObject = message.toObject();
-
-        if (jsonObject.contains("result"))
-        {
-            QJsonObject resultObject = jsonObject.value("result").toObject();
-            if (resultObject.contains("peers"))
-            {
-                m_peersModel->populatePeersFromJson(resultObject);
-            }
-        }
-    }
 }
 
 void LightningModel::unixSocketError(QLocalSocket::LocalSocketError socketError)

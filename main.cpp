@@ -14,11 +14,13 @@ int main(int argc, char *argv[])
 
     // This is loop dependent
     LightningModel* lightningModel = new LightningModel;
-    // doesn't show up
+    // qdebug doesn't show up
     qDebug() << "wtf";
 
     QQmlApplicationEngine engine;
     engine.rootContext()->setContextProperty("peersModel", lightningModel->peersModel());
+    engine.rootContext()->setContextProperty("paymentsModel", lightningModel->paymentsModel());
+
     engine.load(QUrl(QLatin1String("qrc:/main.qml")));
     if (engine.rootObjects().isEmpty())
         return -1;

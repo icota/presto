@@ -94,6 +94,9 @@ public:
 
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
 
+private slots:
+    void requestFinished();
+
 private:
     void fetchPeers();
 

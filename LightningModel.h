@@ -4,6 +4,7 @@
 #include <QLocalSocket>
 
 #include "PeersModel.h"
+#include "PaymentsModel.h"
 
 #include "qjsonrpc/qjsonrpcsocket.h"
 #include "qjsonrpc/qjsonrpcmessage.h"
@@ -15,12 +16,14 @@ class LightningModel : public QObject
 public:
     LightningModel(QObject *parent = 0);
     PeersModel *peersModel() const;
+    PaymentsModel *paymentsModel() const;
 
 private:
     QLocalSocket* m_unixSocket;
     QJsonRpcSocket* m_rpcSocket;
     QList<QJsonRpcServiceReply*> m_repliesList;
     PeersModel* m_peersModel;
+    PaymentsModel* m_paymentsModel;
 
 private slots:
     void rpcConnected();
