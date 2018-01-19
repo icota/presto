@@ -23,13 +23,16 @@ SOURCES += main.cpp \
     PaymentsModel.cpp \
     PeersModel.cpp
 
-RESOURCES += qml.qrc
+RESOURCES += qml.qrc \
+            3rdparty/kirigami/kirigami.qrc
 
 # Additional import path used to resolve QML modules in Qt Creator's code model
 QML_IMPORT_PATH =
 
 # Additional import path used to resolve QML modules just for Qt Quick Designer
 QML_DESIGNER_IMPORT_PATH =
+
+include(3rdparty/kirigami/kirigami.pri)
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

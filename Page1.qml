@@ -4,8 +4,18 @@ import QtQuick.Layouts 1.3
 
 Page {
     ListView {
-        id: peersListView
+        id: paymentsListView
         model: paymentsModel
+        anchors.fill: parent
         delegate: Text { text: "Amount: " + msatoshi + ", " + incoming }
+    }
+
+    Button {
+        id: debugButton
+        text: "debug"
+        visible: false
+        onClicked: {
+            console.log("damn girl")
+        }
     }
 }
