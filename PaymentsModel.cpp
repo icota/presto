@@ -66,8 +66,8 @@ void PaymentsModel::requestFinished()
 
         if (jsonObject.contains("result"))
         {
-            QJsonArray resultArray = jsonObject.value("result").toArray();
-            populatePaymentsFromJson(resultArray);
+            QJsonObject resultObject = jsonObject.value("result").toObject();
+            populatePaymentsFromJson(resultObject.value("payments").toArray());
         }
     }
 }
