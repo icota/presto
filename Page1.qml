@@ -6,7 +6,9 @@ Page {
     ListView {
         id: paymentsListView
         model: paymentsModel
-        anchors.fill: parent
+        width: 500
+        height: 500
+        //anchors.fill: parent
         delegate: Text { text: "Amount: " + msatoshi + ", " + incoming }
     }
 

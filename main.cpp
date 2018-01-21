@@ -8,8 +8,6 @@
 
 int main(int argc, char *argv[])
 {
-
-
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     QGuiApplication app(argc, argv);
 
@@ -21,12 +19,13 @@ int main(int argc, char *argv[])
     QQmlApplicationEngine engine;
     engine.rootContext()->setContextProperty("peersModel", lightningModel->peersModel());
     engine.rootContext()->setContextProperty("paymentsModel", lightningModel->paymentsModel());
-    engine.addImportPath("qrc:/");
+    KirigamiPlugin::getInstance().registerTypes();
+
     engine.load(QUrl(QLatin1String("qrc:/main.qml")));
     if (engine.rootObjects().isEmpty())
         return -1;
 
-    KirigamiPlugin::getInstance().registerTypes();
+
 
 
     return app.exec();
