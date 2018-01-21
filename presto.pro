@@ -1,4 +1,4 @@
-QT += quick
+QT += quick multimedia # added multimedia for the camera functionality
 CONFIG += c++11
 
 # The following define makes your compiler emit warnings if you use
@@ -27,12 +27,12 @@ RESOURCES += qml.qrc
 
 # Additional import path used to resolve QML modules in Qt Creator's code model
 QML_IMPORT_PATH += "/home/igor/Code/build-kirigami-Desktop_Qt_5_9_0_GCC_64bit-Debug"
-#/home/igor/Code/build-kirigami-Desktop_Qt_5_9_0_GCC_64bit-Debug
 
 # Additional import path used to resolve QML modules just for Qt Quick Designer
 QML_DESIGNER_IMPORT_PATH =
 
 include(3rdparty/kirigami/kirigami.pri)
+include(3rdparty/qzxing/src/QZXing.pri)
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

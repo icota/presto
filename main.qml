@@ -27,7 +27,10 @@ Kirigami.ApplicationWindow {
                 }
             },
             Kirigami.Action {
-                text: "action 3"
+                text: "Pay Lightning Invoice"
+                onTriggered: {
+                    console.log("shits");
+                }
             },
             Kirigami.Action {
                 text: "action 4"
@@ -44,10 +47,10 @@ Kirigami.ApplicationWindow {
             title: "Hello"
             actions {
                 main: Kirigami.Action {
-                    iconName: sheet.sheetOpen ? "dialog-cancel" : "document-edit"
+                    iconName: payInvoiceSheet.sheetOpen ? "dialog-cancel" : "document-edit"
                     onTriggered: {
                         print("Action button in buttons page clicked");
-                        sheet.sheetOpen = !sheet.sheetOpen
+                        payInvoiceSheet.sheetOpen = !payInvoiceSheet.sheetOpen
                     }
                 }
                 left: Kirigami.Action {
@@ -75,17 +78,13 @@ Kirigami.ApplicationWindow {
                     },
                     Kirigami.Action {
                         text: "Action for Sheet"
-                        visible: sheet.sheetOpen
+                        visible: payInvoiceSheet.sheetOpen
                     }
                 ]
             }
-            Kirigami.OverlaySheet {
-                id: sheet
-                //onSheetOpenChanged: page.actions.main.checked = sheetOpen
-                QQC2.Label {
-                    wrapMode: Text.WordWrap
-                    text: "Lorem ipsum dolor sit amet"
-                }
+
+            PayInvoiceSheet {
+                id: payInvoiceSheet
             }
             Page1 {
 
