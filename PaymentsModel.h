@@ -67,30 +67,32 @@ public:
         PaymentStatusRole
     };
 
+    PaymentsModel(QJsonRpcSocket* rpcSocket = 0);
+
     QHash<int, QByteArray> roleNames() const;
 
-
-    PaymentsModel(QJsonRpcSocket* rpcSocket = 0);
-    void populatePaymentsFromJson(QJsonArray jsonObject);
-
     int rowCount(const QModelIndex & parent = QModelIndex()) const;
-
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
 
 public slots:
-    void decodePayment(QString paymentString);
+    void decodePayment(QString bolt11String);
+    void pay(QString bolt11String);
 
 private slots:
     void listPaymentsRequestFinished();
     void decodePaymentRequestFinished();
+    void payRequestFinished();
 
 signals:
     void paymentDecoded(int createdAt, QString currency, QString description,
                         int expiry, int minFinalCltvExpiry, int msatoshi,
                         QString payee, QString paymentHash, QString signature, int timestamp);
 
+    void paymentPreimageReceived(QString preimage);
+
 private:
     void fetchPayments();
+    void populatePaymentsFromJson(QJsonArray jsonObject);
 
 private:
     QList<Payment> m_payments;

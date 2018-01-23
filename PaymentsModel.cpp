@@ -37,21 +37,21 @@ QVariant PaymentsModel::data(const QModelIndex &index, int role) const
     if (index.row() < 0 || index.row() >= m_payments.count())
         return QVariant();
 
-    const Payment &Payment = m_payments[index.row()];
+    const Payment &payment = m_payments[index.row()];
     if (role == HashRole)
-        return Payment.hash();
+        return payment.hash();
     else if (role == IncomingRole)
-        return Payment.incoming();
+        return payment.incoming();
     else if (role == MSatoshiRole)
-        return Payment.msatoshi();
+        return payment.msatoshi();
     else if (role == TimestampRole)
-        return Payment.timestamp();
+        return payment.timestamp();
     else if (role == DestinationRole)
-        return Payment.destination();
+        return payment.destination();
     else if (role == PaymentIdRole)
-        return Payment.id();
+        return payment.id();
     else if (role == PaymentStatusRole)
-        return Payment.status();
+        return payment.status();
     return QVariant();
 }
 
@@ -102,6 +102,26 @@ void PaymentsModel::decodePaymentRequestFinished()
     }
 }
 
+void PaymentsModel::payRequestFinished()
+{
+    QJsonRpcServiceReply *reply = static_cast<QJsonRpcServiceReply *>(sender());
+    QJsonRpcMessage message = reply->response();
+
+    if (message.type() == QJsonRpcMessage::Response)
+    {
+        QJsonObject jsonObject = message.toObject();
+
+        if (jsonObject.contains("result"))
+        {
+            QJsonObject resultObject = jsonObject.value("result").toObject();
+            if (resultObject.contains("preimage"))
+            {
+                emit paymentPreimageReceived(resultObject.value("preimage").toString());
+            }
+        }
+    }
+}
+
 void PaymentsModel::populatePaymentsFromJson(QJsonArray jsonArray)
 {
     foreach (const QJsonValue &v, jsonArray)
@@ -109,15 +129,15 @@ void PaymentsModel::populatePaymentsFromJson(QJsonArray jsonArray)
         beginInsertRows(QModelIndex(), rowCount(), rowCount());
 
         QJsonObject PaymentJsonObject = v.toObject();
-        Payment Payment;
-        Payment.setId(PaymentJsonObject.value("id").toString());
-        Payment.setIncoming(PaymentJsonObject.value("incoming").toBool());
-        Payment.setMsatoshi(PaymentJsonObject.value("msatoshi").toInt());
-        Payment.setTimestamp(PaymentJsonObject.value("timestamp").toInt());
-        Payment.setDestination(PaymentJsonObject.value("destination").toString()); // TODO: Figure out why addresses are in an array
-        Payment.setHash(PaymentJsonObject.value("payment_hash").toString());
-        Payment.setStatus((Payment::PaymentStatus)PaymentJsonObject.value("status").toInt()); // TODO: Fix this
-        m_payments.append(Payment);
+        Payment payment;
+        payment.setId(PaymentJsonObject.value("id").toString());
+        payment.setIncoming(PaymentJsonObject.value("incoming").toBool());
+        payment.setMsatoshi(PaymentJsonObject.value("msatoshi").toInt());
+        payment.setTimestamp(PaymentJsonObject.value("timestamp").toInt());
+        payment.setDestination(PaymentJsonObject.value("destination").toString()); // TODO: Figure out why addresses are in an array
+        payment.setHash(PaymentJsonObject.value("payment_hash").toString());
+        payment.setStatus((Payment::PaymentStatus)PaymentJsonObject.value("status").toInt()); // TODO: Fix this
+        m_payments.append(payment);
 
         endInsertRows();
     }
@@ -193,9 +213,16 @@ void Payment::setStatus(const PaymentStatus &status)
     m_status = status;
 }
 
-void PaymentsModel::decodePayment(QString paymentString)
+void PaymentsModel::decodePayment(QString bolt11String)
 {
-    QJsonRpcMessage message = QJsonRpcMessage::createRequest("decodepay", QJsonValue(paymentString));
+    QJsonRpcMessage message = QJsonRpcMessage::createRequest("decodepay", QJsonValue(bolt11String));
     QJsonRpcServiceReply* reply = m_rpcSocket->sendMessage(message);
     QObject::connect(reply, SIGNAL(finished()), this, SLOT(decodePaymentRequestFinished()));
+}
+
+void PaymentsModel::pay(QString bolt11String)
+{
+    QJsonRpcMessage message = QJsonRpcMessage::createRequest("pay", QJsonValue(bolt11String));
+    QJsonRpcServiceReply* reply = m_rpcSocket->sendMessage(message);
+    QObject::connect(reply, SIGNAL(finished()), this, SLOT(payRequestFinished()));
 }

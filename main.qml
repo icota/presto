@@ -99,8 +99,16 @@ Kirigami.ApplicationWindow {
                 target: paymentsModel
                 onPaymentDecoded: {
                     captureInvoiceSheet.sheetOpen = false;
+
+                    payInvoiceSheet.createdAtTimestamp = createdAt;
+                    payInvoiceSheet.currency = currency;
+                    payInvoiceSheet.description = description;
+                    payInvoiceSheet.expiry = expiry;
+                    payInvoiceSheet.msatoshiAmount = msatoshi;
+                    payInvoiceSheet.payee = payee;
+
                     payInvoiceSheet.sheetOpen = true;
-                    console.log("shits");
+
                 }
             }
 
@@ -108,7 +116,7 @@ Kirigami.ApplicationWindow {
                 id: paymentsListView
                 model: paymentsModel
                 anchors.fill: parent
-                delegate: Text { text: "Amount: " + msatoshi + ", " + incoming }
+                delegate: Text { text: "Amount: " + msatoshi + ", Incoming: " + incoming + ", Timestamp: " + timestamp }
             }
 
             //            QQC2.SwipeView {

@@ -5,6 +5,7 @@
 
 #include "PeersModel.h"
 #include "PaymentsModel.h"
+#include "WalletModel.h"
 
 #include "qjsonrpc/qjsonrpcsocket.h"
 #include "qjsonrpc/qjsonrpcmessage.h"
@@ -17,6 +18,7 @@ public:
     LightningModel(QObject *parent = 0);
     PeersModel *peersModel() const;
     PaymentsModel *paymentsModel() const;
+    WalletModel *walletModel() const;
 
 private:
     QLocalSocket* m_unixSocket;
@@ -24,6 +26,7 @@ private:
     QList<QJsonRpcServiceReply*> m_repliesList;
     PeersModel* m_peersModel;
     PaymentsModel* m_paymentsModel;
+    WalletModel* m_walletModel;
 
 private slots:
     void rpcConnected();

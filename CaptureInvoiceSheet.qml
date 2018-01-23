@@ -91,6 +91,7 @@ Kirigami.OverlaySheet {
 
                         onTagFound: {
                             console.log("Barcode data: " + tag)
+                            checkIfValidBolt11(tag)
                         }
 
 
@@ -125,7 +126,8 @@ Kirigami.OverlaySheet {
 
 
     function checkIfValidBolt11(text) {
-        paymentsModel.decodePayment("lnbc1u1pdxf4egpp5la3wgzamjh59rhlax7860ggf6vcwg8z73n5eg5fvslzcaaq4zn9sdru0v3xgg36yffx2ctyypqhyarfvdkx2w3qfphhqurfw3uj66r0wqsjytpzdy3r5g3c89jrwdmpv5mj6wtzv3jj6dp4xgmj6wtxxd3j6e3c89sn2ctzvcmkyefsyf7scqzysh6ppvsc27jyhnxlppc589zn28cfmnqlzxru7zjc8rr56mjkd62nyjdj7eyqwwv860yug4jfwfn77jm0y0d698sr04leh6hynfylwgwsqevz6ms");
+        payInvoiceSheet.bolt11 = text
+        paymentsModel.decodePayment(text);
     }
 }
 

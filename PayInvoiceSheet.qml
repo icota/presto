@@ -6,15 +6,62 @@ import org.kde.kirigami 2.1 as Kirigami
 Kirigami.OverlaySheet {
     id: payInvoiceSheet
 
-    QQC2.Label {
-        wrapMode: Text.WordWrap
-        text: "INVOICE INFO"
-    }
+    property int createdAtTimestamp: 0
+    property string currency: "bc"
+    property string description
+    property int expiry
+    property int msatoshiAmount: 0
+    property int timestamp
+    property string payee
+    property string bolt11
 
-    QQC2.Button {
-        text: "Pay"
-        onClicked: {
-            // pay the invoice
+    property var locale: Qt.locale()
+    property date currentDate: new Date()
+
+    ColumnLayout {
+
+
+
+        QQC2.Label {
+            wrapMode: Text.WordWrap
+            text: "INVOICE INFO"
+        }
+
+
+
+        QQC2.Label {
+            wrapMode: Text.WordWrap
+            text: msatoshiAmount
+        }
+
+
+
+        QQC2.Label {
+            wrapMode: Text.WordWrap
+            text: description
+        }
+
+        QQC2.Label {
+            wrapMode: Text.WordWrap
+            text: Date(createdAtTimestamp + expiry).toLocaleDateString()
+        }
+
+        RowLayout {
+
+        QQC2.Button {
+            text: "Pay"
+            onClicked: {
+                paymentsModel.pay(bolt11)
+            }
+        }
+
+        QQC2.Button {
+            text: "Cancel"
+            onClicked: {
+                sheetOpen.false
+            }
+        }
+
         }
     }
 

@@ -21,7 +21,8 @@ SOURCES += main.cpp \
     qjsonrpc/qjsonrpcservicereply.cpp \
     qjsonrpc/qjsonrpcsocket.cpp \
     PaymentsModel.cpp \
-    PeersModel.cpp
+    PeersModel.cpp \
+    WalletModel.cpp
 
 RESOURCES += qml.qrc
 
@@ -54,4 +55,5 @@ HEADERS += \
     qjsonrpc/qjsonrpcsocket.h \
     qjsonrpc/qjsonrpcsocket_p.h \
     PaymentsModel.h \
-    PeersModel.h
+    PeersModel.h \
+    WalletModel.h
