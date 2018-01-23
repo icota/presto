@@ -23,7 +23,7 @@ void PaymentsModel::fetchPayments()
 {
     QJsonRpcMessage message = QJsonRpcMessage::createRequest("listpayments", QJsonValue());
     QJsonRpcServiceReply* reply = m_rpcSocket->sendMessage(message);
-    QObject::connect(reply, SIGNAL(finished()), this, SLOT(requestFinished()));
+    QObject::connect(reply, SIGNAL(finished()), this, SLOT(listPaymentsRequestFinished()));
 }
 
 int PaymentsModel::rowCount(const QModelIndex & parent) const
@@ -55,7 +55,7 @@ QVariant PaymentsModel::data(const QModelIndex &index, int role) const
     return QVariant();
 }
 
-void PaymentsModel::requestFinished()
+void PaymentsModel::listPaymentsRequestFinished()
 {
     QJsonRpcServiceReply *reply = static_cast<QJsonRpcServiceReply *>(sender());
     QJsonRpcMessage message = reply->response();
@@ -68,6 +68,36 @@ void PaymentsModel::requestFinished()
         {
             QJsonObject resultObject = jsonObject.value("result").toObject();
             populatePaymentsFromJson(resultObject.value("payments").toArray());
+        }
+    }
+}
+
+void PaymentsModel::decodePaymentRequestFinished()
+{
+    QJsonRpcServiceReply *reply = static_cast<QJsonRpcServiceReply *>(sender());
+    QJsonRpcMessage message = reply->response();
+
+    if (message.type() == QJsonRpcMessage::Response)
+    {
+        QJsonObject jsonObject = message.toObject();
+
+        if (jsonObject.contains("result"))
+        {
+            QJsonObject resultObject = jsonObject.value("result").toObject();
+            int createdAt = resultObject.value("created_at").toInt();
+            QString currency = resultObject.value("currency").toString();
+            QString description = resultObject.value("description").toString();
+            int expiry = resultObject.value("expiry").toInt();
+            int minFinalCltvExpiry = resultObject.value("min_final_cltv_expiry").toInt();
+            int msatoshi = resultObject.value("msatoshi").toInt();
+            QString payee = resultObject.value("payee").toString();
+            QString paymentHash = resultObject.value("payment_hash").toString();
+            QString signature = resultObject.value("signature").toString();
+            int timestamp = resultObject.value("timestamp").toInt();
+
+            emit paymentDecoded(createdAt, currency, description,
+                                expiry, minFinalCltvExpiry, msatoshi,
+                                payee, paymentHash, signature, timestamp);
         }
     }
 }
@@ -161,4 +191,11 @@ Payment::PaymentStatus Payment::status() const
 void Payment::setStatus(const PaymentStatus &status)
 {
     m_status = status;
+}
+
+void PaymentsModel::decodePayment(QString paymentString)
+{
+    QJsonRpcMessage message = QJsonRpcMessage::createRequest("decodepay", QJsonValue(paymentString));
+    QJsonRpcServiceReply* reply = m_rpcSocket->sendMessage(message);
+    QObject::connect(reply, SIGNAL(finished()), this, SLOT(decodePaymentRequestFinished()));
 }

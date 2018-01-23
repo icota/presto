@@ -42,6 +42,7 @@ public:
     PaymentStatus status() const;
     void setStatus(const PaymentStatus &status);
 
+
 private:
     QString m_hash;
     bool m_incoming;
@@ -76,8 +77,17 @@ public:
 
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
 
+public slots:
+    void decodePayment(QString paymentString);
+
 private slots:
-    void requestFinished();
+    void listPaymentsRequestFinished();
+    void decodePaymentRequestFinished();
+
+signals:
+    void paymentDecoded(int createdAt, QString currency, QString description,
+                        int expiry, int minFinalCltvExpiry, int msatoshi,
+                        QString payee, QString paymentHash, QString signature, int timestamp);
 
 private:
     void fetchPayments();

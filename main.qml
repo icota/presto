@@ -10,6 +10,7 @@ Kirigami.ApplicationWindow {
     title: qsTr("Presto!")
     header: Kirigami.ApplicationHeader {}
     globalDrawer: Kirigami.GlobalDrawer {
+        drawerOpen: false
         title: "Presto!"
         titleIcon: "applications-graphics"
         actions: [
@@ -35,7 +36,7 @@ Kirigami.ApplicationWindow {
             Kirigami.Action {
                 text: "action 4"
             }
-            ]
+        ]
     }
     contextDrawer: Kirigami.ContextDrawer {
         id: contextDrawer
@@ -43,14 +44,17 @@ Kirigami.ApplicationWindow {
     pageStack.initialPage: mainPageComponent
     Component {
         id: mainPageComponent
+
+
+
         Kirigami.ScrollablePage {
-            title: "Hello"
+            title: "Transactions"
             actions {
                 main: Kirigami.Action {
-                    iconName: payInvoiceSheet.sheetOpen ? "dialog-cancel" : "document-edit"
+                    iconName: captureInvoiceSheet.sheetOpen ? "dialog-cancel" : "document-edit"
                     onTriggered: {
                         print("Action button in buttons page clicked");
-                        payInvoiceSheet.sheetOpen = !payInvoiceSheet.sheetOpen
+                        captureInvoiceSheet.sheetOpen = !captureInvoiceSheet.sheetOpen
                     }
                 }
                 left: Kirigami.Action {
@@ -78,35 +82,52 @@ Kirigami.ApplicationWindow {
                     },
                     Kirigami.Action {
                         text: "Action for Sheet"
-                        visible: payInvoiceSheet.sheetOpen
+                        visible: captureInvoiceSheet.sheetOpen
                     }
                 ]
+            }
+
+            CaptureInvoiceSheet {
+                id: captureInvoiceSheet
             }
 
             PayInvoiceSheet {
                 id: payInvoiceSheet
             }
-            Page1 {
 
+            Connections {
+                target: paymentsModel
+                onPaymentDecoded: {
+                    captureInvoiceSheet.sheetOpen = false;
+                    payInvoiceSheet.sheetOpen = true;
+                    console.log("shits");
+                }
             }
 
-//            QQC2.SwipeView {
-//                id: swipeView
-//                anchors.fill: parent
-//                //currentIndex: tabBar.currentIndex
+            ListView {
+                id: paymentsListView
+                model: paymentsModel
+                anchors.fill: parent
+                delegate: Text { text: "Amount: " + msatoshi + ", " + incoming }
+            }
 
-//                Page1 {
-//                }
+            //            QQC2.SwipeView {
+            //                id: swipeView
+            //                anchors.fill: parent
+            //                //currentIndex: tabBar.currentIndex
 
-//                QQC2.Page {
-//                    ListView {
-//                        id: peersListView
-//                        model: peersModel
-//                        anchors.fill: parent
-//                        delegate: Text { text: "Peer: " + peerid + ", " + msatoshitotal }
-//                    }
-//                }
-//            }
+            //                Page1 {
+            //                }
+
+            //                QQC2.Page {
+            //                    ListView {
+            //                        id: peersListView
+            //                        model: peersModel
+            //                        anchors.fill: parent
+            //                        delegate: Text { text: "Peer: " + peerid + ", " + msatoshitotal }
+            //                    }
+            //                }
+            //            }
         }
     }
 }
