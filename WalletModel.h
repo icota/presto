@@ -32,6 +32,7 @@ private:
 class WalletModel : public QAbstractListModel
 {
     Q_OBJECT
+    Q_PROPERTY(int totalAvailableFunds READ totalAvailableFunds NOTIFY totalAvailableFundsChanged)
 public:
 
     enum FundingRoles {
@@ -47,7 +48,10 @@ public:
     int rowCount(const QModelIndex & parent = QModelIndex()) const;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
 
+    /*Q_INVOKABLE*/ int totalAvailableFunds();
+
 signals:
+    void totalAvailableFundsChanged();
 
 public slots:
 

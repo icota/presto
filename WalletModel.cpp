@@ -36,6 +36,15 @@ QVariant WalletModel::data(const QModelIndex &index, int role) const
     return QVariant();
 }
 
+int WalletModel::totalAvailableFunds()
+{
+    int sumOfAvailableFunds = 0;
+    foreach (FundsTransaction transaction, m_funds) {
+        sumOfAvailableFunds += transaction.amountSatoshi();
+    }
+    return sumOfAvailableFunds;
+}
+
 void WalletModel::fetchFunds()
 {
     QJsonRpcMessage message = QJsonRpcMessage::createRequest("listfunds", QJsonValue());
@@ -77,6 +86,8 @@ void WalletModel::populateFundsFromJson(QJsonArray jsonArray)
 
         endInsertRows();
     }
+
+    emit totalAvailableFundsChanged();
 }
 
 QString FundsTransaction::txId() const

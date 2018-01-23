@@ -8,6 +8,7 @@ Kirigami.ApplicationWindow {
     width: 640
     height: 480
     title: qsTr("Presto!")
+
     header: Kirigami.ApplicationHeader {}
     globalDrawer: Kirigami.GlobalDrawer {
         drawerOpen: false
@@ -48,7 +49,7 @@ Kirigami.ApplicationWindow {
 
 
         Kirigami.ScrollablePage {
-            title: "Transactions"
+            title: walletModel.totalAvailableFunds + " SAT" + " / " // add LN funds
             actions {
                 main: Kirigami.Action {
                     iconName: captureInvoiceSheet.sheetOpen ? "dialog-cancel" : "document-edit"
