@@ -5,5 +5,9 @@
         <file>qtquickcontrols2.conf</file>
         <file>CaptureInvoiceSheet.qml</file>
         <file>PayInvoiceSheet.qml</file>
+        <file>OnchainAddressSheet.qml</file>
+        <file>QRCode.qml</file>
+        <file>qqr.js</file>
+        <file>ConnectToPeerSheet.qml</file>
     </qresource>
 </RCC>

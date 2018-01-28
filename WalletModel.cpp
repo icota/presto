@@ -45,6 +45,13 @@ int WalletModel::totalAvailableFunds()
     return sumOfAvailableFunds;
 }
 
+void WalletModel::requestNewAddress()
+{
+    QJsonRpcMessage message = QJsonRpcMessage::createRequest("newaddr", QJsonValue());
+    QJsonRpcServiceReply* reply = m_rpcSocket->sendMessage(message);
+    QObject::connect(reply, SIGNAL(finished()), this, SLOT(newAddressRequestFinished()));
+}
+
 void WalletModel::fetchFunds()
 {
     QJsonRpcMessage message = QJsonRpcMessage::createRequest("listfunds", QJsonValue());
@@ -65,6 +72,23 @@ void WalletModel::listFundsRequestFinished()
         {
             QJsonObject resultObject = jsonObject.value("result").toObject();
             populateFundsFromJson(resultObject.value("outputs").toArray());
+        }
+    }
+}
+
+void WalletModel::newAddressRequestFinished()
+{
+    QJsonRpcServiceReply *reply = static_cast<QJsonRpcServiceReply *>(sender());
+    QJsonRpcMessage message = reply->response();
+
+    if (message.type() == QJsonRpcMessage::Response)
+    {
+        QJsonObject jsonObject = message.toObject();
+
+        if (jsonObject.contains("result"))
+        {
+            QJsonObject resultObject = jsonObject.value("result").toObject();
+            emit newAddress(resultObject.value("address").toString());
         }
     }
 }

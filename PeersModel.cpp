@@ -21,12 +21,12 @@ PeersModel::PeersModel(QJsonRpcSocket *rpcSocket)
 
 void PeersModel::fetchPeers()
 {
-    QJsonRpcMessage message = QJsonRpcMessage::createRequest("getpeers", QJsonValue());
+    QJsonRpcMessage message = QJsonRpcMessage::createRequest("listpeers", QJsonValue());
     QJsonRpcServiceReply* reply = m_rpcSocket->sendMessage(message);
-    QObject::connect(reply, SIGNAL(finished()), this, SLOT(requestFinished()));
+    QObject::connect(reply, SIGNAL(finished()), this, SLOT(listPeersRequestFinished()));
 }
 
-void PeersModel::requestFinished()
+void PeersModel::listPeersRequestFinished()
 {
     QJsonRpcServiceReply *reply = static_cast<QJsonRpcServiceReply *>(sender());
     QJsonRpcMessage message = reply->response();
@@ -41,6 +41,38 @@ void PeersModel::requestFinished()
             if (resultObject.contains("peers"))
             {
                 populatePeersFromJson(resultObject);
+            }
+        }
+    }
+}
+
+void PeersModel::connectToPeer(QString peerId, QString peerAddress)
+{
+    QJsonObject paramsObject;
+    paramsObject.insert("id", peerId);
+    paramsObject.insert("host", peerAddress);
+
+    QJsonRpcMessage message = QJsonRpcMessage::createRequest("connect", paramsObject);
+    QJsonRpcServiceReply* reply = m_rpcSocket->sendMessage(message);
+    QObject::connect(reply, SIGNAL(finished()), this, SLOT(connectToPeerRequestFinished()));
+}
+
+void PeersModel::connectToPeerRequestFinished()
+{
+    QJsonRpcServiceReply *reply = static_cast<QJsonRpcServiceReply *>(sender());
+    QJsonRpcMessage message = reply->response();
+
+    if (message.type() == QJsonRpcMessage::Response)
+    {
+        QJsonObject jsonObject = message.toObject();
+
+        if (jsonObject.contains("result"))
+        {
+            QJsonObject resultObject = jsonObject.value("result").toObject();
+            if (resultObject.contains("id"))
+            {
+                // TODO: notify GUI that we've connected
+                fetchPeers();
             }
         }
     }
@@ -88,7 +120,14 @@ void PeersModel::populatePeersFromJson(QJsonObject jsonObject)
         peer.setMsatoshiToUs(PeerJsonObject.value("msatoshi_to_us").toInt());
         peer.setMsatoshiTotal(PeerJsonObject.value("msatoshi_total").toInt());
         peer.setNetAddress(PeerJsonObject.value("netaddr").toArray()[0].toString()); // TODO: Figure out why addresses are in an array
-        peer.setId(PeerJsonObject.value("peerid").toString());
+        peer.setId(PeerJsonObject.value("peer").toString());
+
+        QString state = PeerJsonObject.value("state").toString();
+
+        if (state == "GOSSIPING") peer.setState(Peer::PeerState::UNINITIALIZED);
+        else if (state == "WHATEVER") peer.setState(Peer::PeerState::UNINITIALIZED);
+
+
         peer.setState((Peer::PeerState)PeerJsonObject.value("state").toInt()); // TODO: Fix this
         m_peers.append(peer);
 

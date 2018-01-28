@@ -94,8 +94,12 @@ public:
 
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
 
+public slots:
+    void connectToPeer(QString peerId, QString peerAddress);
+
 private slots:
-    void requestFinished();
+    void listPeersRequestFinished();
+    void connectToPeerRequestFinished();
 
 private:
     void fetchPeers();

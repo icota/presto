@@ -20,6 +20,11 @@ WalletModel *LightningModel::walletModel() const
     return m_walletModel;
 }
 
+InvoicesModel *LightningModel::invoicesModel() const
+{
+    return m_invoicesModel;
+}
+
 LightningModel::LightningModel(QObject *parent) {
     {
         Q_UNUSED(parent);
@@ -43,6 +48,7 @@ void LightningModel::rpcConnected()
     m_peersModel = new PeersModel(m_rpcSocket);
     m_paymentsModel = new PaymentsModel(m_rpcSocket);
     m_walletModel = new WalletModel(m_rpcSocket);
+    m_invoicesModel = new InvoicesModel(m_rpcSocket);
 }
 
 void LightningModel::rpcMessageReceived(QJsonRpcMessage message)

@@ -15,6 +15,7 @@ public:
     enum InvoiceStatus {
         UNPAID,
         PAID,
+        EXPIRED
     };
 
 
@@ -61,13 +62,42 @@ private:
     int m_expiresAtTime;
 };
 
-class InvoicesModel : public QObject
+class InvoicesModel : public QAbstractListModel
 {
     Q_OBJECT
 public:
-    explicit InvoicesModel(QObject *parent = nullptr);
+    enum InvoiceRoles {
+        LabelRole = Qt::UserRole + 1,
+        HashRole,
+        MSatoshiRole,
+        StatusRole,
+        PayIndexRole,
+        MSatishiReceivedRole,
+        PaidTimestampRole,
+        PaidAtTimestampRole,
+        ExpiryTimeRole,
+        ExpiresAtRole
+    };
+
+    InvoicesModel(QJsonRpcSocket* rpcSocket = 0);
+
+    QHash<int, QByteArray> roleNames() const;
+
+    int rowCount(const QModelIndex & parent = QModelIndex()) const;
+    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
 
 signals:
+
+private slots:
+    void listInvoicesRequestFinished();
+
+private:
+    void fetchInvoices();
+    void populateInvoicesFromJson(QJsonArray jsonArray);
+
+private:
+    QList<Invoice> m_invoices;
+    QJsonRpcSocket* m_rpcSocket;
 
 public slots:
 };

@@ -16,16 +16,26 @@ Kirigami.ApplicationWindow {
         titleIcon: "applications-graphics"
         actions: [
             Kirigami.Action {
-                text: "View"
+                text: "Lightning Network"
                 iconName: "view-list-icons"
                 Kirigami.Action {
-                    text: "action 1"
+                    text: "Pay"
                 }
                 Kirigami.Action {
-                    text: "action 2"
+                    text: "Invoice"
                 }
                 Kirigami.Action {
-                    text: "action 3"
+                    text: "Peers"
+                    onTriggered: {
+                        pageStack.push(peersPageComponent)
+                        // show list of peers
+                    }
+                }
+                Kirigami.Action {
+                    text: "Connect to Peer"
+                    onTriggered: {
+                        connectToPeerSheet.sheetOpen = !connectToPeerSheet.sheetOpen
+                    }
                 }
             },
             Kirigami.Action {
@@ -35,16 +45,42 @@ Kirigami.ApplicationWindow {
                 }
             },
             Kirigami.Action {
-                text: "action 4"
+                text: "Connect to LN peer"
+                onTriggered: {
+                    connectToPeerSheet.sheetOpen = !connectToPeerSheet.sheetOpen
+                }
             }
         ]
     }
+
+    ConnectToPeerSheet {
+        id: connectToPeerSheet
+    }
+
     contextDrawer: Kirigami.ContextDrawer {
         id: contextDrawer
     }
-    pageStack.initialPage: mainPageComponent
+    pageStack.initialPage: transactionsPageComponent
+
     Component {
-        id: mainPageComponent
+        id: peersPageComponent
+
+
+
+        Kirigami.ScrollablePage {
+            title: "Peers"
+
+            ListView {
+                id: peersListView
+                model: peersModel
+                anchors.fill: parent
+                delegate: Text { text: "Peer: " + peerid + ", " + msatoshitotal }
+            }
+        }
+    }
+
+    Component {
+        id: transactionsPageComponent
 
 
 
@@ -52,20 +88,22 @@ Kirigami.ApplicationWindow {
             title: walletModel.totalAvailableFunds + " SAT" + " / " // add LN funds
             actions {
                 main: Kirigami.Action {
-                    iconName: captureInvoiceSheet.sheetOpen ? "dialog-cancel" : "document-edit"
+                    iconName: captureInvoiceSheet.sheetOpen ? "dialog-cancel" : "document-send"
                     onTriggered: {
                         print("Action button in buttons page clicked");
                         captureInvoiceSheet.sheetOpen = !captureInvoiceSheet.sheetOpen
                     }
                 }
                 left: Kirigami.Action {
-                    iconName: "go-previous"
+                    iconName: "mail-send-receive"
                     onTriggered: {
                         print("Left action triggered")
+                        walletModel.requestNewAddress()
+                        // ask the thing for new address
                     }
                 }
                 right: Kirigami.Action {
-                    iconName: "go-next"
+                    iconName: "document-edit"
                     onTriggered: {
                         print("Right action triggered")
                     }
@@ -96,6 +134,10 @@ Kirigami.ApplicationWindow {
                 id: payInvoiceSheet
             }
 
+            OnchainAddressSheet {
+                id: onchainAddressSheet
+            }
+
             Connections {
                 target: paymentsModel
                 onPaymentDecoded: {
@@ -113,30 +155,20 @@ Kirigami.ApplicationWindow {
                 }
             }
 
+            Connections {
+                target: walletModel
+                onNewAddress: {
+                    onchainAddressSheet.onchainAddress = newAddress
+                    onchainAddressSheet.sheetOpen = !captureInvoiceSheet.sheetOpen
+                }
+            }
+
             ListView {
                 id: paymentsListView
                 model: paymentsModel
                 anchors.fill: parent
                 delegate: Text { text: "Amount: " + msatoshi + ", Incoming: " + incoming + ", Timestamp: " + timestamp }
             }
-
-            //            QQC2.SwipeView {
-            //                id: swipeView
-            //                anchors.fill: parent
-            //                //currentIndex: tabBar.currentIndex
-
-            //                Page1 {
-            //                }
-
-            //                QQC2.Page {
-            //                    ListView {
-            //                        id: peersListView
-            //                        model: peersModel
-            //                        anchors.fill: parent
-            //                        delegate: Text { text: "Peer: " + peerid + ", " + msatoshitotal }
-            //                    }
-            //                }
-            //            }
         }
     }
 }

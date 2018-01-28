@@ -52,11 +52,14 @@ public:
 
 signals:
     void totalAvailableFundsChanged();
+    void newAddress(QString newAddress);
 
 public slots:
+    void requestNewAddress();
 
 private slots:
     void listFundsRequestFinished();
+    void newAddressRequestFinished();
 
 private:
     QList<FundsTransaction> m_funds;

@@ -21,6 +21,7 @@ int main(int argc, char *argv[])
     engine.rootContext()->setContextProperty("peersModel", lightningModel->peersModel());
     engine.rootContext()->setContextProperty("paymentsModel", lightningModel->paymentsModel());
     engine.rootContext()->setContextProperty("walletModel", lightningModel->walletModel());
+    engine.rootContext()->setContextProperty("invoicesModel", lightningModel->invoicesModel());
 
     KirigamiPlugin::getInstance().registerTypes();
     QZXing::registerQMLTypes();
