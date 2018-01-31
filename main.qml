@@ -5,8 +5,8 @@ import org.kde.kirigami 2.1 as Kirigami
 
 Kirigami.ApplicationWindow {
     id: root
-    width: 640
-    height: 480
+    width: 1000
+    height: 600
     title: qsTr("Presto!")
 
     header: Kirigami.ApplicationHeader {}
@@ -39,9 +39,10 @@ Kirigami.ApplicationWindow {
                 }
             },
             Kirigami.Action {
-                text: "Pay Lightning Invoice"
+                text: "My Invoices"
                 onTriggered: {
-                    console.log("shits");
+                    // show invoices list
+                    pageStack.push(myInvoicesPageComponent)
                 }
             },
             Kirigami.Action {
@@ -57,15 +58,45 @@ Kirigami.ApplicationWindow {
         id: connectToPeerSheet
     }
 
-    contextDrawer: Kirigami.ContextDrawer {
-        id: contextDrawer
-    }
     pageStack.initialPage: transactionsPageComponent
 
     Component {
+        id: myInvoicesPageComponent
+
+        Kirigami.ScrollablePage {
+            title: "Invoices"
+
+            actions {
+                main: Kirigami.Action {
+                    iconName: sendInvoiceSheet.sheetOpen ? "dialog-cancel" : "list-add"
+                    onTriggered: {
+                        sendInvoiceSheet.sheetOpen = !sendInvoiceSheet.sheetOpen
+                    }
+                }
+            }
+
+            ListView {
+                id: invoicesListView
+                model: invoicesModel
+                anchors.fill: parent
+                delegate: Kirigami.SwipeListItem {
+
+                    QQC2.Label { text: "Label: " + label + ", msatoshi: " + msatoshi + ", " + expiresAt }
+                    actions: [
+                        Kirigami.Action {
+                            iconName: "edit-delete"
+                            onTriggered: {
+                                // modal dialog to delete
+                            }
+                        }
+                    ]
+                }
+            }
+        }
+    }
+
+    Component {
         id: peersPageComponent
-
-
 
         Kirigami.ScrollablePage {
             title: "Peers"
@@ -74,15 +105,25 @@ Kirigami.ApplicationWindow {
                 id: peersListView
                 model: peersModel
                 anchors.fill: parent
-                delegate: Text { text: "Peer: " + peerid + ", " + msatoshitotal }
+                delegate: Kirigami.SwipeListItem {
+
+                    QQC2.Label { text: "Peer: " + peerid + ", connected: " + connected + ", " + msatoshitotal }
+                    actions: [
+                        Kirigami.Action {
+                            iconName: "list-add"
+                            onTriggered: {
+                                fundChannelSheet.peerToFund = peerid
+                                fundChannelSheet.sheetOpen = !fundChannelSheet.sheetOpen
+                            }
+                        }
+                    ]
+                }
             }
         }
     }
 
     Component {
         id: transactionsPageComponent
-
-
 
         Kirigami.ScrollablePage {
             title: walletModel.totalAvailableFunds + " SAT" + " / " // add LN funds
@@ -97,9 +138,7 @@ Kirigami.ApplicationWindow {
                 left: Kirigami.Action {
                     iconName: "mail-send-receive"
                     onTriggered: {
-                        print("Left action triggered")
                         walletModel.requestNewAddress()
-                        // ask the thing for new address
                     }
                 }
                 right: Kirigami.Action {
@@ -107,59 +146,6 @@ Kirigami.ApplicationWindow {
                     onTriggered: {
                         print("Right action triggered")
                     }
-                }
-                contextualActions: [
-                    Kirigami.Action {
-                        text:"Action for buttons"
-                        iconName: "bookmarks"
-                        onTriggered: print("Action 1 clicked")
-                    },
-                    Kirigami.Action {
-                        text:"Action 2"
-                        iconName: "folder"
-                        enabled: false
-                    },
-                    Kirigami.Action {
-                        text: "Action for Sheet"
-                        visible: captureInvoiceSheet.sheetOpen
-                    }
-                ]
-            }
-
-            CaptureInvoiceSheet {
-                id: captureInvoiceSheet
-            }
-
-            PayInvoiceSheet {
-                id: payInvoiceSheet
-            }
-
-            OnchainAddressSheet {
-                id: onchainAddressSheet
-            }
-
-            Connections {
-                target: paymentsModel
-                onPaymentDecoded: {
-                    captureInvoiceSheet.sheetOpen = false;
-
-                    payInvoiceSheet.createdAtTimestamp = createdAt;
-                    payInvoiceSheet.currency = currency;
-                    payInvoiceSheet.description = description;
-                    payInvoiceSheet.expiry = expiry;
-                    payInvoiceSheet.msatoshiAmount = msatoshi;
-                    payInvoiceSheet.payee = payee;
-
-                    payInvoiceSheet.sheetOpen = true;
-
-                }
-            }
-
-            Connections {
-                target: walletModel
-                onNewAddress: {
-                    onchainAddressSheet.onchainAddress = newAddress
-                    onchainAddressSheet.sheetOpen = !captureInvoiceSheet.sheetOpen
                 }
             }
 
@@ -171,4 +157,68 @@ Kirigami.ApplicationWindow {
             }
         }
     }
+
+    // Sheets
+
+    CaptureInvoiceSheet {
+        id: captureInvoiceSheet
+    }
+
+    FundChannelSheet {
+        id: fundChannelSheet
+    }
+
+    PayInvoiceSheet {
+        id: payInvoiceSheet
+    }
+
+    OnchainAddressSheet {
+        id: onchainAddressSheet
+    }
+
+    SendInvoiceSheet {
+        id: sendInvoiceSheet
+    }
+
+    ShareInvoiceSheet {
+        id: shareInvoiceSheet
+    }
+
+    // Connections
+
+    Connections {
+        target: paymentsModel
+        onPaymentDecoded: {
+            captureInvoiceSheet.sheetOpen = false;
+
+            payInvoiceSheet.createdAtTimestamp = createdAt;
+            payInvoiceSheet.currency = currency;
+            payInvoiceSheet.description = description;
+            payInvoiceSheet.expiry = expiry;
+            payInvoiceSheet.msatoshiAmount = msatoshi;
+            payInvoiceSheet.payee = payee;
+
+            payInvoiceSheet.sheetOpen = true;
+
+        }
+    }
+
+    Connections {
+        target: walletModel
+        onNewAddress: {
+            onchainAddressSheet.onchainAddress = newAddress
+            onchainAddressSheet.sheetOpen = !captureInvoiceSheet.sheetOpen
+        }
+    }
+
+    Connections {
+        target: invoicesModel
+        onInvoiceAdded: {
+            // share invoice
+            shareInvoiceSheet.bolt11 = bolt11;
+            sendInvoiceSheet.sheetOpen = false;
+            shareInvoiceSheet.sheetOpen = true;
+        }
+    }
 }
+

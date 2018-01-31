@@ -107,6 +107,53 @@ void InvoicesModel::populateInvoicesFromJson(QJsonArray jsonArray)
     }
 }
 
+void InvoicesModel::addInvoice(QString label, QString description, QString amountInMsatoshi)
+{
+    QJsonObject paramsObject;
+    paramsObject.insert("label", label);
+        paramsObject.insert("description", description);
+    paramsObject.insert("msatoshi", amountInMsatoshi);
+
+    QJsonRpcMessage message = QJsonRpcMessage::createRequest("invoice", paramsObject);
+    QJsonRpcServiceReply* reply = m_rpcSocket->sendMessage(message);
+    QObject::connect(reply, SIGNAL(finished()), this, SLOT(addInvoiceRequestFinished()));
+}
+
+void InvoicesModel::addInvoiceRequestFinished()
+{
+    QJsonRpcServiceReply *reply = static_cast<QJsonRpcServiceReply *>(sender());
+    QJsonRpcMessage message = reply->response();
+
+    if (message.type() == QJsonRpcMessage::Error)
+    {
+        emit errorString(message.toObject().value("error").toObject().value("message").toString());
+        // show the error to user
+    }
+
+    if (message.type() == QJsonRpcMessage::Response)
+    {
+        QJsonObject jsonObject = message.toObject();
+
+        QString bolt11 = jsonObject.value("result").toObject().value("bolt11").toString();
+
+        if (bolt11.length() > 0)
+        {
+            fetchInvoices();
+            emit invoiceAdded(bolt11);
+        }
+
+        if (jsonObject.contains("result"))
+        {
+            QJsonObject resultObject = jsonObject.value("result").toObject();
+            if (resultObject.contains("id"))
+            {
+                // TODO: notify GUI that we've connected
+                fetchInvoices();
+            }
+        }
+    }
+}
+
 Invoice::Invoice()
 {}
 

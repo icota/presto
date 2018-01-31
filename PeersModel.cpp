@@ -35,13 +35,10 @@ void PeersModel::listPeersRequestFinished()
     {
         QJsonObject jsonObject = message.toObject();
 
-        if (jsonObject.contains("result"))
+        QJsonArray peersArray = jsonObject.value("result").toObject().value("peers").toArray();
+        if (peersArray.count() > 0)
         {
-            QJsonObject resultObject = jsonObject.value("result").toObject();
-            if (resultObject.contains("peers"))
-            {
-                populatePeersFromJson(resultObject);
-            }
+            populatePeersFromJson(peersArray);
         }
     }
 }
@@ -78,6 +75,44 @@ void PeersModel::connectToPeerRequestFinished()
     }
 }
 
+void PeersModel::fundChannel(QString peerId, QString amountInSatoshi)
+{
+    QJsonObject paramsObject;
+    paramsObject.insert("id", peerId);
+    paramsObject.insert("satoshi", amountInSatoshi);
+
+    QJsonRpcMessage message = QJsonRpcMessage::createRequest("fundchannel", paramsObject);
+    QJsonRpcServiceReply* reply = m_rpcSocket->sendMessage(message);
+    QObject::connect(reply, SIGNAL(finished()), this, SLOT(fundChannelRequestFinished()));
+}
+
+void PeersModel::fundChannelRequestFinished()
+{
+    QJsonRpcServiceReply *reply = static_cast<QJsonRpcServiceReply *>(sender());
+    QJsonRpcMessage message = reply->response();
+
+    if (message.type() == QJsonRpcMessage::Error)
+    {
+        emit errorString(message.toObject().value("error").toObject().value("message").toString());
+        // show the error to user
+    }
+
+    if (message.type() == QJsonRpcMessage::Response)
+    {
+        QJsonObject jsonObject = message.toObject();
+
+        if (jsonObject.contains("result"))
+        {
+            QJsonObject resultObject = jsonObject.value("result").toObject();
+            if (resultObject.contains("id"))
+            {
+                // TODO: notify GUI that we've connected
+                fetchPeers();
+            }
+        }
+    }
+}
+
 int PeersModel::rowCount(const QModelIndex & parent) const
 {
     Q_UNUSED(parent);
@@ -89,38 +124,39 @@ QVariant PeersModel::data(const QModelIndex &index, int role) const
     if (index.row() < 0 || index.row() >= m_peers.count())
         return QVariant();
 
-    const Peer &Peer = m_peers[index.row()];
+    const Peer &peer = m_peers[index.row()];
     if (role == ChannelRole)
-        return Peer.channel();
+        return peer.channel();
     else if (role == ConnectedRole)
-        return Peer.connected();
+        return peer.connected();
     else if (role == MSatoshiToUsRole)
-        return Peer.msatoshiToUs();
+        return peer.msatoshiToUs();
     else if (role == MSatoshiTotalRole)
-        return Peer.msatoshiTotal();
+        return peer.msatoshiTotal();
     else if (role == NetAddressRole)
-        return Peer.netAddress();
+        return peer.netAddress();
     else if (role == PeerIdRole)
-        return Peer.id();
+        return peer.id();
     else if (role == PeerStateRole)
-        return Peer.state();
+        return peer.state();
     return QVariant();
 }
 
-void PeersModel::populatePeersFromJson(QJsonObject jsonObject)
+void PeersModel::populatePeersFromJson(QJsonArray jsonArray)
 {
-    foreach (const QJsonValue &v, jsonObject)
+    foreach (const QJsonValue &v, jsonArray)
     {
         beginInsertRows(QModelIndex(), rowCount(), rowCount());
 
-        QJsonObject PeerJsonObject = v.toArray()[0].toObject(); // TODO: Fix
+        QJsonObject PeerJsonObject = v.toObject(); // TODO: Fix
+
         Peer peer;
         peer.setChannel(PeerJsonObject.value("channel").toString());
         peer.setConnected(PeerJsonObject.value("connected").toBool());
         peer.setMsatoshiToUs(PeerJsonObject.value("msatoshi_to_us").toInt());
         peer.setMsatoshiTotal(PeerJsonObject.value("msatoshi_total").toInt());
         peer.setNetAddress(PeerJsonObject.value("netaddr").toArray()[0].toString()); // TODO: Figure out why addresses are in an array
-        peer.setId(PeerJsonObject.value("peer").toString());
+        peer.setId(PeerJsonObject.value("id").toString());
 
         QString state = PeerJsonObject.value("state").toString();
 

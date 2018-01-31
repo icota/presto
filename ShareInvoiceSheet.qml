@@ -6,19 +6,13 @@ import org.kde.kirigami 2.1 as Kirigami
 Kirigami.OverlaySheet {
     parentWidthRatio: 0.75
 
-    property string onchainAddress
+    property string bolt11
 
     ColumnLayout {
 
         QQC2.Label {
-            visible: !walletModel.totalAvailableFunds
             wrapMode: Text.WordWrap
-            text: "NO FUNDS"
-        }
-
-        QQC2.Label {
-            wrapMode: Text.WordWrap
-            text: "Pay to this address"
+            text: "Share this invoice"
         }
 
         QRCode {
@@ -26,7 +20,12 @@ Kirigami.OverlaySheet {
             //Layout.fillWidth: true
             width : 320
             height : 320
-            value : "bitcoin:" + onchainAddress
+            value : "lightning:" + bolt11
+        }
+
+        QQC2.Label {
+            wrapMode: Text.WordWrap
+            text: bolt11
         }
     }
 }

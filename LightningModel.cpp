@@ -1,10 +1,5 @@
 #include "LightningModel.h"
 
-// TODO: Add all the strings to a namespaces
-//namespace CLightningJson {
-//static QString
-//}
-
 PeersModel *LightningModel::peersModel() const
 {
     return m_peersModel;

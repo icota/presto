@@ -87,9 +87,12 @@ public:
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
 
 signals:
+    void errorString(QString error);
+    void invoiceAdded(QString bolt11);
 
 private slots:
-    void listInvoicesRequestFinished();
+    void listInvoicesRequestFinished();   
+    void addInvoiceRequestFinished();
 
 private:
     void fetchInvoices();
@@ -100,6 +103,7 @@ private:
     QJsonRpcSocket* m_rpcSocket;
 
 public slots:
+    void addInvoice(QString label, QString description, QString amountInMsatoshi);
 };
 
 #endif // INVOICESMODEL_H

@@ -88,18 +88,23 @@ public:
 
 
     PeersModel(QJsonRpcSocket* rpcSocket = 0);
-    void populatePeersFromJson(QJsonObject jsonObject);
+    void populatePeersFromJson(QJsonArray jsonArray);
 
     int rowCount(const QModelIndex & parent = QModelIndex()) const;
 
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
 
+signals:
+    void errorString(QString errorString);
+
 public slots:
-    void connectToPeer(QString peerId, QString peerAddress);
+    void connectToPeer(QString peerId, QString peerAddress);    
+    void fundChannel(QString peerId, QString amountInSatoshi);
 
 private slots:
     void listPeersRequestFinished();
     void connectToPeerRequestFinished();
+    void fundChannelRequestFinished();
 
 private:
     void fetchPeers();
