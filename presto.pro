@@ -25,7 +25,8 @@ SOURCES += main.cpp \
     WalletModel.cpp \
     InvoicesModel.cpp
 
-RESOURCES += qml.qrc
+RESOURCES += qml.qrc \
+    kirigami-icons.qrc
 
 # Additional import path used to resolve QML modules in Qt Creator's code model
 QML_IMPORT_PATH += "/home/igor/Code/build-kirigami-Desktop_Qt_5_9_0_GCC_64bit-Debug"

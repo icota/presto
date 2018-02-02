@@ -7,7 +7,7 @@ import QtMultimedia 5.8
 import QZXing 2.3
 
 Kirigami.OverlaySheet {
-    parentWidthRatio: 0.75
+    //parentWidthRatio: 0.75
 
     ColumnLayout {
         //anchors.fill: parent

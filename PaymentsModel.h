@@ -20,7 +20,6 @@ public:
         PAYMENT_FAILED = 2
     };
 
-
     QString hash() const;
     void setHash(const QString &hash);
 
@@ -41,7 +40,6 @@ public:
 
     PaymentStatus status() const;
     void setStatus(const PaymentStatus &status);
-
 
 private:
     QString m_hash;
@@ -74,6 +72,8 @@ public:
     int rowCount(const QModelIndex & parent = QModelIndex()) const;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
 
+    void updatePayments();
+
 public slots:
     void decodePayment(QString bolt11String);
     void pay(QString bolt11String);
@@ -92,7 +92,6 @@ signals:
     void errorString(QString error);
 
 private:
-    void fetchPayments();
     void populatePaymentsFromJson(QJsonArray jsonObject);
 
 private:

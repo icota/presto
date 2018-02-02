@@ -14,5 +14,6 @@
         <file>ShareInvoiceSheet.qml</file>
         <file>OnchainWithdrawSheet.qml</file>
         <file>BalanceItem.qml</file>
+        <file>ExchangeRate.qml</file>
     </qresource>
 </RCC>

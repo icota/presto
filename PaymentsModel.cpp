@@ -16,10 +16,10 @@ QHash<int, QByteArray> PaymentsModel::roleNames() const {
 PaymentsModel::PaymentsModel(QJsonRpcSocket *rpcSocket)
 {
     m_rpcSocket = rpcSocket;
-    fetchPayments();
+    updatePayments();
 }
 
-void PaymentsModel::fetchPayments()
+void PaymentsModel::updatePayments()
 {
     QJsonRpcMessage message = QJsonRpcMessage::createRequest("listpayments", QJsonValue());
     QJsonRpcServiceReply* reply = m_rpcSocket->sendMessage(message);
@@ -124,6 +124,9 @@ void PaymentsModel::payRequestFinished()
 
 void PaymentsModel::populatePaymentsFromJson(QJsonArray jsonArray)
 {
+    m_payments.clear();
+    endResetModel();
+
     foreach (const QJsonValue &v, jsonArray)
     {
         beginInsertRows(QModelIndex(), rowCount(), rowCount());

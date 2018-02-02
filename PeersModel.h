@@ -94,11 +94,13 @@ public:
 
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
 
+    void updatePeers();
+
 signals:
     void errorString(QString error);
 
 public slots:
-    void connectToPeer(QString peerId, QString peerAddress);    
+    void connectToPeer(QString peerId, QString peerAddress);
     void fundChannel(QString peerId, QString amountInSatoshi);
     void closeChannel(QString peerId);
 
@@ -107,9 +109,6 @@ private slots:
     void connectToPeerRequestFinished();
     void fundChannelRequestFinished();
     void closeChannelRequestFinished();
-
-private:
-    void fetchPeers();
 
 private:
     QList<Peer> m_peers;

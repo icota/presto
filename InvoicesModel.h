@@ -18,7 +18,6 @@ public:
         EXPIRED
     };
 
-
     QString label() const;
     void setLabel(const QString &label);
 
@@ -86,7 +85,7 @@ public:
     int rowCount(const QModelIndex & parent = QModelIndex()) const;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
 
-
+    void updateInvoices();
 
 signals:
     void errorString(QString error);
@@ -98,7 +97,6 @@ private slots:
     void deleteInvoiceRequestFinished();
 
 private:
-    void fetchInvoices();
     void populateInvoicesFromJson(QJsonArray jsonArray);
 
 private:

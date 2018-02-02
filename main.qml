@@ -302,6 +302,8 @@ Kirigami.ApplicationWindow {
         }
     }
 
+    ExchangeRate {}
+
     // Notifications
     QQC2.Popup {
         id: errorPopup

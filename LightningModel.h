@@ -2,6 +2,7 @@
 #define LIGHTNINGMODEL_H
 
 #include <QLocalSocket>
+#include <QTimer>
 
 #include "PeersModel.h"
 #include "PaymentsModel.h"
@@ -31,11 +32,13 @@ private:
     PaymentsModel* m_paymentsModel;
     WalletModel* m_walletModel;
     InvoicesModel* m_invoicesModel;
+    QTimer* m_updatesTimer;
 
 private slots:
     void rpcConnected();
     void rpcMessageReceived(QJsonRpcMessage message);
     void unixSocketError(QLocalSocket::LocalSocketError unixSocketError);
+    void updateModels();
 
 };
 

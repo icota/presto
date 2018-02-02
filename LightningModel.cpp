@@ -44,6 +44,14 @@ void LightningModel::rpcConnected()
     m_paymentsModel = new PaymentsModel(m_rpcSocket);
     m_walletModel = new WalletModel(m_rpcSocket);
     m_invoicesModel = new InvoicesModel(m_rpcSocket);
+
+    m_updatesTimer = new QTimer();
+
+    // Update the models every 15 secs
+    m_updatesTimer->setInterval(15000);
+    m_updatesTimer->setSingleShot(false);
+    QObject::connect(m_updatesTimer, &QTimer::timeout, this, &LightningModel::updateModels);
+    m_updatesTimer->start();
 }
 
 void LightningModel::rpcMessageReceived(QJsonRpcMessage message)
@@ -54,4 +62,12 @@ void LightningModel::rpcMessageReceived(QJsonRpcMessage message)
 void LightningModel::unixSocketError(QLocalSocket::LocalSocketError socketError)
 {
     qDebug() << socketError;
+}
+
+void LightningModel::updateModels()
+{
+    m_peersModel->updatePeers();
+    m_paymentsModel->updatePayments();
+    m_walletModel->updateFunds();
+    m_invoicesModel->updateInvoices();
 }

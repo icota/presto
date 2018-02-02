@@ -4,7 +4,7 @@
 WalletModel::WalletModel(QJsonRpcSocket *rpcSocket)
 {
     m_rpcSocket = rpcSocket;
-    fetchFunds();
+    updateFunds();
 }
 
 QHash<int, QByteArray> WalletModel::roleNames() const {
@@ -97,7 +97,7 @@ void WalletModel::withdrawFundsRequestFinished()
     }
 }
 
-void WalletModel::fetchFunds()
+void WalletModel::updateFunds()
 {
     QJsonRpcMessage message = QJsonRpcMessage::createRequest("listfunds", QJsonValue());
     QJsonRpcServiceReply* reply = m_rpcSocket->sendMessage(message);
@@ -140,6 +140,9 @@ void WalletModel::newAddressRequestFinished()
 
 void WalletModel::populateFundsFromJson(QJsonArray jsonArray)
 {
+    m_funds.clear();
+    endResetModel();
+
     foreach (const QJsonValue &v, jsonArray)
     {
         beginInsertRows(QModelIndex(), rowCount(), rowCount());

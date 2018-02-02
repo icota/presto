@@ -4,7 +4,7 @@
 InvoicesModel::InvoicesModel(QJsonRpcSocket *rpcSocket)
 {
     m_rpcSocket = rpcSocket;
-    fetchInvoices();
+    updateInvoices();
 }
 
 QHash<int, QByteArray> InvoicesModel::roleNames() const
@@ -58,7 +58,7 @@ QVariant InvoicesModel::data(const QModelIndex &index, int role) const
     return QVariant();
 }
 
-void InvoicesModel::fetchInvoices()
+void InvoicesModel::updateInvoices()
 {
     QJsonRpcMessage message = QJsonRpcMessage::createRequest("listinvoices", QJsonValue());
     QJsonRpcServiceReply* reply = m_rpcSocket->sendMessage(message);
@@ -84,6 +84,9 @@ void InvoicesModel::listInvoicesRequestFinished()
 
 void InvoicesModel::populateInvoicesFromJson(QJsonArray jsonArray)
 {
+    m_invoices.clear();
+    endResetModel();
+
     foreach (const QJsonValue &v, jsonArray)
     {
         beginInsertRows(QModelIndex(), rowCount(), rowCount());
@@ -137,7 +140,7 @@ void InvoicesModel::addInvoiceRequestFinished()
 
         if (bolt11.length() > 0)
         {
-            fetchInvoices();
+            updateInvoices();
             emit invoiceAdded(bolt11);
         }
 
@@ -147,7 +150,7 @@ void InvoicesModel::addInvoiceRequestFinished()
             if (resultObject.contains("id"))
             {
                 // TODO: notify GUI that we've connected
-                fetchInvoices();
+                updateInvoices();
             }
         }
     }

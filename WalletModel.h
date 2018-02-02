@@ -50,6 +50,8 @@ public:
 
     /*Q_INVOKABLE*/ int totalAvailableFunds();
 
+    void updateFunds();
+
 signals:
     void totalAvailableFundsChanged();
     void newAddress(QString newAddress);
@@ -61,7 +63,7 @@ public slots:
 
 private slots:
     void listFundsRequestFinished();
-    void newAddressRequestFinished();  
+    void newAddressRequestFinished();
     void withdrawFundsRequestFinished();
 
 private:
@@ -69,7 +71,6 @@ private:
     QJsonRpcSocket* m_rpcSocket;
 
 private:
-    void fetchFunds();
     void populateFundsFromJson(QJsonArray jsonArray);
 };
 

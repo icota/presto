@@ -16,10 +16,10 @@ QHash<int, QByteArray> PeersModel::roleNames() const {
 PeersModel::PeersModel(QJsonRpcSocket *rpcSocket)
 {
     m_rpcSocket = rpcSocket;
-    fetchPeers();
+    updatePeers();
 }
 
-void PeersModel::fetchPeers()
+void PeersModel::updatePeers()
 {
     QJsonRpcMessage message = QJsonRpcMessage::createRequest("listpeers", QJsonValue());
     QJsonRpcServiceReply* reply = m_rpcSocket->sendMessage(message);
@@ -68,7 +68,7 @@ void PeersModel::connectToPeerRequestFinished()
             QJsonObject resultObject = jsonObject.value("result").toObject();
             if (resultObject.contains("id"))
             {
-                fetchPeers();
+                updatePeers();
             }
         }
     }
@@ -105,7 +105,7 @@ void PeersModel::fundChannelRequestFinished()
             QJsonObject resultObject = jsonObject.value("result").toObject();
             if (resultObject.contains("id"))
             {
-                fetchPeers();
+                updatePeers();
             }
         }
     }
@@ -137,7 +137,7 @@ void PeersModel::closeChannelRequestFinished()
 
         if (jsonObject.contains("result"))
         {
-                fetchPeers();
+                updatePeers();
         }
     }
 }
@@ -173,6 +173,9 @@ QVariant PeersModel::data(const QModelIndex &index, int role) const
 
 void PeersModel::populatePeersFromJson(QJsonArray jsonArray)
 {
+    m_peers.clear();
+    endResetModel();
+
     foreach (const QJsonValue &v, jsonArray)
     {
         beginInsertRows(QModelIndex(), rowCount(), rowCount());

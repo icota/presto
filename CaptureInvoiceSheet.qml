@@ -7,10 +7,10 @@ import QtMultimedia 5.8
 import QZXing 2.3
 
 Kirigami.OverlaySheet {
-    parentWidthRatio: 0.75
-
     ColumnLayout {
-        //anchors.fill: parent
+        id: columnLayout
+        // This how you do it
+        implicitWidth: parent.width * 0.75
 
         QQC2.Label {
             id: scanLabel
@@ -20,7 +20,7 @@ Kirigami.OverlaySheet {
             MouseArea {
                 anchors.fill: parent
                 onClicked: {
-                    console.log();
+                    console.log(columnLayout.width);
                 }
             }
         }
