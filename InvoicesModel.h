@@ -86,13 +86,16 @@ public:
     int rowCount(const QModelIndex & parent = QModelIndex()) const;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
 
+
+
 signals:
     void errorString(QString error);
     void invoiceAdded(QString bolt11);
 
 private slots:
-    void listInvoicesRequestFinished();   
+    void listInvoicesRequestFinished();
     void addInvoiceRequestFinished();
+    void deleteInvoiceRequestFinished();
 
 private:
     void fetchInvoices();
@@ -104,6 +107,7 @@ private:
 
 public slots:
     void addInvoice(QString label, QString description, QString amountInMsatoshi);
+    void deleteInvoice(QString label, QString status);
 };
 
 #endif // INVOICESMODEL_H

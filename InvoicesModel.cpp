@@ -111,7 +111,7 @@ void InvoicesModel::addInvoice(QString label, QString description, QString amoun
 {
     QJsonObject paramsObject;
     paramsObject.insert("label", label);
-        paramsObject.insert("description", description);
+    paramsObject.insert("description", description);
     paramsObject.insert("msatoshi", amountInMsatoshi);
 
     QJsonRpcMessage message = QJsonRpcMessage::createRequest("invoice", paramsObject);
@@ -127,7 +127,6 @@ void InvoicesModel::addInvoiceRequestFinished()
     if (message.type() == QJsonRpcMessage::Error)
     {
         emit errorString(message.toObject().value("error").toObject().value("message").toString());
-        // show the error to user
     }
 
     if (message.type() == QJsonRpcMessage::Response)
@@ -150,6 +149,40 @@ void InvoicesModel::addInvoiceRequestFinished()
                 // TODO: notify GUI that we've connected
                 fetchInvoices();
             }
+        }
+    }
+}
+
+void InvoicesModel::deleteInvoice(QString label, QString status)
+{
+    QJsonObject paramsObject;
+    paramsObject.insert("label", label);
+    paramsObject.insert("status", status);
+
+    QJsonRpcMessage message = QJsonRpcMessage::createRequest("delinvoice", paramsObject);
+    QJsonRpcServiceReply* reply = m_rpcSocket->sendMessage(message);
+    QObject::connect(reply, SIGNAL(finished()), this, SLOT(deleteInvoiceRequestFinished()));
+}
+
+void InvoicesModel::deleteInvoiceRequestFinished()
+{
+    QJsonRpcServiceReply *reply = static_cast<QJsonRpcServiceReply *>(sender());
+    QJsonRpcMessage message = reply->response();
+
+    if (message.type() == QJsonRpcMessage::Error)
+    {
+        emit errorString(message.toObject().value("error").toObject().value("message").toString());
+    }
+
+
+    if (message.type() == QJsonRpcMessage::Response)
+    {
+        QJsonObject jsonObject = message.toObject();
+
+        if (jsonObject.contains("result"))
+        {
+            QJsonObject resultObject = jsonObject.value("result").toObject();
+            populateInvoicesFromJson(resultObject.value("invoices").toArray());
         }
     }
 }

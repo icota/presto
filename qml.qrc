@@ -12,5 +12,7 @@
         <file>FundChannelSheet.qml</file>
         <file>SendInvoiceSheet.qml</file>
         <file>ShareInvoiceSheet.qml</file>
+        <file>OnchainWithdrawSheet.qml</file>
+        <file>BalanceItem.qml</file>
     </qresource>
 </RCC>

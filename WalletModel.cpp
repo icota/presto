@@ -52,6 +52,51 @@ void WalletModel::requestNewAddress()
     QObject::connect(reply, SIGNAL(finished()), this, SLOT(newAddressRequestFinished()));
 }
 
+void WalletModel::withdrawFunds(QString destinationAddress, QString amountInSatoshi)
+{
+    QJsonObject paramsObject;
+    paramsObject.insert("destination", destinationAddress);
+    paramsObject.insert("satoshi", amountInSatoshi);
+
+    QJsonRpcMessage message = QJsonRpcMessage::createRequest("withdraw", paramsObject);
+    QJsonRpcServiceReply* reply = m_rpcSocket->sendMessage(message);
+    QObject::connect(reply, SIGNAL(finished()), this, SLOT(withdrawFundsRequestFinished()));
+}
+
+void WalletModel::withdrawFundsRequestFinished()
+{
+    QJsonRpcServiceReply *reply = static_cast<QJsonRpcServiceReply *>(sender());
+    QJsonRpcMessage message = reply->response();
+
+    if (message.type() == QJsonRpcMessage::Error)
+    {
+        emit errorString(message.toObject().value("error").toObject().value("message").toString());
+    }
+
+    if (message.type() == QJsonRpcMessage::Response)
+    {
+        QJsonObject jsonObject = message.toObject();
+
+        QString bolt11 = jsonObject.value("result").toObject().value("bolt11").toString();
+
+        if (bolt11.length() > 0)
+        {
+            //fetchInvoices();
+            //emit invoiceAdded(bolt11);
+        }
+
+        if (jsonObject.contains("result"))
+        {
+            QJsonObject resultObject = jsonObject.value("result").toObject();
+            if (resultObject.contains("id"))
+            {
+                // TODO: notify GUI that we've connected
+                //fetchInvoices();
+            }
+        }
+    }
+}
+
 void WalletModel::fetchFunds()
 {
     QJsonRpcMessage message = QJsonRpcMessage::createRequest("listfunds", QJsonValue());

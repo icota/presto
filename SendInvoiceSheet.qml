@@ -4,23 +4,7 @@ import QtQuick.Layouts 1.3
 import org.kde.kirigami 2.1 as Kirigami
 
 Kirigami.OverlaySheet {
-
-//    property int createdAtTimestamp: 0
-//    property string currency: "bc"
-//    property string description
-//    property int expiry
-//    property int msatoshiAmount: 0
-//    property int timestamp
-//    property string payee
-//    property string bolt11
-
-//    property var locale: Qt.locale()
-//    property date currentDate: new Date()
-
     ColumnLayout {
-
-
-
         QQC2.Label {
             wrapMode: Text.WordWrap
             text: "INVOICE SOMEBODY"
@@ -52,6 +36,4 @@ Kirigami.OverlaySheet {
             }
         }
     }
-
-
 }

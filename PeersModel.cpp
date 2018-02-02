@@ -68,7 +68,6 @@ void PeersModel::connectToPeerRequestFinished()
             QJsonObject resultObject = jsonObject.value("result").toObject();
             if (resultObject.contains("id"))
             {
-                // TODO: notify GUI that we've connected
                 fetchPeers();
             }
         }
@@ -106,9 +105,39 @@ void PeersModel::fundChannelRequestFinished()
             QJsonObject resultObject = jsonObject.value("result").toObject();
             if (resultObject.contains("id"))
             {
-                // TODO: notify GUI that we've connected
                 fetchPeers();
             }
+        }
+    }
+}
+
+void PeersModel::closeChannel(QString peerId)
+{
+    QJsonObject paramsObject;
+    paramsObject.insert("id", peerId);
+
+    QJsonRpcMessage message = QJsonRpcMessage::createRequest("close", paramsObject);
+    QJsonRpcServiceReply* reply = m_rpcSocket->sendMessage(message);
+    QObject::connect(reply, SIGNAL(finished()), this, SLOT(closeChannelRequestFinished()));
+}
+
+void PeersModel::closeChannelRequestFinished()
+{
+    QJsonRpcServiceReply *reply = static_cast<QJsonRpcServiceReply *>(sender());
+    QJsonRpcMessage message = reply->response();
+
+    if (message.type() == QJsonRpcMessage::Error)
+    {
+        emit errorString(message.toObject().value("error").toObject().value("message").toString());
+    }
+
+    if (message.type() == QJsonRpcMessage::Response)
+    {
+        QJsonObject jsonObject = message.toObject();
+
+        if (jsonObject.contains("result"))
+        {
+                fetchPeers();
         }
     }
 }

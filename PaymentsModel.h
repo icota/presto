@@ -89,6 +89,7 @@ signals:
                         QString payee, QString paymentHash, QString signature, int timestamp);
 
     void paymentPreimageReceived(QString preimage);
+    void errorString(QString error);
 
 private:
     void fetchPayments();

@@ -53,13 +53,16 @@ public:
 signals:
     void totalAvailableFundsChanged();
     void newAddress(QString newAddress);
+    void errorString(QString error);
 
 public slots:
     void requestNewAddress();
+    void withdrawFunds(QString destinationAddress, QString amountInSatoshi);
 
 private slots:
     void listFundsRequestFinished();
-    void newAddressRequestFinished();
+    void newAddressRequestFinished();  
+    void withdrawFundsRequestFinished();
 
 private:
     QList<FundsTransaction> m_funds;

@@ -1,5 +1,5 @@
 import QtQuick 2.7
-import QtQuick.Controls 2.0 as QQC2
+import QtQuick.Controls 2.2 as QQC2
 import QtQuick.Layouts 1.3
 import org.kde.kirigami 2.1 as Kirigami
 
@@ -9,59 +9,89 @@ Kirigami.ApplicationWindow {
     height: 600
     title: qsTr("Presto!")
 
-    header: Kirigami.ApplicationHeader {}
+    header: Kirigami.ApplicationHeader {
+        headerStyle: Kirigami.ApplicationHeaderStyle.TabBar
+        backButtonEnabled: false
+    }
     globalDrawer: Kirigami.GlobalDrawer {
-        drawerOpen: false
+        // Depends on the screen
+        //drawerOpen: false
         title: "Presto!"
         titleIcon: "applications-graphics"
+
+        topContent: [
+            QQC2.Button {
+                text: "Button"
+            }
+        ]
+
+        //bannerImageSource:
+
         actions: [
             Kirigami.Action {
-                text: "Lightning Network"
+                text: "Lightning Network (" + walletModel.totalAvailableFunds + " SAT)"
                 iconName: "view-list-icons"
                 Kirigami.Action {
-                    text: "Pay"
-                }
-                Kirigami.Action {
-                    text: "Invoice"
-                }
-                Kirigami.Action {
-                    text: "Peers"
+                    text: "Connect"
                     onTriggered: {
-                        pageStack.push(peersPageComponent)
-                        // show list of peers
+                        pageStack.currentIndex = 2;
+                        connectToPeerSheet.sheetOpen = !connectToPeerSheet.sheetOpen
                     }
                 }
                 Kirigami.Action {
-                    text: "Connect to Peer"
+                    text: "Send"
                     onTriggered: {
+                        pageStack.currentIndex = 0;
+                        connectToPeerSheet.sheetOpen = !connectToPeerSheet.sheetOpen
+                    }
+
+                }
+                Kirigami.Action {
+                    text: "Receive"
+                    onTriggered: {
+                        pageStack.currentIndex = 1;
                         connectToPeerSheet.sheetOpen = !connectToPeerSheet.sheetOpen
                     }
                 }
             },
             Kirigami.Action {
-                text: "My Invoices"
+                text: "On-Chain (" + walletModel.totalAvailableFunds + " SAT)"
+                iconName: "view-list-icons"
+                Kirigami.Action {
+                    text: "Request"
+                    iconName: "mail-send-receive"
+                    onTriggered: {
+                        walletModel.requestNewAddress()
+                    }
+                }
+                Kirigami.Action {
+                    text: "Withdraw"
+                    onTriggered: {
+                        onchainWithdrawSheet.sheetOpen = !onchainWithdrawSheet.sheetOpen
+                    }
+                }
+            },
+
+
+            Kirigami.Action {
+                text: "Settings"
+                enabled: false
                 onTriggered: {
-                    // show invoices list
-                    pageStack.push(myInvoicesPageComponent)
                 }
             },
             Kirigami.Action {
-                text: "Connect to LN peer"
+                text: "About"
+                enabled: false
                 onTriggered: {
-                    connectToPeerSheet.sheetOpen = !connectToPeerSheet.sheetOpen
                 }
             }
         ]
     }
 
-    ConnectToPeerSheet {
-        id: connectToPeerSheet
-    }
-
     pageStack.initialPage: transactionsPageComponent
 
     Component {
-        id: myInvoicesPageComponent
+        id: invoicesPageComponent
 
         Kirigami.ScrollablePage {
             title: "Invoices"
@@ -69,6 +99,7 @@ Kirigami.ApplicationWindow {
             actions {
                 main: Kirigami.Action {
                     iconName: sendInvoiceSheet.sheetOpen ? "dialog-cancel" : "list-add"
+                    tooltip: qsTr("Create a new Invoice")
                     onTriggered: {
                         sendInvoiceSheet.sheetOpen = !sendInvoiceSheet.sheetOpen
                     }
@@ -81,12 +112,15 @@ Kirigami.ApplicationWindow {
                 anchors.fill: parent
                 delegate: Kirigami.SwipeListItem {
 
-                    QQC2.Label { text: "Label: " + label + ", msatoshi: " + msatoshi + ", " + expiresAt }
+                    QQC2.Label { text: "Label: " + label +
+                                       ", msatoshi: " + msatoshi +
+                                       ", " + expiresAt }
                     actions: [
                         Kirigami.Action {
                             iconName: "edit-delete"
+                            tooltip: qsTr("Delete")
                             onTriggered: {
-                                // modal dialog to delete
+                                invoicesModel.deleteInvoice(label, status)
                             }
                         }
                     ]
@@ -101,19 +135,39 @@ Kirigami.ApplicationWindow {
         Kirigami.ScrollablePage {
             title: "Peers"
 
+            actions {
+                main: Kirigami.Action {
+                    iconName: connectToPeerSheet.sheetOpen ? "dialog-cancel" : "sync-synchronizing"
+                    tooltip: qsTr("Connect to a Peer")
+                    onTriggered: {
+                        connectToPeerSheet.sheetOpen = !connectToPeerSheet.sheetOpen
+                    }
+                }
+            }
+
             ListView {
                 id: peersListView
                 model: peersModel
                 anchors.fill: parent
                 delegate: Kirigami.SwipeListItem {
 
-                    QQC2.Label { text: "Peer: " + peerid + ", connected: " + connected + ", " + msatoshitotal }
+                    QQC2.Label { text: "Peer: " + peerid +
+                                       ", connected: " + connected +
+                                       ", " + msatoshitotal }
                     actions: [
                         Kirigami.Action {
                             iconName: "list-add"
+                            tooltip: qsTr("Add a new Peer")
                             onTriggered: {
                                 fundChannelSheet.peerToFund = peerid
                                 fundChannelSheet.sheetOpen = !fundChannelSheet.sheetOpen
+                            }
+                        },
+                        Kirigami.Action {
+                            iconName: "dialog-cancel"
+                            tooltip: qsTr("Close the Channel")
+                            onTriggered: {
+                                peersModel.closeChannel(peerid)
                             }
                         }
                     ]
@@ -126,25 +180,13 @@ Kirigami.ApplicationWindow {
         id: transactionsPageComponent
 
         Kirigami.ScrollablePage {
-            title: walletModel.totalAvailableFunds + " SAT" + " / " // add LN funds
+            title: "Payments"
             actions {
                 main: Kirigami.Action {
                     iconName: captureInvoiceSheet.sheetOpen ? "dialog-cancel" : "document-send"
+                    tooltip: qsTr("Pay")
                     onTriggered: {
-                        print("Action button in buttons page clicked");
                         captureInvoiceSheet.sheetOpen = !captureInvoiceSheet.sheetOpen
-                    }
-                }
-                left: Kirigami.Action {
-                    iconName: "mail-send-receive"
-                    onTriggered: {
-                        walletModel.requestNewAddress()
-                    }
-                }
-                right: Kirigami.Action {
-                    iconName: "document-edit"
-                    onTriggered: {
-                        print("Right action triggered")
                     }
                 }
             }
@@ -153,13 +195,21 @@ Kirigami.ApplicationWindow {
                 id: paymentsListView
                 model: paymentsModel
                 anchors.fill: parent
-                delegate: Text { text: "Amount: " + msatoshi + ", Incoming: " + incoming + ", Timestamp: " + timestamp }
+                delegate: Text { text: "Amount: " + msatoshi +
+                                       ", Incoming: " + incoming +
+                                       ", Timestamp: " + timestamp }
             }
         }
     }
 
-    // Sheets
+    Component.onCompleted: {
+        // Gotta be a nicer way
+        pageStack.push(invoicesPageComponent)
+        pageStack.push(peersPageComponent)
+        pageStack.currentIndex = 0;
+    }
 
+    // Sheets
     CaptureInvoiceSheet {
         id: captureInvoiceSheet
     }
@@ -184,8 +234,16 @@ Kirigami.ApplicationWindow {
         id: shareInvoiceSheet
     }
 
-    // Connections
+    ConnectToPeerSheet {
+        id: connectToPeerSheet
+    }
 
+    OnchainWithdrawSheet {
+        id: onchainWithdrawSheet
+    }
+
+
+    // Connections
     Connections {
         target: paymentsModel
         onPaymentDecoded: {
@@ -201,6 +259,11 @@ Kirigami.ApplicationWindow {
             payInvoiceSheet.sheetOpen = true;
 
         }
+
+        onErrorString: {
+            errorPopup.contentItem.text = error
+            errorPopup.open()
+        }
     }
 
     Connections {
@@ -209,16 +272,43 @@ Kirigami.ApplicationWindow {
             onchainAddressSheet.onchainAddress = newAddress
             onchainAddressSheet.sheetOpen = !captureInvoiceSheet.sheetOpen
         }
+
+        onErrorString: {
+            errorPopup.contentItem.text = error
+            errorPopup.open()
+        }
+    }
+
+    Connections {
+        target: peersModel
+        onErrorString: {
+            errorPopup.contentItem.text = error
+            errorPopup.open()
+        }
     }
 
     Connections {
         target: invoicesModel
         onInvoiceAdded: {
-            // share invoice
+            // Share the invoice
             shareInvoiceSheet.bolt11 = bolt11;
             sendInvoiceSheet.sheetOpen = false;
             shareInvoiceSheet.sheetOpen = true;
         }
+
+        onErrorString: {
+            errorPopup.contentItem.text = error
+            errorPopup.open()
+        }
+    }
+
+    // Notifications
+    QQC2.Popup {
+        id: errorPopup
+        modal: true
+        focus: true
+        contentItem: QQC2.Label {}
+        closePolicy: QQC2.Popup.CloseOnEscape | QQC2.Popup.CloseOnPressOutside
     }
 }
 
