@@ -49,7 +49,7 @@ void WalletModel::requestNewAddress()
 {
     QJsonRpcMessage message = QJsonRpcMessage::createRequest("newaddr", QJsonValue());
     QJsonRpcServiceReply* reply = m_rpcSocket->sendMessage(message);
-    QObject::connect(reply, SIGNAL(finished()), this, SLOT(newAddressRequestFinished()));
+    QObject::connect(reply, &QJsonRpcServiceReply::finished, this, &WalletModel::newAddressRequestFinished);
 }
 
 void WalletModel::withdrawFunds(QString destinationAddress, QString amountInSatoshi)
@@ -60,7 +60,7 @@ void WalletModel::withdrawFunds(QString destinationAddress, QString amountInSato
 
     QJsonRpcMessage message = QJsonRpcMessage::createRequest("withdraw", paramsObject);
     QJsonRpcServiceReply* reply = m_rpcSocket->sendMessage(message);
-    QObject::connect(reply, SIGNAL(finished()), this, SLOT(withdrawFundsRequestFinished()));
+    QObject::connect(reply, &QJsonRpcServiceReply::finished, this, &WalletModel::withdrawFundsRequestFinished);
 }
 
 void WalletModel::withdrawFundsRequestFinished()
@@ -101,7 +101,7 @@ void WalletModel::fetchFunds()
 {
     QJsonRpcMessage message = QJsonRpcMessage::createRequest("listfunds", QJsonValue());
     QJsonRpcServiceReply* reply = m_rpcSocket->sendMessage(message);
-    QObject::connect(reply, SIGNAL(finished()), this, SLOT(listFundsRequestFinished()));
+    QObject::connect(reply, &QJsonRpcServiceReply::finished, this, &WalletModel::listFundsRequestFinished);
 }
 
 void WalletModel::listFundsRequestFinished()

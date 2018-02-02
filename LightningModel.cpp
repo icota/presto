@@ -32,7 +32,7 @@ LightningModel::LightningModel(QObject *parent) {
         QObject::connect(m_unixSocket, SIGNAL(error(QLocalSocket::LocalSocketError)),
                          this, SLOT(unixSocketError(QLocalSocket::LocalSocketError)));
 
-        QObject::connect(m_rpcSocket, SIGNAL(messageReceived(QJsonRpcMessage)), this, SLOT(rpcMessageReceived(QJsonRpcMessage)));
+        QObject::connect(m_rpcSocket, &QJsonRpcAbstractSocket::messageReceived, this, &LightningModel::rpcMessageReceived);
 
         m_unixSocket->connectToServer("/home/igor/.lightning/lightning-rpc");
     }

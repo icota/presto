@@ -4,7 +4,6 @@ import QtQuick.Layouts 1.3
 import org.kde.kirigami 2.1 as Kirigami
 
 Kirigami.OverlaySheet {
-    id: payInvoiceSheet
 
     property int createdAtTimestamp: 0
     property string currency: "bc"

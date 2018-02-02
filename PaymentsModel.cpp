@@ -23,7 +23,7 @@ void PaymentsModel::fetchPayments()
 {
     QJsonRpcMessage message = QJsonRpcMessage::createRequest("listpayments", QJsonValue());
     QJsonRpcServiceReply* reply = m_rpcSocket->sendMessage(message);
-    QObject::connect(reply, SIGNAL(finished()), this, SLOT(listPaymentsRequestFinished()));
+    QObject::connect(reply, &QJsonRpcServiceReply::finished, this, &PaymentsModel::listPaymentsRequestFinished);
 }
 
 int PaymentsModel::rowCount(const QModelIndex & parent) const
@@ -217,12 +217,12 @@ void PaymentsModel::decodePayment(QString bolt11String)
 {
     QJsonRpcMessage message = QJsonRpcMessage::createRequest("decodepay", QJsonValue(bolt11String));
     QJsonRpcServiceReply* reply = m_rpcSocket->sendMessage(message);
-    QObject::connect(reply, SIGNAL(finished()), this, SLOT(decodePaymentRequestFinished()));
+    QObject::connect(reply, &QJsonRpcServiceReply::finished, this, &PaymentsModel::decodePaymentRequestFinished);
 }
 
 void PaymentsModel::pay(QString bolt11String)
 {
     QJsonRpcMessage message = QJsonRpcMessage::createRequest("pay", QJsonValue(bolt11String));
     QJsonRpcServiceReply* reply = m_rpcSocket->sendMessage(message);
-    QObject::connect(reply, SIGNAL(finished()), this, SLOT(payRequestFinished()));
+    QObject::connect(reply, &QJsonRpcServiceReply::finished, this, &PaymentsModel::payRequestFinished);
 }

@@ -137,7 +137,7 @@ Kirigami.ApplicationWindow {
 
             actions {
                 main: Kirigami.Action {
-                    iconName: connectToPeerSheet.sheetOpen ? "dialog-cancel" : "sync-synchronizing"
+                    iconName: connectToPeerSheet.sheetOpen ? "dialog-cancel" : "list-add"
                     tooltip: qsTr("Connect to a Peer")
                     onTriggered: {
                         connectToPeerSheet.sheetOpen = !connectToPeerSheet.sheetOpen

@@ -23,7 +23,7 @@ void PeersModel::fetchPeers()
 {
     QJsonRpcMessage message = QJsonRpcMessage::createRequest("listpeers", QJsonValue());
     QJsonRpcServiceReply* reply = m_rpcSocket->sendMessage(message);
-    QObject::connect(reply, SIGNAL(finished()), this, SLOT(listPeersRequestFinished()));
+    QObject::connect(reply, &QJsonRpcServiceReply::finished, this, &PeersModel::listPeersRequestFinished);
 }
 
 void PeersModel::listPeersRequestFinished()
@@ -51,7 +51,7 @@ void PeersModel::connectToPeer(QString peerId, QString peerAddress)
 
     QJsonRpcMessage message = QJsonRpcMessage::createRequest("connect", paramsObject);
     QJsonRpcServiceReply* reply = m_rpcSocket->sendMessage(message);
-    QObject::connect(reply, SIGNAL(finished()), this, SLOT(connectToPeerRequestFinished()));
+    QObject::connect(reply, &QJsonRpcServiceReply::finished, this, &PeersModel::connectToPeerRequestFinished);
 }
 
 void PeersModel::connectToPeerRequestFinished()
@@ -82,7 +82,7 @@ void PeersModel::fundChannel(QString peerId, QString amountInSatoshi)
 
     QJsonRpcMessage message = QJsonRpcMessage::createRequest("fundchannel", paramsObject);
     QJsonRpcServiceReply* reply = m_rpcSocket->sendMessage(message);
-    QObject::connect(reply, SIGNAL(finished()), this, SLOT(fundChannelRequestFinished()));
+    QObject::connect(reply, &QJsonRpcServiceReply::finished, this, &PeersModel::fundChannelRequestFinished);
 }
 
 void PeersModel::fundChannelRequestFinished()
@@ -118,7 +118,7 @@ void PeersModel::closeChannel(QString peerId)
 
     QJsonRpcMessage message = QJsonRpcMessage::createRequest("close", paramsObject);
     QJsonRpcServiceReply* reply = m_rpcSocket->sendMessage(message);
-    QObject::connect(reply, SIGNAL(finished()), this, SLOT(closeChannelRequestFinished()));
+    QObject::connect(reply, &QJsonRpcServiceReply::finished, this, &PeersModel::closeChannelRequestFinished);
 }
 
 void PeersModel::closeChannelRequestFinished()

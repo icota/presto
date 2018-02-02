@@ -62,7 +62,7 @@ void InvoicesModel::fetchInvoices()
 {
     QJsonRpcMessage message = QJsonRpcMessage::createRequest("listinvoices", QJsonValue());
     QJsonRpcServiceReply* reply = m_rpcSocket->sendMessage(message);
-    QObject::connect(reply, SIGNAL(finished()), this, SLOT(listInvoicesRequestFinished()));
+    QObject::connect(reply, &QJsonRpcServiceReply::finished, this, &InvoicesModel::listInvoicesRequestFinished);
 }
 
 void InvoicesModel::listInvoicesRequestFinished()
@@ -116,7 +116,7 @@ void InvoicesModel::addInvoice(QString label, QString description, QString amoun
 
     QJsonRpcMessage message = QJsonRpcMessage::createRequest("invoice", paramsObject);
     QJsonRpcServiceReply* reply = m_rpcSocket->sendMessage(message);
-    QObject::connect(reply, SIGNAL(finished()), this, SLOT(addInvoiceRequestFinished()));
+    QObject::connect(reply, &QJsonRpcServiceReply::finished, this, &InvoicesModel::addInvoiceRequestFinished);
 }
 
 void InvoicesModel::addInvoiceRequestFinished()
@@ -161,7 +161,7 @@ void InvoicesModel::deleteInvoice(QString label, QString status)
 
     QJsonRpcMessage message = QJsonRpcMessage::createRequest("delinvoice", paramsObject);
     QJsonRpcServiceReply* reply = m_rpcSocket->sendMessage(message);
-    QObject::connect(reply, SIGNAL(finished()), this, SLOT(deleteInvoiceRequestFinished()));
+    QObject::connect(reply, &QJsonRpcServiceReply::finished, this, &InvoicesModel::deleteInvoiceRequestFinished);
 }
 
 void InvoicesModel::deleteInvoiceRequestFinished()

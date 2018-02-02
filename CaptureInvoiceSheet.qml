@@ -7,7 +7,6 @@ import QtMultimedia 5.8
 import QZXing 2.3
 
 Kirigami.OverlaySheet {
-    id: captureInvoiceSheet
     parentWidthRatio: 0.75
 
     ColumnLayout {
