@@ -16,6 +16,13 @@
 class LightningModel : public QObject
 {
     Q_OBJECT
+    Q_PROPERTY(QString id READ id NOTIFY infoChanged)
+    Q_PROPERTY(int port READ port NOTIFY infoChanged)
+    Q_PROPERTY(QString address READ address NOTIFY infoChanged)
+    Q_PROPERTY(QString version READ version NOTIFY infoChanged)
+    Q_PROPERTY(int blockheight READ blockheight NOTIFY infoChanged)
+    Q_PROPERTY(QString network READ network NOTIFY infoChanged)
+
 public:
     LightningModel(QObject *parent = 0);
 
@@ -23,6 +30,16 @@ public:
     PaymentsModel *paymentsModel() const;
     WalletModel *walletModel() const;
     InvoicesModel *invoicesModel() const;
+
+    QString id() const;
+    int port() const;
+    QString address() const;
+    QString version() const;
+    int blockheight() const;
+    QString network() const;
+
+private:
+    void updateInfo();
 
 private:
     QLocalSocket* m_unixSocket;
@@ -34,11 +51,22 @@ private:
     InvoicesModel* m_invoicesModel;
     QTimer* m_updatesTimer;
 
+    QString m_id;
+    int m_port;
+    QString m_address;
+    QString m_version;
+    int m_blockheight;
+    QString m_network;
+
 private slots:
     void rpcConnected();
     void rpcMessageReceived(QJsonRpcMessage message);
     void unixSocketError(QLocalSocket::LocalSocketError unixSocketError);
     void updateModels();
+    void updateInfoRequestFinished();
+
+signals:
+    void infoChanged();
 
 };
 

@@ -60,3 +60,5 @@ HEADERS += \
     PeersModel.h \
     WalletModel.h \
     InvoicesModel.h
+
+DISTFILES +=

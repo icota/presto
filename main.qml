@@ -65,7 +65,7 @@ Kirigami.ApplicationWindow {
                     }
                 }
                 Kirigami.Action {
-                    text: "Withdraw"
+                    text: "Send"
                     onTriggered: {
                         onchainWithdrawSheet.sheetOpen = !onchainWithdrawSheet.sheetOpen
                     }
@@ -301,8 +301,6 @@ Kirigami.ApplicationWindow {
             errorPopup.open()
         }
     }
-
-    ExchangeRate {}
 
     // Notifications
     QQC2.Popup {

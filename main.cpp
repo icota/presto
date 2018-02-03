@@ -18,6 +18,9 @@ int main(int argc, char *argv[])
     qDebug() << "wtf";
 
     QQmlApplicationEngine engine;
+
+    engine.rootContext()->setContextProperty("lightningModel", lightningModel);
+
     engine.rootContext()->setContextProperty("peersModel", lightningModel->peersModel());
     engine.rootContext()->setContextProperty("paymentsModel", lightningModel->paymentsModel());
     engine.rootContext()->setContextProperty("walletModel", lightningModel->walletModel());

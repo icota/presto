@@ -4,8 +4,6 @@ import QtQuick.Layouts 1.3
 import org.kde.kirigami 2.1 as Kirigami
 
 Kirigami.OverlaySheet {
-    //parentWidthRatio: 0.75
-
     ColumnLayout {
         //anchors.fill: parent
 
