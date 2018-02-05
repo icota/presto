@@ -201,6 +201,17 @@ void PeersModel::populatePeersFromJson(QJsonArray jsonArray)
 
         endInsertRows();
     }
+
+    emit totalAvailableFundsChanged();
+}
+
+int PeersModel::totalAvailableFunds()
+{
+    int sumOfAvailableFunds = 0;
+    foreach (Peer peer, m_peers) {
+        sumOfAvailableFunds += peer.msatoshiToUs();
+    }
+    return sumOfAvailableFunds;
 }
 
 QString Peer::channel() const

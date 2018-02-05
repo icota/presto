@@ -73,6 +73,8 @@ private:
 class PeersModel : public QAbstractListModel
 {
     Q_OBJECT
+    Q_PROPERTY(int totalAvailableFunds READ totalAvailableFunds NOTIFY totalAvailableFundsChanged)
+
 public:
     enum PeerRoles {
         ChannelRole = Qt::UserRole + 1,
@@ -95,8 +97,10 @@ public:
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
 
     void updatePeers();
+    int totalAvailableFunds();
 
 signals:
+    void totalAvailableFundsChanged();
     void errorString(QString error);
 
 public slots:

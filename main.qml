@@ -29,7 +29,7 @@ Kirigami.ApplicationWindow {
 
         actions: [
             Kirigami.Action {
-                text: "Lightning Network (" + walletModel.totalAvailableFunds + " SAT)"
+                text: "Lightning Network (" + peersModel.totalAvailableFunds + " SAT)"
                 iconName: "view-list-icons"
                 Kirigami.Action {
                     text: "Connect"
