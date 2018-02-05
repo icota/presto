@@ -130,7 +130,8 @@ void LightningModel::unixSocketError(QLocalSocket::LocalSocketError socketError)
 void LightningModel::updateModels()
 {
     updateInfo();
-    m_peersModel->updatePeers();
+    // Disable this until we figure out why it's crashing the deamon
+    //m_peersModel->updatePeers();
     m_paymentsModel->updatePayments();
     m_walletModel->updateFunds();
     m_invoicesModel->updateInvoices();
