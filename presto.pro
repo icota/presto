@@ -12,19 +12,6 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
-SOURCES += main.cpp \
-    LightningModel.cpp \
-    qjsonrpc/qjsonrpcabstractserver.cpp \
-    qjsonrpc/qjsonrpcmessage.cpp \
-    qjsonrpc/qjsonrpcservice.cpp \
-    qjsonrpc/qjsonrpcserviceprovider.cpp \
-    qjsonrpc/qjsonrpcservicereply.cpp \
-    qjsonrpc/qjsonrpcsocket.cpp \
-    PaymentsModel.cpp \
-    PeersModel.cpp \
-    WalletModel.cpp \
-    InvoicesModel.cpp
-
 RESOURCES += qml.qrc \
     kirigami-icons.qrc
 
@@ -42,23 +29,43 @@ qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
+QJSONRPC_HEADERS += \
+    3rdparty/qjsonrpc/src/qjsonrpcabstractserver.h \
+    3rdparty/qjsonrpc/src/qjsonrpcabstractserver_p.h \
+    3rdparty/qjsonrpc/src/qjsonrpcglobal.h \
+    3rdparty/qjsonrpc/src/qjsonrpcmessage.h \
+    3rdparty/qjsonrpc/src/qjsonrpcmetatype.h \
+    3rdparty/qjsonrpc/src/qjsonrpcservice.h \
+    3rdparty/qjsonrpc/src/qjsonrpcservice_p.h \
+    3rdparty/qjsonrpc/src/qjsonrpcserviceprovider.h \
+    3rdparty/qjsonrpc/src/qjsonrpcservicereply.h \
+    3rdparty/qjsonrpc/src/qjsonrpcservicereply_p.h \
+    3rdparty/qjsonrpc/src/qjsonrpcsocket.h \
+    3rdparty/qjsonrpc/src/qjsonrpcsocket_p.h
+
+QJSONRPC_SOURCES += \
+    3rdparty/qjsonrpc/src/qjsonrpcabstractserver.cpp \
+    3rdparty/qjsonrpc/src/qjsonrpcmessage.cpp \
+    3rdparty/qjsonrpc/src/qjsonrpcservice.cpp \
+    3rdparty/qjsonrpc/src/qjsonrpcserviceprovider.cpp \
+    3rdparty/qjsonrpc/src/qjsonrpcservicereply.cpp \
+    3rdparty/qjsonrpc/src/qjsonrpcsocket.cpp \
+
 HEADERS += \
+    $${QJSONRPC_HEADERS} \
     LightningModel.h \
-    qjsonrpc/qjsonrpcabstractserver.h \
-    qjsonrpc/qjsonrpcabstractserver_p.h \
-    qjsonrpc/qjsonrpcglobal.h \
-    qjsonrpc/qjsonrpcmessage.h \
-    qjsonrpc/qjsonrpcmetatype.h \
-    qjsonrpc/qjsonrpcservice.h \
-    qjsonrpc/qjsonrpcservice_p.h \
-    qjsonrpc/qjsonrpcserviceprovider.h \
-    qjsonrpc/qjsonrpcservicereply.h \
-    qjsonrpc/qjsonrpcservicereply_p.h \
-    qjsonrpc/qjsonrpcsocket.h \
-    qjsonrpc/qjsonrpcsocket_p.h \
     PaymentsModel.h \
     PeersModel.h \
     WalletModel.h \
     InvoicesModel.h
+
+SOURCES += \
+    $${QJSONRPC_SOURCES} \
+    main.cpp \
+    LightningModel.cpp \
+    PaymentsModel.cpp \
+    PeersModel.cpp \
+    WalletModel.cpp \
+    InvoicesModel.cpp
 
 DISTFILES +=
