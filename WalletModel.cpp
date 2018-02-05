@@ -1,5 +1,5 @@
 #include "WalletModel.h"
-#include "qjsonrpc/qjsonrpcservicereply.h"
+#include "./3rdparty/qjsonrpc/src/qjsonrpcservicereply.h"
 
 WalletModel::WalletModel(QJsonRpcSocket *rpcSocket)
 {

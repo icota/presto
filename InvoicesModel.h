@@ -4,8 +4,8 @@
 #include <QObject>
 #include <QAbstractItemModel>
 
-#include "qjsonrpc/qjsonrpcsocket.h"
-#include "qjsonrpc/qjsonrpcmessage.h"
+#include "./3rdparty/qjsonrpc/src/qjsonrpcsocket.h"
+#include "./3rdparty/qjsonrpc/src/qjsonrpcmessage.h"
 
 class Invoice
 {

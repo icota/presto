@@ -1,5 +1,5 @@
 #include "PaymentsModel.h"
-#include "qjsonrpc/qjsonrpcservicereply.h"
+#include "./3rdparty/qjsonrpc/src/qjsonrpcservicereply.h"
 
 QHash<int, QByteArray> PaymentsModel::roleNames() const {
     QHash<int, QByteArray> roles;

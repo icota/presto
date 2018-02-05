@@ -9,8 +9,8 @@
 #include "WalletModel.h"
 #include "InvoicesModel.h"
 
-#include "qjsonrpc/qjsonrpcsocket.h"
-#include "qjsonrpc/qjsonrpcmessage.h"
+#include "./3rdparty/qjsonrpc/src/qjsonrpcsocket.h"
+#include "./3rdparty/qjsonrpc/src/qjsonrpcmessage.h"
 
 
 class LightningModel : public QObject

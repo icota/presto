@@ -1,5 +1,5 @@
 #include "PeersModel.h"
-#include "qjsonrpc/qjsonrpcservicereply.h"
+#include "./3rdparty/qjsonrpc/src/qjsonrpcservicereply.h"
 
 QHash<int, QByteArray> PeersModel::roleNames() const {
     QHash<int, QByteArray> roles;

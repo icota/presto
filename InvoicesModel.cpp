@@ -1,5 +1,5 @@
 #include "InvoicesModel.h"
-#include "qjsonrpc/qjsonrpcservicereply.h"
+#include "./3rdparty/qjsonrpc/src/qjsonrpcservicereply.h"
 
 InvoicesModel::InvoicesModel(QJsonRpcSocket *rpcSocket)
 {

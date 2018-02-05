@@ -1,5 +1,5 @@
 #include "LightningModel.h"
-#include "qjsonrpc/qjsonrpcservicereply.h"
+#include "./3rdparty/qjsonrpc/src/qjsonrpcservicereply.h"
 
 PeersModel *LightningModel::peersModel() const
 {
