@@ -75,8 +75,8 @@ Kirigami.ApplicationWindow {
 
             Kirigami.Action {
                 text: "Settings"
-                enabled: false
                 onTriggered: {
+                    settingsSheet.sheetOpen = true;
                 }
             },
             Kirigami.Action {
@@ -240,6 +240,10 @@ Kirigami.ApplicationWindow {
 
     OnchainWithdrawSheet {
         id: onchainWithdrawSheet
+    }
+
+    SettingsSheet {
+        id: settingsSheet
     }
 
 

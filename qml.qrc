@@ -14,5 +14,6 @@
         <file>OnchainWithdrawSheet.qml</file>
         <file>BalanceItem.qml</file>
         <file>ExchangeRate.qml</file>
+        <file>SettingsSheet.qml</file>
     </qresource>
 </RCC>
