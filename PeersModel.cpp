@@ -22,9 +22,7 @@ PeersModel::PeersModel(QJsonRpcSocket *rpcSocket)
 void PeersModel::updatePeers()
 {
     QJsonArray paramsArray;
-    // This value should never be of JSON type Null (crashes daemon)
-    paramsArray.append(QJsonValue(0));
-
+    // This depends on a change in QJsonRpc's standard behaviour
     QJsonRpcMessage message = QJsonRpcMessage::createRequest("listpeers", paramsArray);
     QJsonRpcServiceReply* reply = m_rpcSocket->sendMessage(message);
     QObject::connect(reply, &QJsonRpcServiceReply::finished, this, &PeersModel::listPeersRequestFinished);
@@ -141,7 +139,7 @@ void PeersModel::closeChannelRequestFinished()
 
         if (jsonObject.contains("result"))
         {
-                updatePeers();
+            updatePeers();
         }
     }
 }

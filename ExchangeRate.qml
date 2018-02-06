@@ -1,5 +1,5 @@
 import QtQuick 2.0
-//pragma Singleton
+pragma Singleton
 
 Item {
     id: wrapper

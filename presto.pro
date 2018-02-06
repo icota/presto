@@ -68,4 +68,5 @@ SOURCES += \
     WalletModel.cpp \
     InvoicesModel.cpp
 
-DISTFILES +=
+DISTFILES += \
+    qmldir

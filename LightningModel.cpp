@@ -111,11 +111,12 @@ LightningModel::LightningModel(QObject *parent) {
 
 void LightningModel::rpcConnected()
 {
-    updateInfo();
     m_peersModel = new PeersModel(m_rpcSocket);
     m_paymentsModel = new PaymentsModel(m_rpcSocket);
     m_walletModel = new WalletModel(m_rpcSocket);
     m_invoicesModel = new InvoicesModel(m_rpcSocket);
+
+    updateInfo();
 
     m_updatesTimer = new QTimer();
 
@@ -138,9 +139,9 @@ void LightningModel::unixSocketError(QLocalSocket::LocalSocketError socketError)
 
 void LightningModel::updateModels()
 {
-    updateInfo();
-    m_peersModel->updatePeers();
+    //m_peersModel->updatePeers();
     m_paymentsModel->updatePayments();
     m_walletModel->updateFunds();
     m_invoicesModel->updateInvoices();
+    updateInfo();
 }
