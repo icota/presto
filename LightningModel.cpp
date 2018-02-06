@@ -86,6 +86,14 @@ void LightningModel::updateInfoRequestFinished()
 LightningModel::LightningModel(QObject *parent) {
     {
         Q_UNUSED(parent);
+
+        m_address = QString();
+        m_blockheight = 0;
+        m_id = QString();
+        m_network = QString();
+        m_port = 0;
+        m_version = QString();
+
         m_unixSocket = new QLocalSocket();
         m_rpcSocket = new QJsonRpcSocket(m_unixSocket);
 
@@ -103,6 +111,7 @@ LightningModel::LightningModel(QObject *parent) {
 
 void LightningModel::rpcConnected()
 {
+    updateInfo();
     m_peersModel = new PeersModel(m_rpcSocket);
     m_paymentsModel = new PaymentsModel(m_rpcSocket);
     m_walletModel = new WalletModel(m_rpcSocket);
@@ -130,8 +139,7 @@ void LightningModel::unixSocketError(QLocalSocket::LocalSocketError socketError)
 void LightningModel::updateModels()
 {
     updateInfo();
-    // Disable this until we figure out why it's crashing the deamon
-    //m_peersModel->updatePeers();
+    m_peersModel->updatePeers();
     m_paymentsModel->updatePayments();
     m_walletModel->updateFunds();
     m_invoicesModel->updateInvoices();
