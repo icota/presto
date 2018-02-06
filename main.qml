@@ -94,7 +94,7 @@ Kirigami.ApplicationWindow {
         id: invoicesPageComponent
 
         Kirigami.ScrollablePage {
-            title: "Invoices"
+            title: qsTr("Invoices") + " (" + invoicesListView.count + ")"
 
             actions {
                 main: Kirigami.Action {
@@ -133,7 +133,7 @@ Kirigami.ApplicationWindow {
         id: peersPageComponent
 
         Kirigami.ScrollablePage {
-            title: "Peers"
+            title: qsTr("Peers") + " (" + peersListView.count + ")"
 
             actions {
                 main: Kirigami.Action {
@@ -180,7 +180,7 @@ Kirigami.ApplicationWindow {
         id: transactionsPageComponent
 
         Kirigami.ScrollablePage {
-            title: "Payments"
+            title: qsTr("Payments") + " (" + paymentsListView.count + ")"
             actions {
                 main: Kirigami.Action {
                     iconName: captureInvoiceSheet.sheetOpen ? "dialog-cancel" : "document-send"
