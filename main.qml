@@ -10,8 +10,6 @@ Kirigami.ApplicationWindow {
     height: 600
     title: qsTr("Presto!")
 
-    //property var locale: Qt.locale()
-
     header: Kirigami.ApplicationHeader {
         headerStyle: Kirigami.ApplicationHeaderStyle.TabBar
         backButtonEnabled: false
@@ -216,6 +214,8 @@ Kirigami.ApplicationWindow {
         pageStack.push(invoicesPageComponent)
         pageStack.push(peersPageComponent)
         pageStack.currentIndex = 0;
+
+        ExchangeRate.locale = locale
     }
 
     // Sheets

@@ -4,6 +4,8 @@ import QtQuick 2.0
 Item {
     id: exchangeRate
 
+    // Get this from main window
+    property var locale
     property string cryptoCurrencyCode: "BTC"
     property string currencyCode: "USD"
     property real rate: 0.0
@@ -64,5 +66,9 @@ Item {
 
     Component.onCompleted: {
         reload();
+    }
+
+    function getAmountInCurrency(amountCrypto){
+        return ((amountCrypto * rate).toLocaleString(locale, 'f' , 2)) + " " + currencyCode
     }
 }

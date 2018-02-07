@@ -14,7 +14,6 @@ Kirigami.OverlaySheet {
     property string payee
     property string bolt11
 
-    property var locale: Qt.locale()
     property date currentDate: new Date()
 
     ColumnLayout {

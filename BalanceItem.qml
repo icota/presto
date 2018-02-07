@@ -5,15 +5,15 @@ import org.kde.kirigami 2.1 as Kirigami
 import "." // QTBUG-34418
 
 Item {
+    property int amount: peersModel.totalAvailableFunds + walletModel.totalAvailableFunds
+
     ColumnLayout {
         QQC2.Label {
             font.pixelSize: 22
-            text: (peersModel.totalAvailableFunds + walletModel.totalAvailableFunds).toLocaleString(locale, 'f' , 0)
-                  + " SAT"
+            text: (amount).toLocaleString(locale, 'f' , 0) + " SAT"
         }
         QQC2.Label {
-            text: ((peersModel.totalAvailableFunds + walletModel.totalAvailableFunds) *
-                  ExchangeRate.rate).toLocaleString(locale, 'f' , 2) + " " + ExchangeRate.currencyCode
+            text: ExchangeRate.getAmountInCurrency(amount)
 
         }
     }
