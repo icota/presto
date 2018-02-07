@@ -139,9 +139,10 @@ void LightningModel::unixSocketError(QLocalSocket::LocalSocketError socketError)
 
 void LightningModel::updateModels()
 {
-    //m_peersModel->updatePeers();
     m_paymentsModel->updatePayments();
     m_walletModel->updateFunds();
     m_invoicesModel->updateInvoices();
     updateInfo();
+    // This calls needs to go last cause it hates concurrency
+    m_peersModel->updatePeers();
 }
