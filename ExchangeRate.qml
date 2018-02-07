@@ -52,8 +52,15 @@ Item {
         req.send();
     }
 
-    onCryptoCurrencyCodeChanged: reload();
-    onCurrencyCodeChanged: reload();
+    onCryptoCurrencyCodeChanged: {
+        if (cryptoCurrencyCode.length == 3)
+        reload();
+    }
+
+    onCurrencyCodeChanged: {
+        if (currencyCode.length == 3)
+        reload();
+    }
 
     Component.onCompleted: {
         reload();
