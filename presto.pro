@@ -12,7 +12,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
-RESOURCES += qml.qrc \
+RESOURCES += src/qml/qml.qrc \
     kirigami-icons.qrc
 
 # Additional import path used to resolve QML modules in Qt Creator's code model
@@ -53,20 +53,20 @@ QJSONRPC_SOURCES += \
 
 HEADERS += \
     $${QJSONRPC_HEADERS} \
-    LightningModel.h \
-    PaymentsModel.h \
-    PeersModel.h \
-    WalletModel.h \
-    InvoicesModel.h
+    src/LightningModel.h \
+    src/PaymentsModel.h \
+    src/PeersModel.h \
+    src/WalletModel.h \
+    src/InvoicesModel.h
 
 SOURCES += \
     $${QJSONRPC_SOURCES} \
-    main.cpp \
-    LightningModel.cpp \
-    PaymentsModel.cpp \
-    PeersModel.cpp \
-    WalletModel.cpp \
-    InvoicesModel.cpp
+    src/main.cpp \
+    src/LightningModel.cpp \
+    src/PaymentsModel.cpp \
+    src/PeersModel.cpp \
+    src/WalletModel.cpp \
+    src/InvoicesModel.cpp
 
 DISTFILES += \
-    qmldir
+    src/qml/qmldir
