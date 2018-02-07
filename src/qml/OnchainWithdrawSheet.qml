@@ -9,79 +9,35 @@ import QZXing 2.3
 Kirigami.OverlaySheet {
     onSheetOpenChanged: {
         if (sheetOpen) {
-            camera.start()
+            qrScannerViewfinder.camera.start()
         }
         else {
-            camera.stop()
+            qrScannerViewfinder.camera.stop()
         }
     }
     ColumnLayout {
-        //anchors.fill: parent
-
         QQC2.Label {
+            color: Kirigami.Theme.textColor
             id: scanLabel
             Layout.alignment: Qt.AlignCenter
             wrapMode: Text.WordWrap
             text: qsTr("Scan the QR Code")
         }
 
-        Rectangle {
-            id: viewfinderRectangle
+        QRScannerViewfinder {
+            id: qrScannerViewfinder
             Layout.alignment: Qt.AlignCenter
             Layout.fillWidth: true
-            height: 400
-
-            VideoOutput {
-                id: viewfinderOutput
-                source: camera
-                visible: true
-                filters: [ zxingFilter ]
-                anchors.fill: parent
-                onContentRectChanged: {
-                    viewfinderRectangle.height = contentRect.height
-                }
-            }
-
-            Item {
-                id: cameraViewFinderItem
-                visible: false
-                Camera {
-                    id: camera
-                    cameraState: Camera.UnloadedState
-                    imageCapture {
-                        id: qrCapture
-                        onImageCaptured: {
-                            imageToDecode.source = preview
-                            decoder.decodeImageQML(imageToDecode);
-                        }
-                    }
-                }
-
-                QZXingFilter {
-                    id: zxingFilter
-                    captureRect: {
-                        // setup bindings
-                        viewfinderOutput.contentRect;
-                        viewfinderOutput.sourceRect;
-                        return viewfinderOutput.mapRectToSource(viewfinderOutput.mapNormalizedRectToItem(
-                                                                    Qt.rect(0.25, 0.25, 0.5, 0.5)));
-                    }
-                    decoder {
-                        enabledDecoders: QZXing.DecoderFormat_QR_CODE
-
-                        onTagFound: {
-                            console.log("Barcode data: " + tag)
-                            if (tag.startsWith("bitcoin:")) {
-                                pasteTextArea.text = tag.substring(8);
-                            }
-                        }
-                    }
+            zxingFilter.decoder.onTagFound: {
+                if (tag.startsWith("bitcoin:")) {
+                    pasteTextArea.text = tag.substring(8);
                 }
             }
         }
 
         QQC2.TextArea {
             id: pasteTextArea
+            font: fixedFont
             Layout.alignment: Qt.AlignCenter
             Layout.fillWidth: true
             placeholderText: qsTr("Or Paste the Address Here")
@@ -117,6 +73,7 @@ Kirigami.OverlaySheet {
             }
 
             QQC2.Label {
+                color: Kirigami.Theme.textColor
                 text: qsTr("Withdraw All")
             }
 

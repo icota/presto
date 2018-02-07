@@ -16,26 +16,33 @@ Kirigami.OverlaySheet {
 
         QQC2.Label {
             wrapMode: Text.WordWrap
+            color: Kirigami.Theme.textColor
             text: "Network: "
         }
 
         QQC2.Label {
             wrapMode: Text.WordWrap
+            color: Kirigami.Theme.textColor
+            font: fixedFont
             text: lightningModel.network
         }
 
         QQC2.Label {
             wrapMode: Text.WordWrap
+            color: Kirigami.Theme.textColor
             text: "Your Node ID:"
         }
 
         QQC2.Label {
             wrapMode: Text.WordWrap
+            color: Kirigami.Theme.textColor
+            font: fixedFont
             text: lightningModel.id
         }
 
         QQC2.Label {
             wrapMode: Text.WordWrap
+            color: Kirigami.Theme.textColor
             text: qsTr("Currency Code:")
         }
 

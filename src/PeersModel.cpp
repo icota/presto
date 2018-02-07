@@ -71,6 +71,7 @@ void PeersModel::connectToPeerRequestFinished()
             if (resultObject.contains("id"))
             {
                 updatePeers();
+                emit connectedToPeer(resultObject.value("id").toString());
             }
         }
     }
@@ -95,7 +96,6 @@ void PeersModel::fundChannelRequestFinished()
     if (message.type() == QJsonRpcMessage::Error)
     {
         emit errorString(message.toObject().value("error").toObject().value("message").toString());
-        // show the error to user
     }
 
     if (message.type() == QJsonRpcMessage::Response)
@@ -108,6 +108,7 @@ void PeersModel::fundChannelRequestFinished()
             if (resultObject.contains("id"))
             {
                 updatePeers();
+                emit channelFunded(resultObject.value("id").toString());
             }
         }
     }

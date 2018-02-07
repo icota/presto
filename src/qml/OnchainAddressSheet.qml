@@ -9,22 +9,40 @@ Kirigami.OverlaySheet {
     ColumnLayout {
 
         QQC2.Label {
+            color: Kirigami.Theme.textColor
             visible: !walletModel.totalAvailableFunds
             wrapMode: Text.WordWrap
             text: "NO FUNDS"
         }
 
         QQC2.Label {
-            wrapMode: Text.WordWrap
-            text: "Pay to this address"
+            color: Kirigami.Theme.textColor
+            Layout.alignment: Qt.AlignCenter
+            font.pixelSize: 22
+            text: qsTr("Your On-Chain Address")
         }
 
         QRCode {
             Layout.alignment: Qt.AlignCenter
-            //Layout.fillWidth: true
             width : 320
             height : 320
             value : "bitcoin:" + onchainAddress
+        }
+
+        QQC2.Label {
+            color: Kirigami.Theme.textColor
+            Layout.alignment: Qt.AlignCenter
+            wrapMode: Text.WordWrap
+            font: fixedFont
+            text: onchainAddress
+
+            MouseArea {
+                anchors.fill: parent
+                onClicked: {
+                    clipboard.setText(onchainAddress)
+                    //notify that we've copied to clipboard?
+                }
+            }
         }
     }
 }

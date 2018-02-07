@@ -102,6 +102,8 @@ public:
 signals:
     void totalAvailableFundsChanged();
     void errorString(QString error);
+    void connectedToPeer(QString peerId);
+    void channelFunded(QString peerId);
 
 public slots:
     void connectToPeer(QString peerId, QString peerAddress);

@@ -8,11 +8,15 @@ Item {
     property int amount: peersModel.totalAvailableFunds + walletModel.totalAvailableFunds
 
     ColumnLayout {
+        anchors.leftMargin: 50
         QQC2.Label {
-            font.pixelSize: 22
+            color: Kirigami.Theme.textColor
+            font.pixelSize: 26
             text: (amount).toLocaleString(locale, 'f' , 0) + " SAT"
         }
+
         QQC2.Label {
+            color: Kirigami.Theme.textColor
             text: ExchangeRate.getAmountInCurrency(amount)
 
         }

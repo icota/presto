@@ -69,6 +69,8 @@ Item {
     }
 
     function getAmountInCurrency(amountCrypto){
+        // Convert weird JS values to zero
+        amountCrypto = amountCrypto || 0
         return ((amountCrypto * rate).toLocaleString(locale, 'f' , 2)) + " " + currencyCode
     }
 }

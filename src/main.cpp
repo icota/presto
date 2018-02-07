@@ -5,6 +5,7 @@
 #include <QFontDatabase>
 
 #include "LightningModel.h"
+#include "QClipboardProxy.h"
 
 #include "./3rdparty/kirigami/src/kirigamiplugin.h"
 #include "./3rdparty/qzxing/src/QZXing.h"
@@ -28,6 +29,9 @@ int main(int argc, char *argv[])
     KirigamiPlugin::getInstance().registerTypes();
     QZXing::registerQMLTypes();
     QZXing::registerQMLImageProvider(engine);
+
+    engine.rootContext()->setContextProperty("clipboard",
+                                             new QClipboardProxy(QGuiApplication::clipboard()));
 
     // Platform independent way of getting a fixed width font to QML
     const QFont fixedFont = QFontDatabase::systemFont(QFontDatabase::FixedFont);

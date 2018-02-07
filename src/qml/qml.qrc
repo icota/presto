@@ -16,5 +16,7 @@
         <file>ExchangeRate.qml</file>
         <file>SettingsSheet.qml</file>
         <file>qmldir</file>
+        <file>MilisatoshiTextField.qml</file>
+        <file>QRScannerViewfinder.qml</file>
     </qresource>
 </RCC>

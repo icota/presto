@@ -6,6 +6,7 @@ import org.kde.kirigami 2.1 as Kirigami
 Kirigami.OverlaySheet {
     ColumnLayout {
         QQC2.Label {
+            color: Kirigami.Theme.textColor
             wrapMode: Text.WordWrap
             text: "INVOICE SOMEBODY"
         }
@@ -20,19 +21,17 @@ Kirigami.OverlaySheet {
             placeholderText: qsTr("Enter Description")
         }
 
-        QQC2.TextField {
+        MilisatoshiTextField {
             id: amountTextField
-            validator: IntValidator {bottom: 0;}
-            placeholderText: qsTr("Enter Amount in milisatoshi")
+            Layout.topMargin: 25
         }
-
 
         QQC2.Button {
             text: "Pay"
             onClicked: {
                 invoicesModel.addInvoice(labelTextField.text,
                                          descriptionTextField.text,
-                                         amountTextField.text)
+                                         amountTextField.amount)
             }
         }
     }

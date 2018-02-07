@@ -17,16 +17,13 @@ Kirigami.ApplicationWindow {
     globalDrawer: Kirigami.GlobalDrawer {
         // Depends on the screen
         //drawerOpen: false
-        title: "Presto!"
-        titleIcon: "applications-graphics"
 
         topContent: [
             BalanceItem {
-                height: 100
+                anchors.leftMargin: 25
+                height: 65
             }
         ]
-
-        //bannerImageSource:
 
         actions: [
             Kirigami.Action {
@@ -35,7 +32,7 @@ Kirigami.ApplicationWindow {
                       " SAT)"
                 iconName: "view-list-icons"
                 Kirigami.Action {
-                    text: "Connect"
+                    text: qsTr("Connect to Peer")
                     iconName: "contact-new"
                     onTriggered: {
                         pageStack.currentIndex = 2;
@@ -43,18 +40,20 @@ Kirigami.ApplicationWindow {
                     }
                 }
                 Kirigami.Action {
-                    text: "Send"
+                    text: qsTr("Send Payment")
+                    iconName: "go-up"
                     onTriggered: {
                         pageStack.currentIndex = 0;
-                        connectToPeerSheet.sheetOpen = !connectToPeerSheet.sheetOpen
+                        captureInvoiceSheet.sheetOpen = !captureInvoiceSheet.sheetOpen
                     }
 
                 }
                 Kirigami.Action {
-                    text: "Receive"
+                    text: qsTr("Request Payment")
+                    iconName: "go-down"
                     onTriggered: {
                         pageStack.currentIndex = 1;
-                        connectToPeerSheet.sheetOpen = !connectToPeerSheet.sheetOpen
+                        sendInvoiceSheet.sheetOpen = !sendInvoiceSheet.sheetOpen
                     }
                 }
             },
@@ -64,14 +63,15 @@ Kirigami.ApplicationWindow {
                       " SAT)"
                 iconName: "view-list-icons"
                 Kirigami.Action {
-                    text: "Request"
-                    iconName: "mail-send-receive"
+                    text: qsTr("Request Payment")
+                    iconName: "go-down"
                     onTriggered: {
                         walletModel.requestNewAddress()
                     }
                 }
                 Kirigami.Action {
-                    text: "Send"
+                    text: qsTr("Send Payment")
+                    iconName: "go-up"
                     onTriggered: {
                         onchainWithdrawSheet.sheetOpen = !onchainWithdrawSheet.sheetOpen
                     }
@@ -88,6 +88,7 @@ Kirigami.ApplicationWindow {
             },
             Kirigami.Action {
                 text: "About"
+                iconName: "help-about"
                 enabled: false
                 onTriggered: {
                 }
@@ -105,7 +106,7 @@ Kirigami.ApplicationWindow {
 
             actions {
                 main: Kirigami.Action {
-                    iconName: sendInvoiceSheet.sheetOpen ? "dialog-cancel" : "list-add"
+                    iconName: sendInvoiceSheet.sheetOpen ? "dialog-cancel" : "document-send"
                     tooltip: qsTr("Create a new Invoice")
                     onTriggered: {
                         sendInvoiceSheet.sheetOpen = !sendInvoiceSheet.sheetOpen
@@ -119,7 +120,9 @@ Kirigami.ApplicationWindow {
                 anchors.fill: parent
                 delegate: Kirigami.SwipeListItem {
 
-                    QQC2.Label { text: "Label: " + label +
+                    QQC2.Label {
+                        color: Kirigami.Theme.textColor
+                        text: "Label: " + label +
                                        ", msatoshi: " + msatoshi +
                                        ", " + expiresAt }
                     actions: [
@@ -158,7 +161,9 @@ Kirigami.ApplicationWindow {
                 anchors.fill: parent
                 delegate: Kirigami.SwipeListItem {
 
-                    QQC2.Label { text: "Peer: " + peerid +
+                    QQC2.Label {
+                        color: Kirigami.Theme.textColor
+                        text: "Peer: " + peerid +
                                        ", connected: " + connected +
                                        ", " + msatoshitotal }
                     actions: [
@@ -297,6 +302,16 @@ Kirigami.ApplicationWindow {
         onErrorString: {
             errorPopup.contentItem.text = error
             errorPopup.open()
+        }
+
+        onConnectedToPeer: {
+            connectToPeerSheet.sheetOpen = false
+            fundChannelSheet.peerToFund = peerId
+            fundChannelSheet.sheetOpen = true
+        }
+
+        onChannelFunded: {
+            fundChannelSheet.sheetOpen = false
         }
     }
 

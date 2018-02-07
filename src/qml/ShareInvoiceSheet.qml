@@ -10,6 +10,7 @@ Kirigami.OverlaySheet {
 
         QQC2.Label {
             wrapMode: Text.WordWrap
+            color: Kirigami.Theme.textColor
             text: "Share this invoice"
         }
 
@@ -22,7 +23,9 @@ Kirigami.OverlaySheet {
         }
 
         QQC2.Label {
+            color: Kirigami.Theme.textColor
             wrapMode: Text.WordWrap
+            font: fixedFont
             text: bolt11
         }
     }

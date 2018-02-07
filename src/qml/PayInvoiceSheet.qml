@@ -21,6 +21,7 @@ Kirigami.OverlaySheet {
 
 
         QQC2.Label {
+            color: Kirigami.Theme.textColor
             wrapMode: Text.WordWrap
             text: "INVOICE INFO"
         }
@@ -28,6 +29,7 @@ Kirigami.OverlaySheet {
 
 
         QQC2.Label {
+            color: Kirigami.Theme.textColor
             wrapMode: Text.WordWrap
             text: msatoshiAmount
         }
@@ -35,12 +37,14 @@ Kirigami.OverlaySheet {
 
 
         QQC2.Label {
+            color: Kirigami.Theme.textColor
             wrapMode: Text.WordWrap
             text: description
         }
 
         QQC2.Label {
             wrapMode: Text.WordWrap
+            color: Kirigami.Theme.textColor
             text: Date(createdAtTimestamp + expiry).toLocaleDateString()
         }
 
