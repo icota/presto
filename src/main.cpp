@@ -1,6 +1,8 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
+#include <QFont>
+#include <QFontDatabase>
 
 #include "LightningModel.h"
 
@@ -26,6 +28,10 @@ int main(int argc, char *argv[])
     KirigamiPlugin::getInstance().registerTypes();
     QZXing::registerQMLTypes();
     QZXing::registerQMLImageProvider(engine);
+
+    // Platform independent way of getting a fixed width font to QML
+    const QFont fixedFont = QFontDatabase::systemFont(QFontDatabase::FixedFont);
+    engine.rootContext()->setContextProperty("fixedFont", fixedFont);
 
     engine.load(QUrl(QLatin1String("qrc:/main.qml")));
     if (engine.rootObjects().isEmpty())
