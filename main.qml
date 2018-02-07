@@ -38,6 +38,7 @@ Kirigami.ApplicationWindow {
                 iconName: "view-list-icons"
                 Kirigami.Action {
                     text: "Connect"
+                    iconName: "contact-new"
                     onTriggered: {
                         pageStack.currentIndex = 2;
                         connectToPeerSheet.sheetOpen = !connectToPeerSheet.sheetOpen
@@ -82,6 +83,7 @@ Kirigami.ApplicationWindow {
 
             Kirigami.Action {
                 text: "Settings"
+                iconName: "preferences-system"
                 onTriggered: {
                     settingsSheet.sheetOpen = true;
                 }
