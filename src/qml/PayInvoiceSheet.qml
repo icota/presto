@@ -33,7 +33,7 @@ Kirigami.OverlaySheet {
             QQC2.Label {
                 color: Kirigami.Theme.textColor
                 wrapMode: Text.WordWrap
-                text: msatoshiAmount + " SAT"
+                text: msatoshiAmount + " mSAT"
                 Layout.alignment: Qt.AlignCenter
                 Layout.fillWidth: parent
                 font.pixelSize: 16
@@ -42,7 +42,7 @@ Kirigami.OverlaySheet {
             QQC2.Label {
                 color: Kirigami.Theme.textColor
                 wrapMode: Text.WordWrap
-                text: ExchangeRate.getAmountInCurrency(msatoshiAmount / 1000 / 1000)
+                text: ExchangeRate.getAmountInCurrency(msatoshiAmount * 1000)
                 Layout.alignment: Qt.AlignCenter
                 Layout.fillWidth: parent
                 font.pixelSize: 12
