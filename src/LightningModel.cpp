@@ -59,6 +59,16 @@ void LightningModel::updateInfo()
     QObject::connect(reply, &QJsonRpcServiceReply::finished, this, &LightningModel::updateInfoRequestFinished);
 }
 
+QString LightningModel::serverName() const
+{
+    return m_serverName;
+}
+
+void LightningModel::setServerName(const QString &serverName)
+{
+    m_serverName = serverName;
+}
+
 void LightningModel::updateInfoRequestFinished()
 {
     QJsonRpcServiceReply *reply = static_cast<QJsonRpcServiceReply *>(sender());

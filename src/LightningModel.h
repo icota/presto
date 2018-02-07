@@ -23,6 +23,8 @@ class LightningModel : public QObject
     Q_PROPERTY(int blockheight READ blockheight NOTIFY infoChanged)
     Q_PROPERTY(QString network READ network NOTIFY infoChanged)
 
+    Q_PROPERTY(QString serverName READ serverName WRITE setServerName NOTIFY serverNameChanged)
+
 public:
     LightningModel(QString serverName = QString(""), QObject *parent = 0);
 
@@ -37,6 +39,9 @@ public:
     QString version() const;
     int blockheight() const;
     QString network() const;
+
+    QString serverName() const;
+    void setServerName(const QString &serverName);
 
 private:
     void updateInfo();
@@ -69,6 +74,7 @@ private slots:
 
 signals:
     void infoChanged();
+    void serverNameChanged();
 
 };
 

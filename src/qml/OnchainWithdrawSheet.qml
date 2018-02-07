@@ -21,7 +21,7 @@ Kirigami.OverlaySheet {
             id: scanLabel
             Layout.alignment: Qt.AlignCenter
             wrapMode: Text.WordWrap
-            text: qsTr("Scan the QR Code")
+            text: qsTr("Scan QR Code")
         }
 
         QRScannerViewfinder {
@@ -40,7 +40,7 @@ Kirigami.OverlaySheet {
             font: fixedFont
             Layout.alignment: Qt.AlignCenter
             Layout.fillWidth: true
-            placeholderText: qsTr("Or Paste the Address Here")
+            placeholderText: qsTr("Or Paste Address Here")
             background: Rectangle {
                 anchors.fill: parent
             }

@@ -8,7 +8,7 @@ Kirigami.OverlaySheet {
         QQC2.Label {
             color: Kirigami.Theme.textColor
             wrapMode: Text.WordWrap
-            text: "INVOICE SOMEBODY"
+            text: "Create Invoice"
         }
 
         QQC2.TextField {

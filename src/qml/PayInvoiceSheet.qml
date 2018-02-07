@@ -2,6 +2,7 @@ import QtQuick 2.7
 import QtQuick.Controls 2.0 as QQC2
 import QtQuick.Layouts 1.3
 import org.kde.kirigami 2.1 as Kirigami
+import "." // QTBUG-34418
 
 Kirigami.OverlaySheet {
 
@@ -17,53 +18,67 @@ Kirigami.OverlaySheet {
     property date currentDate: new Date()
 
     ColumnLayout {
-
-
-
         QQC2.Label {
             color: Kirigami.Theme.textColor
             wrapMode: Text.WordWrap
-            text: "INVOICE INFO"
+            text: qsTr("Payment Details")
+            Layout.alignment: Qt.AlignCenter
+            Layout.fillWidth: parent
+            font.pixelSize: 16
         }
 
 
 
-        QQC2.Label {
-            color: Kirigami.Theme.textColor
-            wrapMode: Text.WordWrap
-            text: msatoshiAmount
-        }
+        RowLayout {
+            QQC2.Label {
+                color: Kirigami.Theme.textColor
+                wrapMode: Text.WordWrap
+                text: msatoshiAmount + " SAT"
+                Layout.alignment: Qt.AlignCenter
+                Layout.fillWidth: parent
+                font.pixelSize: 16
+            }
 
+            QQC2.Label {
+                color: Kirigami.Theme.textColor
+                wrapMode: Text.WordWrap
+                text: ExchangeRate.getAmountInCurrency(msatoshiAmount / 1000 / 1000)
+                Layout.alignment: Qt.AlignCenter
+                Layout.fillWidth: parent
+                font.pixelSize: 12
+            }
+        }
 
 
         QQC2.Label {
             color: Kirigami.Theme.textColor
             wrapMode: Text.WordWrap
             text: description
+            Layout.alignment: Qt.AlignCenter
+            Layout.fillWidth: parent
+            font.pixelSize: 16
         }
 
         QQC2.Label {
             wrapMode: Text.WordWrap
             color: Kirigami.Theme.textColor
             text: Date(createdAtTimestamp + expiry).toLocaleDateString()
+            Layout.alignment: Qt.AlignCenter
+            Layout.fillWidth: parent
+            font.pixelSize: 16
         }
 
         RowLayout {
 
-        QQC2.Button {
-            text: "Pay"
-            onClicked: {
-                paymentsModel.pay(bolt11)
+            QQC2.Button {
+                text: qsTr("Pay")
+                Layout.alignment: Qt.AlignCenter
+                Layout.fillWidth: parent
+                font.pixelSize: 16
+                onClicked: {
+                    paymentsModel.pay(bolt11)
+                }
             }
-        }
-
-        QQC2.Button {
-            text: "Cancel"
-            onClicked: {
-                sheetOpen.false
-            }
-        }
-
         }
     }
 

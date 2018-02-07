@@ -19,7 +19,7 @@ RowLayout {
         wrapMode: Text.WordWrap
         Layout.alignment: Qt.AlignCenter
         Layout.fillWidth: parent
-        text: ExchangeRate.getAmountInCurrency(amountTextField.text / 1000)
+        text: ExchangeRate.getAmountInCurrency(amountTextField.text / 1000 / 1000)
         font.pixelSize: 16
     }
 }
