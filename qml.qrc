@@ -15,5 +15,6 @@
         <file>BalanceItem.qml</file>
         <file>ExchangeRate.qml</file>
         <file>SettingsSheet.qml</file>
+        <file>qmldir</file>
     </qresource>
 </RCC>

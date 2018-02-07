@@ -2,12 +2,15 @@ import QtQuick 2.7
 import QtQuick.Controls 2.2 as QQC2
 import QtQuick.Layouts 1.3
 import org.kde.kirigami 2.1 as Kirigami
+//import "." // QTBUG-34418, singletons require explicit import to load qmldir file
 
 Kirigami.ApplicationWindow {
     id: root
     width: 1000
     height: 600
     title: qsTr("Presto!")
+
+    //property var locale: Qt.locale()
 
     header: Kirigami.ApplicationHeader {
         headerStyle: Kirigami.ApplicationHeaderStyle.TabBar
@@ -20,8 +23,8 @@ Kirigami.ApplicationWindow {
         titleIcon: "applications-graphics"
 
         topContent: [
-            QQC2.Button {
-                text: "Button"
+            BalanceItem {
+                height: 100
             }
         ]
 
@@ -29,7 +32,9 @@ Kirigami.ApplicationWindow {
 
         actions: [
             Kirigami.Action {
-                text: "Lightning Network (" + peersModel.totalAvailableFunds + " SAT)"
+                text: "Lightning Network (" +
+                      peersModel.totalAvailableFunds.toLocaleString(locale, 'f', 0) +
+                      " SAT)"
                 iconName: "view-list-icons"
                 Kirigami.Action {
                     text: "Connect"
@@ -55,7 +60,9 @@ Kirigami.ApplicationWindow {
                 }
             },
             Kirigami.Action {
-                text: "On-Chain (" + walletModel.totalAvailableFunds + " SAT)"
+                text: "On-Chain (" +
+                      walletModel.totalAvailableFunds.toLocaleString(locale, 'f' , 0) +
+                      " SAT)"
                 iconName: "view-list-icons"
                 Kirigami.Action {
                     text: "Request"
