@@ -7,6 +7,15 @@ import QtMultimedia 5.8
 import QZXing 2.3
 
 Kirigami.OverlaySheet {
+    onSheetOpenChanged: {
+        if (sheetOpen) {
+            camera.start()
+        }
+        else {
+            camera.stop()
+        }
+    }
+
     ColumnLayout {
         id: columnLayout
         // This how you do it
@@ -57,6 +66,7 @@ Kirigami.OverlaySheet {
                 visible: false
                 Camera {
                     id: camera
+                    cameraState: Camera.UnloadedState
                     //captureMode: CaptureMode.CaptureStillImage
 
                     imageCapture {
