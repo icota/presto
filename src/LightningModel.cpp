@@ -59,6 +59,17 @@ void LightningModel::updateInfo()
     QObject::connect(reply, &QJsonRpcServiceReply::finished, this, &LightningModel::updateInfoRequestFinished);
 }
 
+void LightningModel::launchDaemon()
+{
+    QString program = "/home/igor/Code/presto/3rdparty/lightning/lightningd/lightningd";
+    QStringList arguments;
+    arguments << "--network=testnet";
+
+    m_lightningDaemonProcess = new QProcess();
+    m_lightningDaemonProcess->start(program, arguments);
+    m_lightningDaemonProcess->waitForStarted();
+}
+
 QString LightningModel::serverName() const
 {
     return m_serverName;
@@ -115,8 +126,8 @@ LightningModel::LightningModel(QString serverName, QObject *parent) {
         m_unixSocket = new QLocalSocket();
         m_rpcSocket = new QJsonRpcSocket(m_unixSocket);
 
-        QObject::connect(m_unixSocket, &QLocalSocket::connected,
-                         this, &LightningModel::rpcConnected);
+        //        QObject::connect(m_unixSocket, &QLocalSocket::connected,
+        //                         this, &LightningModel::rpcConnected);
 
         QObject::connect(m_unixSocket, SIGNAL(error(QLocalSocket::LocalSocketError)),
                          this, SLOT(unixSocketError(QLocalSocket::LocalSocketError)));
@@ -124,6 +135,16 @@ LightningModel::LightningModel(QString serverName, QObject *parent) {
         QObject::connect(m_rpcSocket, &QJsonRpcAbstractSocket::messageReceived, this, &LightningModel::rpcMessageReceived);
 
         m_unixSocket->connectToServer(m_serverName);
+
+        if (m_unixSocket->waitForConnected())
+        {
+            rpcConnected();
+        }
+        else
+        {
+            rpcNotConnected();
+        }
+
     }
 }
 
@@ -143,6 +164,29 @@ void LightningModel::rpcConnected()
     m_updatesTimer->setSingleShot(false);
     QObject::connect(m_updatesTimer, &QTimer::timeout, this, &LightningModel::updateModels);
     m_updatesTimer->start();
+}
+
+void LightningModel::rpcNotConnected()
+{
+    // No daemon so lets launch our own
+    launchDaemon();
+
+    // wait
+    int ms = 5000;
+    struct timespec ts = { ms / 1000, (ms % 1000) * 1000 * 1000 };
+    nanosleep(&ts, NULL);
+
+
+    // Try to connect
+    m_unixSocket->connectToServer(m_serverName);
+    if (m_unixSocket->waitForConnected())
+    {
+        rpcConnected();
+    }
+    else
+    {
+
+    }
 }
 
 void LightningModel::rpcMessageReceived(QJsonRpcMessage message)

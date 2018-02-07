@@ -3,6 +3,7 @@
 
 #include <QLocalSocket>
 #include <QTimer>
+#include <QProcess>
 
 #include "PeersModel.h"
 #include "PaymentsModel.h"
@@ -45,6 +46,8 @@ public:
 
 private:
     void updateInfo();
+    void launchDaemon();
+    void rpcNotConnected();
 
 private:
     QLocalSocket* m_unixSocket;
@@ -57,6 +60,8 @@ private:
     QTimer* m_updatesTimer;
 
     QString m_serverName;
+
+    QProcess* m_lightningDaemonProcess;
 
     QString m_id;
     int m_port;
