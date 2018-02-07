@@ -16,7 +16,7 @@ Kirigami.OverlaySheet {
 
         QQC2.Label {
             wrapMode: Text.WordWrap
-            text: "Network"
+            text: "Network: "
         }
 
         QQC2.Label {
@@ -41,12 +41,13 @@ Kirigami.OverlaySheet {
 
         QQC2.TextField {
             id: currencyCodeTextField
-            // save this somewhere
+            font.capitalization: Font.AllUppercase
             wrapMode: Text.WordWrap
             text: settings.currencyCode
+            inputMask: "AAA" // ISO 4217
 
             onTextChanged: {
-                ExchangeRate.currencyCode = text
+                ExchangeRate.currencyCode = text.toUpperCase()
             }
         }
     }
