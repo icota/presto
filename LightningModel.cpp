@@ -1,3 +1,4 @@
+#include <QDir>
 #include "LightningModel.h"
 #include "./3rdparty/qjsonrpc/src/qjsonrpcservicereply.h"
 
@@ -83,9 +84,16 @@ void LightningModel::updateInfoRequestFinished()
     }
 }
 
-LightningModel::LightningModel(QObject *parent) {
+LightningModel::LightningModel(QString serverName, QObject *parent) {
     {
         Q_UNUSED(parent);
+
+        if (serverName.isEmpty()) {
+            m_serverName = QDir::homePath() + "/.lightning/lightning-rpc";
+        }
+        else {
+            m_serverName = serverName;
+        }
 
         m_address = QString();
         m_blockheight = 0;
@@ -105,7 +113,7 @@ LightningModel::LightningModel(QObject *parent) {
 
         QObject::connect(m_rpcSocket, &QJsonRpcAbstractSocket::messageReceived, this, &LightningModel::rpcMessageReceived);
 
-        m_unixSocket->connectToServer("/home/igor/.lightning/lightning-rpc");
+        m_unixSocket->connectToServer(m_serverName);
     }
 }
 

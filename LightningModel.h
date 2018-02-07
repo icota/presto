@@ -24,7 +24,7 @@ class LightningModel : public QObject
     Q_PROPERTY(QString network READ network NOTIFY infoChanged)
 
 public:
-    LightningModel(QObject *parent = 0);
+    LightningModel(QString serverName = QString(""), QObject *parent = 0);
 
     PeersModel *peersModel() const;
     PaymentsModel *paymentsModel() const;
@@ -50,6 +50,8 @@ private:
     WalletModel* m_walletModel;
     InvoicesModel* m_invoicesModel;
     QTimer* m_updatesTimer;
+
+    QString m_serverName;
 
     QString m_id;
     int m_port;

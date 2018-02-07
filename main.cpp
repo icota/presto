@@ -12,10 +12,7 @@ int main(int argc, char *argv[])
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     QGuiApplication app(argc, argv);
 
-    // This is loop dependent
     LightningModel* lightningModel = new LightningModel;
-    // qdebug doesn't show up
-    qDebug() << "wtf";
 
     QQmlApplicationEngine engine;
 
