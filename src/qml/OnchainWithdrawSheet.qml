@@ -23,12 +23,6 @@ Kirigami.OverlaySheet {
             Layout.alignment: Qt.AlignCenter
             wrapMode: Text.WordWrap
             text: qsTr("Scan the QR Code")
-            MouseArea {
-                anchors.fill: parent
-                onClicked: {
-                    console.log();
-                }
-            }
         }
 
         Rectangle {
@@ -42,20 +36,10 @@ Kirigami.OverlaySheet {
                 source: camera
                 visible: true
                 filters: [ zxingFilter ]
-                //Layout.alignment: Qt.AlignCenter
-                //Layout.preferredWidth: parent.width
-                //Layout.fillWidth: true
-                //width: 200
-                //height: 200
-                //Layout.fillHeight: true
                 anchors.fill: parent
                 onContentRectChanged: {
                     viewfinderRectangle.height = contentRect.height
                 }
-
-                //width: parent.width
-                //height: parent.height
-                //focus : visible // to receive focus and capture key events when visible
             }
 
             Item {
@@ -64,20 +48,11 @@ Kirigami.OverlaySheet {
                 Camera {
                     id: camera
                     cameraState: Camera.UnloadedState
-
-
                     imageCapture {
                         id: qrCapture
                         onImageCaptured: {
                             imageToDecode.source = preview
                             decoder.decodeImageQML(imageToDecode);
-                        }
-
-                        onReadyForCaptureChanged: {
-                            if (qrCapture.ready) {
-                                //camera.start()
-                                //capture();
-                            }
                         }
                     }
                 }
@@ -88,30 +63,21 @@ Kirigami.OverlaySheet {
                         // setup bindings
                         viewfinderOutput.contentRect;
                         viewfinderOutput.sourceRect;
-                        return viewfinderOutput.mapRectToSource(viewfinderOutput.mapNormalizedRectToItem(Qt.rect(
-                                                                                                             0.25, 0.25, 0.5, 0.5
-                                                                                                             )));
+                        return viewfinderOutput.mapRectToSource(viewfinderOutput.mapNormalizedRectToItem(
+                                                                    Qt.rect(0.25, 0.25, 0.5, 0.5)));
                     }
                     decoder {
                         enabledDecoders: QZXing.DecoderFormat_QR_CODE
 
                         onTagFound: {
                             console.log("Barcode data: " + tag)
-                            pasteTextArea.text = tag
+                            if (tag.startsWith("bitcoin:")) {
+                                pasteTextArea.text = tag.substring(8);
+                            }
                         }
-
-
-                    }
-
-                    onDecodingStarted: {
-                        console.log("Decoding of image started...")
-                    }
-                    onDecodingFinished: {
-                        console.log("Decoding finished " + (succeeded==true ? "successfully" :    "unsuccessfully") )
                     }
                 }
             }
-
         }
 
         QQC2.TextArea {
@@ -172,6 +138,5 @@ Kirigami.OverlaySheet {
 
     function checkIfValidOnChainAddress(text) {
         // validate somehow?
-        //paymentsModel.decodePayment(text);
     }
 }
