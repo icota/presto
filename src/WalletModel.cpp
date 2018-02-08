@@ -4,6 +4,7 @@
 WalletModel::WalletModel(QJsonRpcSocket *rpcSocket)
 {
     m_rpcSocket = rpcSocket;
+    m_funds = QList<FundsTransaction>();
     updateFunds();
 }
 

@@ -16,6 +16,7 @@ QHash<int, QByteArray> PeersModel::roleNames() const {
 PeersModel::PeersModel(QJsonRpcSocket *rpcSocket)
 {
     m_rpcSocket = rpcSocket;
+    m_peers = QList<Peer>();
     updatePeers();
 }
 
