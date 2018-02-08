@@ -59,15 +59,6 @@ Kirigami.OverlaySheet {
             font.pixelSize: 16
         }
 
-        QQC2.Label {
-            wrapMode: Text.WordWrap
-            color: Kirigami.Theme.textColor
-            text: Date(createdAtTimestamp + expiry).toLocaleDateString()
-            Layout.alignment: Qt.AlignCenter
-            Layout.fillWidth: parent
-            font.pixelSize: 16
-        }
-
         RowLayout {
 
             QQC2.Button {
