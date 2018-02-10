@@ -65,7 +65,7 @@ void LightningModel::launchDaemon()
     QStringList arguments;
     arguments << "--network=testnet";
 
-    m_lightningDaemonProcess = new QProcess();
+    m_lightningDaemonProcess = new QProcess(this);
     m_lightningDaemonProcess->start(program, arguments);
     m_lightningDaemonProcess->waitForStarted();
 }
@@ -123,11 +123,9 @@ LightningModel::LightningModel(QString serverName, QObject *parent) {
         m_port = 0;
         m_version = QString();
 
+        m_connectionRetryTimer = new QTimer();
         m_unixSocket = new QLocalSocket();
         m_rpcSocket = new QJsonRpcSocket(m_unixSocket);
-
-        //        QObject::connect(m_unixSocket, &QLocalSocket::connected,
-        //                         this, &LightningModel::rpcConnected);
 
         QObject::connect(m_unixSocket, SIGNAL(error(QLocalSocket::LocalSocketError)),
                          this, SLOT(unixSocketError(QLocalSocket::LocalSocketError)));
@@ -142,6 +140,8 @@ LightningModel::LightningModel(QString serverName, QObject *parent) {
         }
         else
         {
+            // No daemon so lets launch our own
+            launchDaemon();
             rpcNotConnected();
         }
 
@@ -150,6 +150,8 @@ LightningModel::LightningModel(QString serverName, QObject *parent) {
 
 void LightningModel::rpcConnected()
 {
+    m_connectionRetryTimer->stop();
+
     m_peersModel = new PeersModel(m_rpcSocket);
     m_paymentsModel = new PaymentsModel(m_rpcSocket);
     m_walletModel = new WalletModel(m_rpcSocket);
@@ -168,24 +170,20 @@ void LightningModel::rpcConnected()
 
 void LightningModel::rpcNotConnected()
 {
-    // No daemon so lets launch our own
-    launchDaemon();
+    m_connectionRetryTimer->stop();
 
-    // wait
-    int ms = 5000;
-    struct timespec ts = { ms / 1000, (ms % 1000) * 1000 * 1000 };
-    nanosleep(&ts, NULL);
+    // Let's retry every 10 secs
+    m_connectionRetryTimer->setInterval(10000);
+    m_connectionRetryTimer->setSingleShot(true);
 
+    // Reentrant slot right here
+    QObject::connect(m_connectionRetryTimer, &QTimer::timeout, this, &LightningModel::rpcNotConnected);
+    m_connectionRetryTimer->start();
 
-    // Try to connect
     m_unixSocket->connectToServer(m_serverName);
     if (m_unixSocket->waitForConnected())
     {
         rpcConnected();
-    }
-    else
-    {
-
     }
 }
 

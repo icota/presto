@@ -60,6 +60,7 @@ private:
     QTimer* m_updatesTimer;
 
     QString m_serverName;
+    QTimer* m_connectionRetryTimer;
 
     QProcess* m_lightningDaemonProcess;
 
