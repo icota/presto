@@ -5,7 +5,7 @@ import org.kde.kirigami 2.1 as Kirigami
 import "." // QTBUG-34418
 
 Item {
-    property int amount: peersModel.totalAvailableFunds + walletModel.totalAvailableFunds
+    property int amount: peersModel.totalAvailableFunds / 1000 + walletModel.totalAvailableFunds
 
     ColumnLayout {
         anchors.leftMargin: 50

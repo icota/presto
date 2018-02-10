@@ -11,7 +11,7 @@ Item {
     property real rate: 0.0
 
     // Update every hour
-    property int updateInterval: 360 * 1000
+    property int updateInterval: 3600 * 1000
 
     Timer {
         interval: updateInterval; running: true; repeat: true

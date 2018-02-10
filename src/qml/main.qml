@@ -28,7 +28,7 @@ Kirigami.ApplicationWindow {
         actions: [
             Kirigami.Action {
                 text: "Lightning Network (" +
-                      peersModel.totalAvailableFunds.toLocaleString(locale, 'f', 0) +
+                      (peersModel.totalAvailableFunds / 1000).toLocaleString(locale, 'f', 0) +
                       " SAT)"
                 iconName: "view-list-icons"
                 Kirigami.Action {
@@ -123,8 +123,8 @@ Kirigami.ApplicationWindow {
                     QQC2.Label {
                         color: Kirigami.Theme.textColor
                         text: "Label: " + label +
-                                       ", msatoshi: " + msatoshi +
-                                       ", " + expiresAt }
+                              ", msatoshi: " + msatoshi +
+                              ", " + expiresAt }
                     actions: [
                         Kirigami.Action {
                             iconName: "edit-delete"
@@ -160,12 +160,10 @@ Kirigami.ApplicationWindow {
                 model: peersModel
                 anchors.fill: parent
                 delegate: Kirigami.SwipeListItem {
+                    height: 50
+                    PeersDelegateItem {
+                    }
 
-                    QQC2.Label {
-                        color: Kirigami.Theme.textColor
-                        text: "Peer: " + peerid +
-                                       ", connected: " + connected +
-                                       ", " + msatoshitotal }
                     actions: [
                         Kirigami.Action {
                             iconName: "list-add"

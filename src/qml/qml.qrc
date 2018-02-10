@@ -18,5 +18,7 @@
         <file>qmldir</file>
         <file>MilisatoshiTextField.qml</file>
         <file>QRScannerViewfinder.qml</file>
+        <file>PeersDelegateItem.qml</file>
+        <file>MsatoshiAmountItem.qml</file>
     </qresource>
 </RCC>
