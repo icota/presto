@@ -184,23 +184,27 @@ void PeersModel::populatePeersFromJson(QJsonArray jsonArray)
     {
         beginInsertRows(QModelIndex(), rowCount(), rowCount());
 
-        QJsonObject PeerJsonObject = v.toObject(); // TODO: Fix
+        QJsonObject peerJsonObject = v.toObject();
 
         Peer peer;
-        peer.setChannel(PeerJsonObject.value("channel").toString());
-        peer.setConnected(PeerJsonObject.value("connected").toBool());
-        peer.setMsatoshiToUs(PeerJsonObject.value("msatoshi_to_us").toInt());
-        peer.setMsatoshiTotal(PeerJsonObject.value("msatoshi_total").toInt());
-        peer.setNetAddress(PeerJsonObject.value("netaddr").toArray()[0].toString()); // TODO: Figure out why addresses are in an array
-        peer.setId(PeerJsonObject.value("id").toString());
 
-        QString state = PeerJsonObject.value("state").toString();
+        peer.setId(peerJsonObject.value("id").toString());
+        peer.setNetAddress(peerJsonObject.value("netaddr").toArray()[0].toString()); // TODO: Figure out why addresses are in an array
+        peer.setConnected(peerJsonObject.value("connected").toBool());
+
+        QJsonArray channelsJsonArray = peerJsonObject.value("channels").toArray();
+        peer.setMsatoshiToUs(channelsJsonArray[0].toObject().value("msatoshi_to_us").toInt());
+
+        // FIX
+        peer.setChannel(peerJsonObject.value("channel").toString());
+        peer.setMsatoshiTotal(peerJsonObject.value("msatoshi_total").toInt());
+        QString state = peerJsonObject.value("state").toString();
 
         if (state == "GOSSIPING") peer.setState(Peer::PeerState::UNINITIALIZED);
         else if (state == "WHATEVER") peer.setState(Peer::PeerState::UNINITIALIZED);
 
 
-        peer.setState((Peer::PeerState)PeerJsonObject.value("state").toInt()); // TODO: Fix this
+        peer.setState((Peer::PeerState)peerJsonObject.value("state").toInt());
         m_peers.append(peer);
 
         endInsertRows();
