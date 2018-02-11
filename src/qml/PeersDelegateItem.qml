@@ -10,7 +10,12 @@ Item {
     {
         anchors.fill: parent
         // status icon with tooltip" , connected: " + connected
-
+        Rectangle {
+             width: 25
+             height: 25
+             color: connected ? "green" : "red"
+             radius: width*0.5
+        }
         // peerid or
         QQC2.Label {
             id: peerIdLabel
