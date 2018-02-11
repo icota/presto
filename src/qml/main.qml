@@ -277,8 +277,10 @@ Kirigami.ApplicationWindow {
         }
 
         onErrorString: {
-            errorPopup.contentItem.text = error
-            errorPopup.open()
+            showPassiveNotification(error)
+
+//            errorPopup.contentItem.text = error
+//            errorPopup.open()
         }
     }
 
@@ -290,16 +292,19 @@ Kirigami.ApplicationWindow {
         }
 
         onErrorString: {
-            errorPopup.contentItem.text = error
-            errorPopup.open()
+            showPassiveNotification(error)
+
+//            errorPopup.contentItem.text = error
+//            errorPopup.open()
         }
     }
 
     Connections {
         target: peersModel
         onErrorString: {
-            errorPopup.contentItem.text = error
-            errorPopup.open()
+            showPassiveNotification(error)
+            //errorPopup.contentItem.text = error
+            //errorPopup.open()
         }
 
         onConnectedToPeer: {
@@ -323,8 +328,10 @@ Kirigami.ApplicationWindow {
         }
 
         onErrorString: {
-            errorPopup.contentItem.text = error
-            errorPopup.open()
+            showPassiveNotification(error)
+
+//            errorPopup.contentItem.text = error
+//            errorPopup.open()
         }
     }
 
