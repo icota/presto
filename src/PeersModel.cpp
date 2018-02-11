@@ -62,6 +62,11 @@ void PeersModel::connectToPeerRequestFinished()
     QJsonRpcServiceReply *reply = static_cast<QJsonRpcServiceReply *>(sender());
     QJsonRpcMessage message = reply->response();
 
+    if (message.type() == QJsonRpcMessage::Error)
+    {
+        emit errorString(message.toObject().value("error").toObject().value("message").toString());
+    }
+
     if (message.type() == QJsonRpcMessage::Response)
     {
         QJsonObject jsonObject = message.toObject();
