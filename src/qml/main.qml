@@ -212,6 +212,8 @@ Kirigami.ApplicationWindow {
                 delegate: Kirigami.SwipeListItem {
                     GenericListDelegate {
                         indicator.color: connected ? "green" : "red"
+                        indicatorTooltip: connected ?
+                                              qsTr("Connected with Status") + " " + peerstatestring : qsTr("Disconnected")
                         label.text: peerid.substring(0, 10) + " (" + netaddress + ")"
                         status.text: peerstatestring
                         msatoshiAmount.amount: msatoshitous
