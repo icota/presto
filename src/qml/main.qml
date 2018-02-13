@@ -17,12 +17,23 @@ Kirigami.ApplicationWindow {
     globalDrawer: Kirigami.GlobalDrawer {
         // Depends on the screen
         //drawerOpen: false
+        id: globalDrawer
 
         topContent: [
             BalanceItem {
-                anchors.leftMargin: 25
-                height: 65
+                id: balanceItem
+                Layout.alignment: Qt.AlignLeft | Qt.AlignVCenter
+                Layout.margins: 10
+            },
+
+            Rectangle {
+                color: Kirigami.Theme.textColor
+                height: 1
+                Layout.fillWidth: true
+                Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+                Layout.margins: 10
             }
+
         ]
 
         actions: [
@@ -99,6 +110,48 @@ Kirigami.ApplicationWindow {
     pageStack.initialPage: transactionsPageComponent
 
     Component {
+        id: transactionsPageComponent
+
+        Kirigami.ScrollablePage {
+            title: qsTr("Payments") + " (" + paymentsListView.count + ")"
+            actions {
+                main: Kirigami.Action {
+                    iconName: captureInvoiceSheet.sheetOpen ? "dialog-cancel" : "document-send"
+                    tooltip: qsTr("Pay")
+                    onTriggered: {
+                        captureInvoiceSheet.sheetOpen = !captureInvoiceSheet.sheetOpen
+                    }
+                }
+            }
+
+            ListView {
+                id: paymentsListView
+                model: paymentsModel
+                anchors.fill: parent
+                delegate: Kirigami.SwipeListItem {
+                    GenericListDelegate {
+                        indicator.color: paid ? "green" : "red"
+                        label.text: label
+                        status.text: "invoicestatus"
+                        msatoshiAmount.amount: msatoshi
+                    }
+
+                    actions: [
+                        Kirigami.Action {
+                            iconName: "edit-delete"
+                            tooltip: qsTr("Delete")
+                            onTriggered: {
+                                //invoicesModel.deleteInvoice(label, status)
+                            }
+                        }
+                    ]
+                }
+            }
+        }
+    }
+
+
+    Component {
         id: invoicesPageComponent
 
         Kirigami.ScrollablePage {
@@ -106,7 +159,7 @@ Kirigami.ApplicationWindow {
 
             actions {
                 main: Kirigami.Action {
-                    iconName: sendInvoiceSheet.sheetOpen ? "dialog-cancel" : "document-send"
+                    iconName: sendInvoiceSheet.sheetOpen ? "dialog-cancel" : "document-new"
                     tooltip: qsTr("Create a new Invoice")
                     onTriggered: {
                         sendInvoiceSheet.sheetOpen = !sendInvoiceSheet.sheetOpen
@@ -119,12 +172,13 @@ Kirigami.ApplicationWindow {
                 model: invoicesModel
                 anchors.fill: parent
                 delegate: Kirigami.SwipeListItem {
+                    GenericListDelegate {
+                        indicator.color: paid ? "green" : "red"
+                        label.text: label
+                        status.text: "invoicestatus"
+                        msatoshiAmount.amount: msatoshi
+                    }
 
-                    QQC2.Label {
-                        color: Kirigami.Theme.textColor
-                        text: "Label: " + label +
-                              ", msatoshi: " + msatoshi +
-                              ", " + expiresAt }
                     actions: [
                         Kirigami.Action {
                             iconName: "edit-delete"
@@ -160,8 +214,11 @@ Kirigami.ApplicationWindow {
                 model: peersModel
                 anchors.fill: parent
                 delegate: Kirigami.SwipeListItem {
-                    height: 50
-                    PeersDelegateItem {
+                    GenericListDelegate {
+                        indicator.color: connected ? "green" : "red"
+                        label.text: peerid.substring(0, 10) + "..." + " (" + address + ")"
+                        status.text: "peerstatus"
+                        msatoshiAmount.amount: msatoshitous
                     }
 
                     actions: [
@@ -182,32 +239,6 @@ Kirigami.ApplicationWindow {
                         }
                     ]
                 }
-            }
-        }
-    }
-
-    Component {
-        id: transactionsPageComponent
-
-        Kirigami.ScrollablePage {
-            title: qsTr("Payments") + " (" + paymentsListView.count + ")"
-            actions {
-                main: Kirigami.Action {
-                    iconName: captureInvoiceSheet.sheetOpen ? "dialog-cancel" : "document-send"
-                    tooltip: qsTr("Pay")
-                    onTriggered: {
-                        captureInvoiceSheet.sheetOpen = !captureInvoiceSheet.sheetOpen
-                    }
-                }
-            }
-
-            ListView {
-                id: paymentsListView
-                model: paymentsModel
-                anchors.fill: parent
-                delegate: Text { text: "Amount: " + msatoshi +
-                                       ", Incoming: " + incoming +
-                                       ", Timestamp: " + timestamp }
             }
         }
     }
@@ -278,9 +309,6 @@ Kirigami.ApplicationWindow {
 
         onErrorString: {
             showPassiveNotification(error)
-
-//            errorPopup.contentItem.text = error
-//            errorPopup.open()
         }
     }
 
@@ -293,9 +321,6 @@ Kirigami.ApplicationWindow {
 
         onErrorString: {
             showPassiveNotification(error)
-
-//            errorPopup.contentItem.text = error
-//            errorPopup.open()
         }
     }
 
@@ -303,8 +328,6 @@ Kirigami.ApplicationWindow {
         target: peersModel
         onErrorString: {
             showPassiveNotification(error)
-            //errorPopup.contentItem.text = error
-            //errorPopup.open()
         }
 
         onConnectedToPeer: {
@@ -329,19 +352,6 @@ Kirigami.ApplicationWindow {
 
         onErrorString: {
             showPassiveNotification(error)
-
-//            errorPopup.contentItem.text = error
-//            errorPopup.open()
         }
     }
-
-    // Notifications
-    QQC2.Popup {
-        id: errorPopup
-        modal: true
-        focus: true
-        contentItem: QQC2.Label {}
-        closePolicy: QQC2.Popup.CloseOnEscape | QQC2.Popup.CloseOnPressOutside
-    }
 }
-

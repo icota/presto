@@ -4,21 +4,18 @@ import QtQuick.Layouts 1.3
 import org.kde.kirigami 2.1 as Kirigami
 import "." // QTBUG-34418
 
-Item {
+ColumnLayout {
     property int amount: peersModel.totalAvailableFunds / 1000 + walletModel.totalAvailableFunds
+    QQC2.Label {
+        color: Kirigami.Theme.textColor
+        font.pixelSize: 26
+        text: (amount).toLocaleString(locale, 'f' , 0) + " SAT"
+    }
 
-    ColumnLayout {
-        anchors.leftMargin: 50
-        QQC2.Label {
-            color: Kirigami.Theme.textColor
-            font.pixelSize: 26
-            text: (amount).toLocaleString(locale, 'f' , 0) + " SAT"
-        }
+    QQC2.Label {
+        color: Kirigami.Theme.textColor
+        text: ExchangeRate.getAmountInCurrency(amount)
 
-        QQC2.Label {
-            color: Kirigami.Theme.textColor
-            text: ExchangeRate.getAmountInCurrency(amount)
-
-        }
     }
 }
+

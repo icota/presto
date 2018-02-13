@@ -27,7 +27,7 @@ Kirigami.OverlaySheet {
             text: peerToFund
         }
 
-        MilisatoshiTextField {
+        MsatoshiTextField {
             id: amountTextField
             Layout.topMargin: 25
         }
