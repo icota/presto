@@ -27,6 +27,13 @@ Kirigami.OverlaySheet {
             wrapMode: Text.WordWrap
             font: fixedFont
             text: bolt11
+            MouseArea {
+                anchors.fill: parent
+                onClicked: {
+                    clipboard.setText(bolt11)
+                    showPassiveNotification(qsTr("Invoice Copied to Clipboard"))
+                }
+            }
         }
     }
 }

@@ -40,7 +40,7 @@ Kirigami.OverlaySheet {
                 anchors.fill: parent
                 onClicked: {
                     clipboard.setText(onchainAddress)
-                    //notify that we've copied to clipboard?
+                    showPassiveNotification(qsTr("Address Copied to Clipboard"))
                 }
             }
         }

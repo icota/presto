@@ -34,10 +34,18 @@ Kirigami.OverlaySheet {
         }
 
         QQC2.Label {
+            id: idLabel
             wrapMode: Text.WordWrap
             color: Kirigami.Theme.textColor
             font: fixedFont
             text: lightningModel.id
+            MouseArea {
+                anchors.fill: parent
+                onClicked: {
+                    clipboard.setText(idLabel.text)
+                    showPassiveNotification(qsTr("Node ID Copied to Clipboard"))
+                }
+            }
         }
 
         QQC2.Label {
