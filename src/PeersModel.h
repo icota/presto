@@ -60,6 +60,9 @@ public:
     PeerState state() const;
     void setState(const PeerState &PeerState);
 
+    QString stateString() const;
+    void setStateString(const QString &stateString);
+
 private:
     QString m_channel;
     bool m_connected;
@@ -68,6 +71,7 @@ private:
     QString m_netAddress;
     QString m_id;
     PeerState m_state;
+    QString m_stateString;
 };
 
 class PeersModel : public QAbstractListModel
@@ -83,7 +87,8 @@ public:
         MSatoshiTotalRole,
         NetAddressRole,
         PeerIdRole,
-        PeerStateRole
+        PeerStateRole,
+        PeerStateStringRole
     };
 
     QHash<int, QByteArray> roleNames() const;

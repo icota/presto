@@ -10,6 +10,7 @@ QHash<int, QByteArray> PeersModel::roleNames() const {
     roles[NetAddressRole] = "netaddress";
     roles[PeerIdRole] = "peerid";
     roles[PeerStateRole] = "peerstate";
+    roles[PeerStateStringRole] = "peerstatestring";
     return roles;
 }
 
@@ -177,6 +178,8 @@ QVariant PeersModel::data(const QModelIndex &index, int role) const
         return peer.id();
     else if (role == PeerStateRole)
         return peer.state();
+    else if (role == PeerStateStringRole)
+        return peer.stateString();
     return QVariant();
 }
 
@@ -198,16 +201,16 @@ void PeersModel::populatePeersFromJson(QJsonArray jsonArray)
         peer.setConnected(peerJsonObject.value("connected").toBool());
 
         QJsonArray channelsJsonArray = peerJsonObject.value("channels").toArray();
-        peer.setMsatoshiToUs(channelsJsonArray[0].toObject().value("msatoshi_to_us").toInt());
+        // FIX: Store the whole array somehow
 
-        // FIX
-        peer.setChannel(peerJsonObject.value("channel").toString());
+        peer.setMsatoshiToUs(channelsJsonArray[0].toObject().value("msatoshi_to_us").toInt());
         peer.setMsatoshiTotal(peerJsonObject.value("msatoshi_total").toInt());
-        QString state = peerJsonObject.value("state").toString();
+
+        QString state = channelsJsonArray[0].toObject().value("state").toString();
+        peer.setStateString(state);
 
         if (state == "GOSSIPING") peer.setState(Peer::PeerState::UNINITIALIZED);
         else if (state == "WHATEVER") peer.setState(Peer::PeerState::UNINITIALIZED);
-
 
         peer.setState((Peer::PeerState)peerJsonObject.value("state").toInt());
         m_peers.append(peer);
@@ -295,5 +298,15 @@ Peer::PeerState Peer::state() const
 void Peer::setState(const PeerState &state)
 {
     m_state = state;
+}
+
+QString Peer::stateString() const
+{
+    return m_stateString;
+}
+
+void Peer::setStateString(const QString &stateString)
+{
+    m_stateString = stateString;
 }
 
