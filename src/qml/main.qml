@@ -25,15 +25,11 @@ Kirigami.ApplicationWindow {
                 Layout.alignment: Qt.AlignLeft | Qt.AlignVCenter
                 Layout.margins: 10
             },
-
-            Rectangle {
-                color: Kirigami.Theme.textColor
-                height: 1
+            Kirigami.Separator {
                 Layout.fillWidth: true
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
                 Layout.margins: 10
             }
-
         ]
 
         actions: [
@@ -216,8 +212,8 @@ Kirigami.ApplicationWindow {
                 delegate: Kirigami.SwipeListItem {
                     GenericListDelegate {
                         indicator.color: connected ? "green" : "red"
-                        label.text: peerid.substring(0, 10) + "..." + " (" + address + ")"
-                        status.text: "peerstatus"
+                        label.text: peerid.substring(0, 10) + " (" + netaddress + ")"
+                        status.text: peerstatestring
                         msatoshiAmount.amount: msatoshitous
                     }
 
