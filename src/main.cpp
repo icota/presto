@@ -37,7 +37,7 @@ int main(int argc, char *argv[])
     const QFont fixedFont = QFontDatabase::systemFont(QFontDatabase::FixedFont);
     engine.rootContext()->setContextProperty("fixedFont", fixedFont);
 
-    engine.load(QUrl(QLatin1String("qrc:/main.qml")));
+    engine.load(QUrl(QLatin1String("qrc:/src/qml/main.qml")));
     if (engine.rootObjects().isEmpty())
         return -1;
 

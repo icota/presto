@@ -1,0 +1,24 @@
+<RCC>
+    <qresource prefix="/">
+        <file>src/qml/main.qml</file>
+        <file>src/qml/qtquickcontrols2.conf</file>
+        <file>src/qml/CaptureInvoiceSheet.qml</file>
+        <file>src/qml/PayInvoiceSheet.qml</file>
+        <file>src/qml/OnchainAddressSheet.qml</file>
+        <file>src/qml/QRCode.qml</file>
+        <file alias="src/qml/qqr.js">3rdparty/qqr.js/qqr.js</file>
+        <file>src/qml/ConnectToPeerSheet.qml</file>
+        <file>src/qml/FundChannelSheet.qml</file>
+        <file>src/qml/SendInvoiceSheet.qml</file>
+        <file>src/qml/ShareInvoiceSheet.qml</file>
+        <file>src/qml/OnchainWithdrawSheet.qml</file>
+        <file>src/qml/BalanceItem.qml</file>
+        <file>src/qml/ExchangeRate.qml</file>
+        <file>src/qml/SettingsSheet.qml</file>
+        <file>src/qml/qmldir</file>
+        <file>src/qml/MsatoshiTextField.qml</file>
+        <file>src/qml/QRScannerViewfinder.qml</file>
+        <file>src/qml/GenericListDelegate.qml</file>
+        <file>src/qml/MsatoshiAmountItem.qml</file>
+    </qresource>
+</RCC>
