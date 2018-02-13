@@ -74,17 +74,17 @@ Kirigami.ApplicationWindow {
                       " SAT)"
                 iconName: "view-list-icons"
                 Kirigami.Action {
-                    text: qsTr("Request Payment")
-                    iconName: "go-down"
-                    onTriggered: {
-                        walletModel.requestNewAddress()
-                    }
-                }
-                Kirigami.Action {
                     text: qsTr("Send Payment")
                     iconName: "go-up"
                     onTriggered: {
                         onchainWithdrawSheet.sheetOpen = !onchainWithdrawSheet.sheetOpen
+                    }
+                }
+                Kirigami.Action {
+                    text: qsTr("Request Payment")
+                    iconName: "go-down"
+                    onTriggered: {
+                        walletModel.requestNewAddress()
                     }
                 }
             },
