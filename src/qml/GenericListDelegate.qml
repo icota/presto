@@ -6,6 +6,7 @@ import org.kde.kirigami 2.1 as Kirigami
 RowLayout
 {
     property alias indicator: indicator
+    property string indicatorTooltip: ""
     property alias label: label
     property alias status: status
     property alias msatoshiAmount: msatoshiAmount
@@ -17,6 +18,23 @@ RowLayout
         width: 25
         height: 25
         radius: width * 0.5
+
+        MouseArea {
+            anchors.fill: parent
+            hoverEnabled: true
+
+            onEntered: {
+
+            }
+
+            QQC2.ToolTip    {
+                text: indicatorTooltip
+                //id: tooltip
+                //delay: 1000
+                //timeout: 5000
+                visible: parent.pressed
+            }
+        }
     }
 
     ColumnLayout {
