@@ -28,6 +28,7 @@ Kirigami.OverlaySheet {
         }
 
         MsatoshiTextField {
+            satoshi: true
             id: amountTextField
             Layout.topMargin: 25
         }
