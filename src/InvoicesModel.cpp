@@ -10,7 +10,7 @@ InvoicesModel::InvoicesModel(QJsonRpcSocket *rpcSocket)
 QHash<int, QByteArray> InvoicesModel::roleNames() const
 {
     QHash<int, QByteArray> roles;
-    roles[LabelRole] = "label";
+    roles[LabelRole] = "invoicelabel";
     roles[HashRole] = "hash";
     roles[MSatoshiRole] = "msatoshi";
     roles[StatusRole] = "status";
@@ -91,18 +91,23 @@ void InvoicesModel::populateInvoicesFromJson(QJsonArray jsonArray)
     {
         beginInsertRows(QModelIndex(), rowCount(), rowCount());
 
-        QJsonObject InvoiceJsonObject = v.toObject();
+        QJsonObject invoiceJsonObject = v.toObject();
         Invoice invoice;
-        invoice.setLabel(InvoiceJsonObject.value("label").toString());
-        invoice.setHash(InvoiceJsonObject.value("payment_hash").toString());
-        invoice.setMsatoshi(InvoiceJsonObject.value("msatoshi").toInt());
-        invoice.setStatus((Invoice::InvoiceStatus)InvoiceJsonObject.value("status").toInt()); // TODO
-        invoice.setPayIndex(InvoiceJsonObject.value("pay_index").toInt());
-        invoice.setMsatoshiReceived(InvoiceJsonObject.value("msatoshi_received").toInt());
-        invoice.setPaidTimestamp(InvoiceJsonObject.value("paid_timestamp").toInt()); // TODO: Fix this
-        invoice.setPaidAtTimestamp(InvoiceJsonObject.value("paid_at").toInt());
-        invoice.setExpiryTime(InvoiceJsonObject.value("expiry_time").toInt());
-        invoice.setExpiresAtTime(InvoiceJsonObject.value("expires_at").toInt());
+        invoice.setLabel(invoiceJsonObject.value("label").toString());
+        invoice.setHash(invoiceJsonObject.value("payment_hash").toString());
+        invoice.setMsatoshi(invoiceJsonObject.value("msatoshi").toInt());
+
+        QString status = invoiceJsonObject.value("status").toString();
+        if (status.toLower() == "paid") invoice.setStatus(InvoiceTypes::InvoiceStatus::PAID);
+        else if (status.toLower() == "unpaid") invoice.setStatus(InvoiceTypes::InvoiceStatus::UNPAID);
+        else if (status.toLower() == "expired") invoice.setStatus(InvoiceTypes::InvoiceStatus::EXPIRED);
+
+        invoice.setPayIndex(invoiceJsonObject.value("pay_index").toInt());
+        invoice.setMsatoshiReceived(invoiceJsonObject.value("msatoshi_received").toInt());
+        invoice.setPaidTimestamp(invoiceJsonObject.value("paid_timestamp").toInt()); // TODO: Fix this
+        invoice.setPaidAtTimestamp(invoiceJsonObject.value("paid_at").toInt());
+        invoice.setExpiryTime(invoiceJsonObject.value("expiry_time").toInt());
+        invoice.setExpiresAtTime(invoiceJsonObject.value("expires_at").toInt());
 
         m_invoices.append(invoice);
 
@@ -223,12 +228,12 @@ void Invoice::setMsatoshi(int msatoshi)
     m_msatoshi = msatoshi;
 }
 
-Invoice::InvoiceStatus Invoice::status() const
+InvoiceTypes::InvoiceStatus Invoice::status() const
 {
     return m_status;
 }
 
-void Invoice::setStatus(const InvoiceStatus &status)
+void Invoice::setStatus(const InvoiceTypes::InvoiceStatus &status)
 {
     m_status = status;
 }

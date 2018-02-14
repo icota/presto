@@ -7,16 +7,21 @@
 #include "./3rdparty/qjsonrpc/src/qjsonrpcsocket.h"
 #include "./3rdparty/qjsonrpc/src/qjsonrpcmessage.h"
 
+namespace InvoiceTypes
+{
+    Q_NAMESPACE
+enum InvoiceStatus {
+    UNPAID,
+    PAID,
+    EXPIRED
+};
+Q_ENUM_NS(InvoiceStatus)
+}
+
 class Invoice
 {
 public:
     Invoice();
-
-    enum InvoiceStatus {
-        UNPAID,
-        PAID,
-        EXPIRED
-    };
 
     QString label() const;
     void setLabel(const QString &label);
@@ -27,8 +32,8 @@ public:
     int msatoshi() const;
     void setMsatoshi(int msatoshi);
 
-    InvoiceStatus status() const;
-    void setStatus(const InvoiceStatus &status);
+    InvoiceTypes::InvoiceStatus status() const;
+    void setStatus(const InvoiceTypes::InvoiceStatus &status);
 
     int payIndex() const;
     void setPayIndex(int payIndex);
@@ -52,7 +57,7 @@ private:
     QString m_label;
     QString m_hash;
     int m_msatoshi;
-    InvoiceStatus m_status;
+    InvoiceTypes::InvoiceStatus m_status;
     int m_payIndex;
     int m_msatoshiReceived;
     int m_paidTimestamp;
