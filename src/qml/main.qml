@@ -2,7 +2,8 @@ import QtQuick 2.7
 import QtQuick.Controls 2.2 as QQC2
 import QtQuick.Layouts 1.3
 import org.kde.kirigami 2.1 as Kirigami
-//import "." // QTBUG-34418, singletons require explicit import to load qmldir file
+
+import Lightning.Invoice 1.0
 
 Kirigami.ApplicationWindow {
     id: root
@@ -88,7 +89,7 @@ Kirigami.ApplicationWindow {
 
             Kirigami.Action {
                 text: "Settings"
-                iconName: "preferences-system"
+                iconName: "applications-system"
                 onTriggered: {
                     settingsSheet.sheetOpen = true;
                 }
@@ -113,7 +114,7 @@ Kirigami.ApplicationWindow {
             actions {
                 main: Kirigami.Action {
                     iconName: captureInvoiceSheet.sheetOpen ? "dialog-cancel" : "document-send"
-                    tooltip: qsTr("Pay")
+                    text: qsTr("Pay")
                     onTriggered: {
                         captureInvoiceSheet.sheetOpen = !captureInvoiceSheet.sheetOpen
                     }
@@ -125,11 +126,12 @@ Kirigami.ApplicationWindow {
                 model: paymentsModel
                 anchors.fill: parent
                 delegate: Kirigami.SwipeListItem {
+                    supportsMouseEvents: true
                     GenericListDelegate {
-                        indicator.color: paid ? "green" : "red"
-                        label.text: label
-                        status.text: "invoicestatus"
-                        msatoshiAmount.amount: msatoshi
+//                        indicator.color: paid ? "green" : "red"
+//                        label.text: label
+//                        status.text: "invoicestatus"
+//                        msatoshiAmount.amount: msatoshi
                     }
 
                     actions: [
@@ -156,7 +158,7 @@ Kirigami.ApplicationWindow {
             actions {
                 main: Kirigami.Action {
                     iconName: sendInvoiceSheet.sheetOpen ? "dialog-cancel" : "document-new"
-                    tooltip: qsTr("Create a new Invoice")
+                    text: qsTr("Create a new Invoice")
                     onTriggered: {
                         sendInvoiceSheet.sheetOpen = !sendInvoiceSheet.sheetOpen
                     }
@@ -168,10 +170,11 @@ Kirigami.ApplicationWindow {
                 model: invoicesModel
                 anchors.fill: parent
                 delegate: Kirigami.SwipeListItem {
+                    supportsMouseEvents: true
                     GenericListDelegate {
-                        indicator.color: paid ? "green" : "red"
-                        label.text: label
-                        status.text: "invoicestatus"
+                        indicator.color: status === Invoice.PAID ? "green" : "grey"
+                        label.text: invoicelabel
+                        //status.text: paymentstatusstring
                         msatoshiAmount.amount: msatoshi
                     }
 
@@ -180,7 +183,7 @@ Kirigami.ApplicationWindow {
                             iconName: "edit-delete"
                             tooltip: qsTr("Delete")
                             onTriggered: {
-                                invoicesModel.deleteInvoice(label, status)
+                                invoicesModel.deleteInvoice(invoicelabel, status)
                             }
                         }
                     ]
@@ -198,7 +201,7 @@ Kirigami.ApplicationWindow {
             actions {
                 main: Kirigami.Action {
                     iconName: connectToPeerSheet.sheetOpen ? "dialog-cancel" : "list-add"
-                    tooltip: qsTr("Connect to a Peer")
+                    text: qsTr("Connect to a Peer")
                     onTriggered: {
                         connectToPeerSheet.sheetOpen = !connectToPeerSheet.sheetOpen
                     }
@@ -210,8 +213,9 @@ Kirigami.ApplicationWindow {
                 model: peersModel
                 anchors.fill: parent
                 delegate: Kirigami.SwipeListItem {
+                    supportsMouseEvents: true
                     GenericListDelegate {
-                        indicator.color: connected ? "green" : "red"
+                        indicator.color: connected && peerstatestring == "CHANNELD_NORMAL" ? "green" : "orange"
                         indicatorTooltip: connected ?
                                               qsTr("Connected with Status") + " " + peerstatestring : qsTr("Disconnected")
                         label.text: peerid.substring(0, 10) + " (" + netaddress + ")"
@@ -222,7 +226,7 @@ Kirigami.ApplicationWindow {
                     actions: [
                         Kirigami.Action {
                             iconName: "list-add"
-                            tooltip: qsTr("Add a new Peer")
+                            text: qsTr("Fund the Channel")
                             onTriggered: {
                                 fundChannelSheet.peerToFund = peerid
                                 fundChannelSheet.sheetOpen = !fundChannelSheet.sheetOpen
@@ -230,7 +234,7 @@ Kirigami.ApplicationWindow {
                         },
                         Kirigami.Action {
                             iconName: "dialog-cancel"
-                            tooltip: qsTr("Close the Channel")
+                            text: qsTr("Close the Channel")
                             onTriggered: {
                                 peersModel.closeChannel(peerid)
                             }
