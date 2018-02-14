@@ -25,6 +25,14 @@ int main(int argc, char *argv[])
     engine.rootContext()->setContextProperty("paymentsModel", lightningModel->paymentsModel());
     engine.rootContext()->setContextProperty("walletModel", lightningModel->walletModel());
     engine.rootContext()->setContextProperty("invoicesModel", lightningModel->invoicesModel());
+    qmlRegisterUncreatableMetaObject(
+      InvoiceTypes::staticMetaObject,
+      "Lightning.Invoice",
+      1, 0,
+      "Invoice",
+      "Error: only enums"
+    );
+
 
     KirigamiPlugin::getInstance().registerTypes();
     QZXing::registerQMLTypes();
