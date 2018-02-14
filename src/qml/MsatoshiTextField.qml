@@ -5,12 +5,13 @@ import org.kde.kirigami 2.1 as Kirigami
 import "." // QTBUG-34418
 
 RowLayout {
+    property bool satoshi: false
     property alias amount: amountTextField.text
     QQC2.TextField {
         id: amountTextField
         validator: IntValidator { bottom: 0; }
         selectByMouse: true
-        placeholderText: qsTr("Enter Amount in milisatoshi")
+        placeholderText: satoshi ? qsTr("Enter Amount in satoshi") : qsTr("Enter Amount in milisatoshi")
     }
     
     QQC2.Label {
@@ -19,7 +20,7 @@ RowLayout {
         wrapMode: Text.WordWrap
         Layout.alignment: Qt.AlignCenter
         Layout.fillWidth: parent
-        text: ExchangeRate.getAmountInCurrency(amountTextField.text / 1000)
+        text: ExchangeRate.getAmountInCurrency(satoshi ? amountTextField.text : (amountTextField.text / 1000))
         font.pixelSize: 16
     }
 }
