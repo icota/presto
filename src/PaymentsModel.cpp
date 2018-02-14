@@ -9,7 +9,8 @@ QHash<int, QByteArray> PaymentsModel::roleNames() const {
     roles[TimestampRole] = "timestamp";
     roles[DestinationRole] = "destination";
     roles[PaymentIdRole] = "paymentid";
-    roles[PaymentStatusRole] = "paymentstate";
+    roles[PaymentStatusRole] = "paymentstatus";
+    roles[PaymentStatusStringRole] = "paymentstatusstring";
     return roles;
 }
 
@@ -52,6 +53,8 @@ QVariant PaymentsModel::data(const QModelIndex &index, int role) const
         return payment.id();
     else if (role == PaymentStatusRole)
         return payment.status();
+    else if (role == PaymentStatusStringRole)
+        return payment.statusString();
     return QVariant();
 }
 
@@ -214,6 +217,16 @@ Payment::PaymentStatus Payment::status() const
 void Payment::setStatus(const PaymentStatus &status)
 {
     m_status = status;
+}
+
+QString Payment::statusString() const
+{
+    return m_statusString;
+}
+
+void Payment::setStatusString(const QString &statusString)
+{
+    m_statusString = statusString;
 }
 
 void PaymentsModel::decodePayment(QString bolt11String)

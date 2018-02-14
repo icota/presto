@@ -41,6 +41,9 @@ public:
     PaymentStatus status() const;
     void setStatus(const PaymentStatus &status);
 
+    QString statusString() const;
+    void setStatusString(const QString &statusString);
+
 private:
     QString m_hash;
     bool m_incoming;
@@ -49,6 +52,7 @@ private:
     QString m_destination;
     QString m_id;
     PaymentStatus m_status;
+    QString m_statusString;
 };
 
 class PaymentsModel : public QAbstractListModel
@@ -62,7 +66,8 @@ public:
         TimestampRole,
         DestinationRole,
         PaymentIdRole,
-        PaymentStatusRole
+        PaymentStatusRole,
+        PaymentStatusStringRole
     };
 
     PaymentsModel(QJsonRpcSocket* rpcSocket = 0);
