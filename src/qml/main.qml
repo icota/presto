@@ -196,6 +196,7 @@ Kirigami.ApplicationWindow {
         id: peersPageComponent
 
         Kirigami.ScrollablePage {
+            id: peersScrollablePage
             title: qsTr("Peers") + " (" + peersListView.count + ")"
 
             actions {
@@ -208,17 +209,23 @@ Kirigami.ApplicationWindow {
                 }
             }
 
+            property string peerIdToClose
+            function closeChannel() {
+                peersModel.closeChannel(peerIdToClose)
+            }
+
             ListView {
                 id: peersListView
                 model: peersModel
+
                 anchors.fill: parent
                 delegate: Kirigami.SwipeListItem {
                     supportsMouseEvents: true
                     GenericListDelegate {
-                        indicator.color: connected && peerstatestring == "CHANNELD_NORMAL" ? "green" : "orange"
+                        indicator.color: connected && peerstatestring == "CHANNELD_NORMAL" ? "green" : connected ? "orange" : "red"
                         indicatorTooltip: connected ?
-                                              qsTr("Connected with Status") + " " + peerstatestring : qsTr("Disconnected")
-                        label.text: peerid.substring(0, 10) + " (" + netaddress + ")"
+                                              qsTr("Connected Status") + ": " + peerstatestring : qsTr("Disconnected")
+                        label.text: peerid.substring(0, 10) + (connected ? " (" + netaddress + ")" : "")
                         status.text: peerstatestring
                         msatoshiAmount.amount: msatoshitous
                     }
@@ -236,7 +243,8 @@ Kirigami.ApplicationWindow {
                             iconName: "dialog-cancel"
                             text: qsTr("Close the Channel")
                             onTriggered: {
-                                peersModel.closeChannel(peerid)
+                                peersScrollablePage.peerIdToClose = peerid
+                                showPassiveNotification(qsTr("Close the Channel to this Peer?"), 10000, "OK", closeChannel)
                             }
                         }
                     ]
