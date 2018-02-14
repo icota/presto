@@ -38,6 +38,7 @@ Kirigami.OverlaySheet {
             selectByMouse: true
             Layout.alignment: Qt.AlignCenter
             Layout.fillWidth: parent
+            font: fixedFont
             placeholderText: qsTr("Enter Address")
         }
 
