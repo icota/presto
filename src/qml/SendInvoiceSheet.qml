@@ -21,7 +21,7 @@ Kirigami.OverlaySheet {
             placeholderText: qsTr("Enter Description")
         }
 
-        MsatoshiTextField {
+        AmountTextField {
             id: amountTextField
             Layout.topMargin: 25
         }

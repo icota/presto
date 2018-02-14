@@ -16,9 +16,9 @@
         <file>src/qml/ExchangeRate.qml</file>
         <file>src/qml/SettingsSheet.qml</file>
         <file>src/qml/qmldir</file>
-        <file>src/qml/MsatoshiTextField.qml</file>
         <file>src/qml/QRScannerViewfinder.qml</file>
         <file>src/qml/GenericListDelegate.qml</file>
         <file>src/qml/MsatoshiAmountItem.qml</file>
+        <file>src/qml/AmountTextField.qml</file>
     </qresource>
 </RCC>
