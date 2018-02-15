@@ -127,23 +127,28 @@ LightningModel::LightningModel(QString serverName, QObject *parent) {
         m_unixSocket = new QLocalSocket();
         m_rpcSocket = new QJsonRpcSocket(m_unixSocket);
 
+	   m_peersModel = new PeersModel(m_rpcSocket);
+	   m_paymentsModel = new PaymentsModel(m_rpcSocket);
+	   m_walletModel = new WalletModel(m_rpcSocket);
+	   m_invoicesModel = new InvoicesModel(m_rpcSocket);
+
         QObject::connect(m_unixSocket, SIGNAL(error(QLocalSocket::LocalSocketError)),
                          this, SLOT(unixSocketError(QLocalSocket::LocalSocketError)));
 
         QObject::connect(m_rpcSocket, &QJsonRpcAbstractSocket::messageReceived, this, &LightningModel::rpcMessageReceived);
 
-        m_unixSocket->connectToServer(m_serverName);
+	   m_unixSocket->connectToServer(m_serverName);
 
-        if (m_unixSocket->waitForConnected())
-        {
-            rpcConnected();
-        }
-        else
-        {
-            // No daemon so lets launch our own
-            launchDaemon();
-            rpcNotConnected();
-        }
+	   if (m_unixSocket->waitForConnected())
+	   {
+		  rpcConnected();
+	   }
+	   else
+	   {
+		  // No daemon so lets launch our own
+		  launchDaemon();
+		  rpcNotConnected();
+	   }
 
     }
 }
@@ -152,13 +157,7 @@ void LightningModel::rpcConnected()
 {
     m_connectionRetryTimer->stop();
 
-    m_peersModel = new PeersModel(m_rpcSocket);
-    m_paymentsModel = new PaymentsModel(m_rpcSocket);
-    m_walletModel = new WalletModel(m_rpcSocket);
-    m_invoicesModel = new InvoicesModel(m_rpcSocket);
-
-    updateInfo();
-
+    updateModels();
     m_updatesTimer = new QTimer();
 
     // Update the models every 15 secs

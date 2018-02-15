@@ -17,7 +17,7 @@ QHash<int, QByteArray> PaymentsModel::roleNames() const {
 PaymentsModel::PaymentsModel(QJsonRpcSocket *rpcSocket)
 {
     m_rpcSocket = rpcSocket;
-    updatePayments();
+    m_payments = QList<Payment>();
 }
 
 void PaymentsModel::updatePayments()

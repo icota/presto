@@ -4,7 +4,7 @@
 InvoicesModel::InvoicesModel(QJsonRpcSocket *rpcSocket)
 {
     m_rpcSocket = rpcSocket;
-    updateInvoices();
+    m_invoices = QList<Invoice>();
 }
 
 QHash<int, QByteArray> InvoicesModel::roleNames() const

@@ -18,7 +18,6 @@ PeersModel::PeersModel(QJsonRpcSocket *rpcSocket)
 {
     m_rpcSocket = rpcSocket;
     m_peers = QList<Peer>();
-    updatePeers();
 }
 
 void PeersModel::updatePeers()
@@ -203,6 +202,7 @@ void PeersModel::populatePeersFromJson(QJsonArray jsonArray)
         QJsonArray channelsJsonArray = peerJsonObject.value("channels").toArray();
         // FIX: Store the whole array somehow
 
+        // FIX: msatoshi stuff probably needs to be a long rather than an int
         peer.setMsatoshiToUs(channelsJsonArray[0].toObject().value("msatoshi_to_us").toInt());
         peer.setMsatoshiTotal(peerJsonObject.value("msatoshi_total").toInt());
 

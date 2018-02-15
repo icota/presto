@@ -5,7 +5,6 @@ WalletModel::WalletModel(QJsonRpcSocket *rpcSocket)
 {
     m_rpcSocket = rpcSocket;
     m_funds = QList<FundsTransaction>();
-    updateFunds();
 }
 
 QHash<int, QByteArray> WalletModel::roleNames() const {
