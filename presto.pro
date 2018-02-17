@@ -25,9 +25,18 @@ include(3rdparty/kirigami/kirigami.pri)
 include(3rdparty/qzxing/src/QZXing.pri)
 
 # Default rules for deployment.
-qnx: target.path = /tmp/$${TARGET}/bin
-else: unix:!android: target.path = /opt/$${TARGET}/bin
-!isEmpty(target.path): INSTALLS += target
+#qnx: target.path = /tmp/$${TARGET}/bin
+#else: unix:!android: target.path = /opt/$${TARGET}/bin
+#!isEmpty(target.path): INSTALLS += target
+
+android
+{
+bitcoin_binaries.path = /assets
+bitcoin_binaries = $$files($$PWD/3rdparty/bin/*)
+INSTALLS += bitcoin_binaries
+}
+
+message($$bitcoin_binaries)
 
 QJSONRPC_HEADERS += \
     3rdparty/qjsonrpc/src/qjsonrpcabstractserver.h \
@@ -71,4 +80,13 @@ SOURCES += \
     src/QClipboardProxy.cpp
 
 DISTFILES += \
-    src/qml/qmldir
+    src/qml/qmldir \
+    android/AndroidManifest.xml \
+    android/gradle/wrapper/gradle-wrapper.jar \
+    android/gradlew \
+    android/res/values/libs.xml \
+    android/build.gradle \
+    android/gradle/wrapper/gradle-wrapper.properties \
+    android/gradlew.bat
+
+ANDROID_PACKAGE_SOURCE_DIR = $$PWD/android
