@@ -1,0 +1,18 @@
+[submodule "3rdparty/breeze-icons"]
+	path = 3rdparty/breeze-icons
+	url = git://anongit.kde.org/breeze-icons.git
+[submodule "3rdparty/kirigami"]
+	path = 3rdparty/kirigami
+	url = git@git.kde.org:kirigami.git
+[submodule "3rdparty/lightning"]
+	path = 3rdparty/lightning
+	url = git@git.kde.org:kirigami.git
+[submodule "3rdparty/qjsonrpc"]
+	path = 3rdparty/qjsonrpc
+	url = git@bitbucket.org:devonit/qjsonrpc.git
+[submodule "3rdparty/qqr.js"]
+	path = 3rdparty/qqr.js
+	url = git@bitbucket.org:devonit/qjsonrpc.git
+[submodule "3rdparty/qzxing"]
+	path = 3rdparty/qzxing
+	url = git@github.com:ftylitak/qzxing.git

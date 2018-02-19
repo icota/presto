@@ -22,9 +22,7 @@ PeersModel::PeersModel(QJsonRpcSocket *rpcSocket)
 
 void PeersModel::updatePeers()
 {
-    QJsonArray paramsArray;
-    // This depends on a change in QJsonRpc's standard behaviour
-    QJsonRpcMessage message = QJsonRpcMessage::createRequest("listpeers", paramsArray);
+    QJsonRpcMessage message = QJsonRpcMessage::createRequest("listpeers", QJsonValue());
     QJsonRpcServiceReply* reply = m_rpcSocket->sendMessage(message);
     QObject::connect(reply, &QJsonRpcServiceReply::finished, this, &PeersModel::listPeersRequestFinished);
 }
