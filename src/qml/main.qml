@@ -14,6 +14,9 @@ Kirigami.ApplicationWindow {
     header: Kirigami.ApplicationHeader {
         headerStyle: Kirigami.ApplicationHeaderStyle.TabBar
         backButtonEnabled: false
+        minimumHeight: Kirigami.Units.gridUnit * 2.5
+        preferredHeight: Kirigami.Units.gridUnit * 2.5
+        maximumHeight: Kirigami.Units.gridUnit * 2.5
     }
     globalDrawer: Kirigami.GlobalDrawer {
         // Depends on the screen
