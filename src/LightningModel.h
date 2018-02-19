@@ -24,6 +24,8 @@ class LightningModel : public QObject
     Q_PROPERTY(int blockheight READ blockheight NOTIFY infoChanged)
     Q_PROPERTY(QString network READ network NOTIFY infoChanged)
 
+    Q_PROPERTY(bool connectedToDaemon READ connectedToDaemon NOTIFY infoChanged)
+
     Q_PROPERTY(QString serverName READ serverName WRITE setServerName NOTIFY serverNameChanged)
 
 public:
@@ -44,6 +46,8 @@ public:
     QString serverName() const;
     void setServerName(const QString &serverName);
 
+    bool connectedToDaemon() const;
+
 private:
     void updateInfo();
     void launchDaemon();
@@ -61,6 +65,7 @@ private:
 
     QString m_serverName;
     QTimer* m_connectionRetryTimer;
+    bool m_connectedToDaemon;
 
     QProcess* m_lightningDaemonProcess;
 
@@ -70,6 +75,7 @@ private:
     QString m_version;
     int m_blockheight;
     QString m_network;
+
 
 private slots:
     void rpcConnected();

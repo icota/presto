@@ -116,6 +116,8 @@ LightningModel::LightningModel(QString serverName, QObject *parent) {
             m_serverName = serverName;
         }
 
+        m_connectedToDaemon = false;
+
         m_address = QString();
         m_blockheight = 0;
         m_id = QString();
@@ -156,6 +158,7 @@ LightningModel::LightningModel(QString serverName, QObject *parent) {
 void LightningModel::rpcConnected()
 {
     m_connectionRetryTimer->stop();
+    m_connectedToDaemon = true;
 
     updateModels();
     m_updatesTimer = new QTimer();
@@ -171,8 +174,8 @@ void LightningModel::rpcNotConnected()
 {
     m_connectionRetryTimer->stop();
 
-    // Let's retry every 10 secs
-    m_connectionRetryTimer->setInterval(10000);
+    // Let's retry every 30 secs
+    m_connectionRetryTimer->setInterval(30000);
     m_connectionRetryTimer->setSingleShot(true);
 
     // Reentrant slot right here
@@ -182,8 +185,13 @@ void LightningModel::rpcNotConnected()
     m_unixSocket->connectToServer(m_serverName);
     if (m_unixSocket->waitForConnected())
     {
-        rpcConnected();
+	   rpcConnected();
     }
+}
+
+bool LightningModel::connectedToDaemon() const
+{
+    return m_connectedToDaemon;
 }
 
 void LightningModel::rpcMessageReceived(QJsonRpcMessage message)

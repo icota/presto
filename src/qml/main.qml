@@ -38,6 +38,7 @@ Kirigami.ApplicationWindow {
 
         actions: [
             Kirigami.Action {
+                enabled: lightningModel.connectedToDaemon
                 text: "Lightning Network (" +
                       (peersModel.totalAvailableFunds / 1000).toLocaleString(locale, 'f', 0) +
                       " SAT)"
@@ -69,6 +70,7 @@ Kirigami.ApplicationWindow {
                 }
             },
             Kirigami.Action {
+                enabled: lightningModel.connectedToDaemon
                 text: "On-Chain (" +
                       walletModel.totalAvailableFunds.toLocaleString(locale, 'f' , 0) +
                       " SAT)"
@@ -116,6 +118,7 @@ Kirigami.ApplicationWindow {
             title: qsTr("Payments") + " (" + paymentsListView.count + ")"
             actions {
                 main: Kirigami.Action {
+                    visible: lightningModel.connectedToDaemon
                     iconName: captureInvoiceSheet.sheetOpen ? "dialog-cancel" : "document-send"
                     text: qsTr("Pay")
                     onTriggered: {
@@ -160,6 +163,7 @@ Kirigami.ApplicationWindow {
 
             actions {
                 main: Kirigami.Action {
+                    visible: lightningModel.connectedToDaemon
                     iconName: sendInvoiceSheet.sheetOpen ? "dialog-cancel" : "document-new"
                     text: qsTr("Create a new Invoice")
                     onTriggered: {
@@ -204,6 +208,7 @@ Kirigami.ApplicationWindow {
 
             actions {
                 main: Kirigami.Action {
+                    visible: lightningModel.connectedToDaemon
                     iconName: connectToPeerSheet.sheetOpen ? "dialog-cancel" : "list-add"
                     text: qsTr("Connect to a Peer")
                     onTriggered: {

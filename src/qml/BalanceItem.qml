@@ -14,7 +14,7 @@ ColumnLayout {
 
     QQC2.Label {
         color: Kirigami.Theme.textColor
-        text: ExchangeRate.getAmountInCurrency(amount)
+        text: lightningModel.connectedToDaemon ? ExchangeRate.getAmountInCurrency(amount) : qsTr("Disconnected")
 
     }
 }
