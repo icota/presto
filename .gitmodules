@@ -16,3 +16,6 @@
 [submodule "3rdparty/qzxing"]
 	path = 3rdparty/qzxing
 	url = git@github.com:ftylitak/qzxing.git
+[submodule "3rdparty/papirus"]
+	path = 3rdparty/papirus
+	url = git@github.com:PapirusDevelopmentTeam/papirus-icon-theme.git
