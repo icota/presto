@@ -1,6 +1,11 @@
 QT += quick multimedia # added multimedia for the camera functionality
 CONFIG += c++11
 
+android {
+message("Building for Android...")
+QT += androidextras
+}
+
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which as been marked deprecated (the exact warnings
 # depend on your compiler). Please consult the documentation of the
