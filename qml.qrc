@@ -1,7 +1,7 @@
 <RCC>
     <qresource prefix="/">
         <file>src/qml/main.qml</file>
-        <file>src/qml/qtquickcontrols2.conf</file>
+        <file alias="qtquickcontrols2.conf">src/qml/qtquickcontrols2.conf</file>
         <file>src/qml/CaptureInvoiceSheet.qml</file>
         <file>src/qml/PayInvoiceSheet.qml</file>
         <file>src/qml/OnchainAddressSheet.qml</file>
