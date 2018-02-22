@@ -1,4 +1,9 @@
 #include <QDir>
+
+#ifdef Q_OS_ANDROID
+#include <QAndroidJniObject>
+#endif
+
 #include "LightningModel.h"
 #include "./3rdparty/qjsonrpc/src/qjsonrpcservicereply.h"
 
@@ -61,13 +66,34 @@ void LightningModel::updateInfo()
 
 void LightningModel::launchDaemon()
 {
-    QString program = "/home/igor/Code/presto/3rdparty/lightning/lightningd/lightningd";
+#ifdef Q_OS_ANDROID
+    QAndroidJniObject runtime =
+            QAndroidJniObject::callStaticObjectMethod("java/lang/Runtime",
+                                                      "getRuntime",
+                                                      "()Ljava/lang/Runtime;");
+    qDebug()<<"Runtime gotten";
+    QAndroidJniObject process = runtime.callObjectMethod("exec",
+                                                         "(I)Ljava/lang/String;",
+                                                         "test");
+                                                         //"getContext().getApplicationInfo().nativeLibraryDir + \"liblightningd.so\")");
+
+    qDebug()<<"Daemon started";
+#else
+    QString program = "assets:/bin/lightningd";
     QStringList arguments;
     arguments << "--network=testnet";
 
     m_lightningDaemonProcess = new QProcess(this);
     m_lightningDaemonProcess->start(program, arguments);
-    m_lightningDaemonProcess->waitForStarted();
+    if (m_lightningDaemonProcess->waitForStarted())
+    {
+        qDebug()<<"Daemon started";
+    }
+    else
+    {
+        qDebug() << "Couldn't start daemon: " << m_lightningDaemonProcess->error();
+    }
+#endif
 }
 
 QString LightningModel::serverName() const
@@ -129,28 +155,28 @@ LightningModel::LightningModel(QString serverName, QObject *parent) {
         m_unixSocket = new QLocalSocket();
         m_rpcSocket = new QJsonRpcSocket(m_unixSocket);
 
-	   m_peersModel = new PeersModel(m_rpcSocket);
-	   m_paymentsModel = new PaymentsModel(m_rpcSocket);
-	   m_walletModel = new WalletModel(m_rpcSocket);
-	   m_invoicesModel = new InvoicesModel(m_rpcSocket);
+        m_peersModel = new PeersModel(m_rpcSocket);
+        m_paymentsModel = new PaymentsModel(m_rpcSocket);
+        m_walletModel = new WalletModel(m_rpcSocket);
+        m_invoicesModel = new InvoicesModel(m_rpcSocket);
 
         QObject::connect(m_unixSocket, SIGNAL(error(QLocalSocket::LocalSocketError)),
                          this, SLOT(unixSocketError(QLocalSocket::LocalSocketError)));
 
         QObject::connect(m_rpcSocket, &QJsonRpcAbstractSocket::messageReceived, this, &LightningModel::rpcMessageReceived);
 
-	   m_unixSocket->connectToServer(m_serverName);
+        m_unixSocket->connectToServer(m_serverName);
 
-	   if (m_unixSocket->waitForConnected())
-	   {
-		  rpcConnected();
-	   }
-	   else
-	   {
-		  // No daemon so lets launch our own
-		  launchDaemon();
-		  rpcNotConnected();
-	   }
+        if (m_unixSocket->waitForConnected())
+        {
+            rpcConnected();
+        }
+        else
+        {
+            // No daemon so lets launch our own
+            launchDaemon();
+            rpcNotConnected();
+        }
 
     }
 }
@@ -185,7 +211,7 @@ void LightningModel::rpcNotConnected()
     m_unixSocket->connectToServer(m_serverName);
     if (m_unixSocket->waitForConnected())
     {
-	   rpcConnected();
+        rpcConnected();
     }
 }
 
