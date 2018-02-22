@@ -1,2 +1,12 @@
-<!DOCTYPE RCC>
-<RCC version="1.0"/>
+<RCC>
+    <qresource prefix="/org/kde/kirigami/icons">
+        <file alias="dialog-close.svg">3rdparty/papirus/Papirus/24x24/actions/dialog-close.svg</file>
+        <file alias="go-next-symbolic.svg">3rdparty/papirus/Papirus/symbolic/actions/go-next-symbolic.svg</file>
+        <file alias="view-list-icons.svg">3rdparty/papirus/Papirus/24x24/actions/view-list-icons.svg</file>
+        <file alias="help-about.svg">3rdparty/papirus/Papirus/24x24/actions/help-about.svg</file>
+        <file alias="go-previous-symbolic.svg">3rdparty/papirus/Papirus/symbolic/actions/go-previous-symbolic.svg</file>
+        <file alias="go-up.svg">3rdparty/papirus/Papirus/24x24/actions/go-up.svg</file>
+        <file alias="document-new.svg">3rdparty/papirus/Papirus/24x24/actions/document-new.svg</file>
+        <file alias="applications-system.svg">3rdparty/papirus/Papirus/symbolic/categories/applications-system-symbolic.svg</file>
+    </qresource>
+</RCC>
