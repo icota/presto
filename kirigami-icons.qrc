@@ -8,5 +8,6 @@
         <file alias="go-up.svg">3rdparty/papirus/Papirus/24x24/actions/go-up.svg</file>
         <file alias="document-new.svg">3rdparty/papirus/Papirus/24x24/actions/document-new.svg</file>
         <file alias="applications-system.svg">3rdparty/papirus/Papirus/symbolic/categories/applications-system-symbolic.svg</file>
+        <file alias="list-add.svg">3rdparty/papirus/Papirus/24x24/actions/list-add.svg</file>
     </qresource>
 </RCC>
