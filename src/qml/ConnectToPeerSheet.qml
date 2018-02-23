@@ -6,7 +6,7 @@ import org.kde.kirigami 2.1 as Kirigami
 Kirigami.OverlaySheet {
     ColumnLayout {
         QQC2.Label {
-            color: Kirigami.Theme.textColor
+            
             wrapMode: Text.WordWrap
             Layout.alignment: Qt.AlignCenter
             Layout.fillWidth: parent
@@ -25,7 +25,7 @@ Kirigami.OverlaySheet {
 
         QQC2.Label {
             Layout.topMargin: 10
-            color: Kirigami.Theme.textColor
+            
             wrapMode: Text.WordWrap
             Layout.fillWidth: parent
             Layout.alignment: Qt.AlignCenter

@@ -25,7 +25,7 @@ Kirigami.OverlaySheet {
         implicitHeight: qrScannerViewfinder.height + 30
 
         QQC2.Label {
-            color: Kirigami.Theme.textColor
+            
             id: scanLabel
             Layout.alignment: Qt.AlignCenter
             width: parent.width

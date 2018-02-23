@@ -6,7 +6,7 @@ import org.kde.kirigami 2.1 as Kirigami
 Kirigami.OverlaySheet {
     ColumnLayout {
         QQC2.Label {
-            color: Kirigami.Theme.textColor
+            
             wrapMode: Text.WordWrap
             text: "Create Invoice"
         }

@@ -19,7 +19,7 @@ Kirigami.OverlaySheet {
 
     ColumnLayout {
         QQC2.Label {
-            color: Kirigami.Theme.textColor
+            
             wrapMode: Text.WordWrap
             text: qsTr("Payment Details")
             Layout.alignment: Qt.AlignCenter
@@ -31,7 +31,7 @@ Kirigami.OverlaySheet {
 
         RowLayout {
             QQC2.Label {
-                color: Kirigami.Theme.textColor
+                
                 wrapMode: Text.WordWrap
                 text: msatoshiAmount + " mSAT"
                 Layout.alignment: Qt.AlignCenter
@@ -40,7 +40,7 @@ Kirigami.OverlaySheet {
             }
 
             QQC2.Label {
-                color: Kirigami.Theme.textColor
+                
                 wrapMode: Text.WordWrap
                 text: ExchangeRate.getAmountInCurrency(msatoshiAmount / 1000)
                 Layout.alignment: Qt.AlignCenter
@@ -51,7 +51,7 @@ Kirigami.OverlaySheet {
 
 
         QQC2.Label {
-            color: Kirigami.Theme.textColor
+            
             wrapMode: Text.WordWrap
             text: description
             Layout.alignment: Qt.AlignCenter

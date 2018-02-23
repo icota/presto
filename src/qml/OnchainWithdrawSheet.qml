@@ -17,7 +17,7 @@ Kirigami.OverlaySheet {
     }
     ColumnLayout {
         QQC2.Label {
-            color: Kirigami.Theme.textColor
+            
             id: scanLabel
             Layout.alignment: Qt.AlignCenter
             wrapMode: Text.WordWrap
@@ -73,7 +73,7 @@ Kirigami.OverlaySheet {
             }
 
             QQC2.Label {
-                color: Kirigami.Theme.textColor
+                
                 text: qsTr("Withdraw All")
             }
 

@@ -7,13 +7,13 @@ import "." // QTBUG-34418
 ColumnLayout {
     property int amount: peersModel.totalAvailableFunds / 1000 + walletModel.totalAvailableFunds
     QQC2.Label {
-        color: Kirigami.Theme.textColor
+        
         font.pixelSize: 26
         text: (amount).toLocaleString(locale, 'f' , 0) + " SAT"
     }
 
     QQC2.Label {
-        color: Kirigami.Theme.textColor
+        
         text: lightningModel.connectedToDaemon ? ExchangeRate.getAmountInCurrency(amount) : qsTr("Disconnected")
 
     }

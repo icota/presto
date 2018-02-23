@@ -10,7 +10,7 @@ Kirigami.OverlaySheet {
     ColumnLayout {
 
         QQC2.Label {
-            color: Kirigami.Theme.textColor
+            
             wrapMode: Text.WordWrap
             Layout.alignment: Qt.AlignCenter
             Layout.fillWidth: parent
@@ -19,7 +19,7 @@ Kirigami.OverlaySheet {
         }
 
         QQC2.Label {
-            color: Kirigami.Theme.textColor
+            
             wrapMode: Text.WordWrap
             Layout.alignment: Qt.AlignCenter
             Layout.fillWidth: parent

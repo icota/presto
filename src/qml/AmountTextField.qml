@@ -16,7 +16,7 @@ RowLayout {
     
     QQC2.Label {
         id: currencyAmountLabel
-        color: Kirigami.Theme.textColor
+        
         wrapMode: Text.WordWrap
         Layout.alignment: Qt.AlignCenter
         Layout.fillWidth: parent

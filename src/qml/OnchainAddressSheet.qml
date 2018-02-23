@@ -9,14 +9,14 @@ Kirigami.OverlaySheet {
     ColumnLayout {
 
         QQC2.Label {
-            color: Kirigami.Theme.textColor
+            
             visible: !walletModel.totalAvailableFunds
             wrapMode: Text.WordWrap
             text: "NO FUNDS"
         }
 
         QQC2.Label {
-            color: Kirigami.Theme.textColor
+            
             Layout.alignment: Qt.AlignCenter
             font.pixelSize: 22
             text: qsTr("Your On-Chain Address")
@@ -30,7 +30,7 @@ Kirigami.OverlaySheet {
         }
 
         QQC2.Label {
-            color: Kirigami.Theme.textColor
+            
             Layout.alignment: Qt.AlignCenter
             wrapMode: Text.WordWrap
             font: fixedFont
