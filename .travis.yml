@@ -3,7 +3,7 @@ before_install:
     - sudo apt-get update -qq
     - sudo apt-get install -qq qt5-qmake qtbase5-dev qtdeclarative5-dev libqt5webkit5-dev libsqlite3-dev
     - echo -e "Host github.com\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
-    - echo -e "Host kde.org\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
+    - echo -e "Host git.kde.org\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
 script:
     - qmake -qt=qt5 -v
     - qmake -qt=qt5
