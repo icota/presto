@@ -1,9 +1,5 @@
 #include <QDir>
 
-#ifdef Q_OS_ANDROID
-#include <QAndroidJniObject>
-#endif
-
 #include "LightningModel.h"
 #include "./3rdparty/qjsonrpc/src/qjsonrpcservicereply.h"
 
@@ -67,21 +63,28 @@ void LightningModel::updateInfo()
 void LightningModel::launchDaemon()
 {
 #ifdef Q_OS_ANDROID
-    QAndroidJniObject runtime =
-            QAndroidJniObject::callStaticObjectMethod("java/lang/Runtime",
-                                                      "getRuntime",
-                                                      "()Ljava/lang/Runtime;");
-    qDebug()<<"Runtime gotten";
-    QAndroidJniObject process = runtime.callObjectMethod("exec",
-                                                         "(I)Ljava/lang/String;",
-                                                         "test");
-                                                         //"getContext().getApplicationInfo().nativeLibraryDir + \"liblightningd.so\")");
+#endif
 
-    qDebug()<<"Daemon started";
-#else
-    QString program = "assets:/bin/lightningd";
+    QDir programDir = QDir::home();
+
+    programDir.cdUp();
+
+    QString program = programDir.absolutePath() + "/lib/liblightningd.so";
+
+    qDebug() << "Starting: " << program;
     QStringList arguments;
-    arguments << "--network=testnet";
+    arguments << "--network=testnet"
+              << "--lightning-dir=" + QDir::homePath() + "/lightning-data"
+              << "--pid-file=" + QDir::homePath() + "/lightning.pid"
+              << "--bitcoin-cli=" + programDir.absolutePath() + "/lib/libbitcoin-cli.so"
+              << "--bitcoin-datadir=" + QDir::homePath() + "/bitcoin-data"
+              << "--bitcoin-rpcconnect=192.168.0.12"
+              << "--bitcoin-rpcuser=igor"
+              << "--bitcoin-rpcpassword=test"
+              << "--rpc-file=" + QDir::homePath() + "/lightning-rpc"
+              << "--log-level=debug";
+
+    qDebug() << "Arguments: " << arguments;
 
     m_lightningDaemonProcess = new QProcess(this);
     m_lightningDaemonProcess->start(program, arguments);
@@ -93,7 +96,6 @@ void LightningModel::launchDaemon()
     {
         qDebug() << "Couldn't start daemon: " << m_lightningDaemonProcess->error();
     }
-#endif
 }
 
 QString LightningModel::serverName() const
@@ -136,7 +138,7 @@ LightningModel::LightningModel(QString serverName, QObject *parent) {
         Q_UNUSED(parent);
 
         if (serverName.isEmpty()) {
-            m_serverName = QDir::homePath() + "/.lightning/lightning-rpc";
+            m_serverName = QDir::homePath() + "/lightning-rpc";
         }
         else {
             m_serverName = serverName;
@@ -238,4 +240,7 @@ void LightningModel::updateModels()
     updateInfo();
     // This calls needs to go last cause it hates concurrency
     m_peersModel->updatePeers();
+
+    // Temporary daemon debug on android
+    qDebug() << m_lightningDaemonProcess->readAllStandardOutput();
 }
