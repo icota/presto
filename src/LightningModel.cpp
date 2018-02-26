@@ -95,21 +95,41 @@ void LightningModel::launchDaemon()
     QString program = cLightningDir.absolutePath() + "/lightningd";
 #else
     QDir programDir = QDir::home();
-    QString program = programDir.absolutePath() + "/lightningd";
+    QString program = programDir.absolutePath() + "/lightningd"; // Hardcode some location within a snap?
 #endif
 
     qDebug() << "Starting: " << program;
     QStringList arguments;
     arguments << "--network=testnet"
-              << "--lightning-dir=" + QDir::homePath() + "/lightning-data"
+//              << "--bitcoin-rpcconnect=192.168.0.12"
+//              << "--bitcoin-rpcuser=igor"
+//              << "--bitcoin-rpcpassword=test"
+              << "--log-level=debug";
+
+#ifdef Q_OS_ANDROID
+    arguments << "--lightning-dir=" + QDir::homePath() + "/lightning-data"
               << "--pid-file=" + QDir::homePath() + "/lightning.pid"
               << "--bitcoin-cli=" + programDir.absolutePath() + "/lib/libbitcoin-cli.so"
               << "--bitcoin-datadir=" + QDir::homePath() + "/bitcoin-data"
-              << "--bitcoin-rpcconnect=192.168.0.12"
-              << "--bitcoin-rpcuser=igor"
-              << "--bitcoin-rpcpassword=test"
-              << "--rpc-file=" + QDir::homePath() + "/lightning-rpc"
-              << "--log-level=debug";
+              << "--rpc-file=" + QDir::homePath() + "/lightning-rpc";
+#else
+    if (!m_bitcoinCliPath.isEmpty())
+    {
+        arguments << "--bitcoin-cli=" + m_bitcoinCliPath;
+    }
+
+    if (!m_bitcoinDataPath.isEmpty())
+    {
+        arguments << "--bitcoin-datadir=" + m_bitcoinDataPath;
+    }
+#endif
+
+    if (!m_bitcoinRpcServerName.isEmpty())
+    {
+        arguments << "--bitcoin-rpcconnect=" + m_bitcoinRpcServerName
+                  << "--bitcoin-rpcuser=" + m_bitcoinRpcUser
+                  << "--bitcoin-rpcpassword=" + m_bitcoinRpcPassword;
+    }
 
     qDebug() << "Arguments: " << arguments;
 
@@ -126,12 +146,12 @@ void LightningModel::launchDaemon()
 
 QString LightningModel::serverName() const
 {
-    return m_serverName;
+    return m_lightningRpcSocket;
 }
 
 void LightningModel::setServerName(const QString &serverName)
 {
-    m_serverName = serverName;
+    m_lightningRpcSocket = serverName;
 }
 
 void LightningModel::updateInfoRequestFinished()
@@ -164,10 +184,14 @@ LightningModel::LightningModel(QString serverName, QObject *parent) {
         Q_UNUSED(parent);
 
         if (serverName.isEmpty()) {
-            m_serverName = QDir::homePath() + "/lightning-rpc";
+#ifdef Q_OS_ANDROID
+            m_lightningRpcSocket = QDir::homePath() + "/lightning-rpc";
+#else
+            m_lightningRpcSocket = QDir::homePath() + "/.lightning/lightning-rpc";
+#endif
         }
         else {
-            m_serverName = serverName;
+            m_lightningRpcSocket = serverName;
         }
 
         m_lightningDaemonProcess = new QProcess(this);
@@ -195,7 +219,7 @@ LightningModel::LightningModel(QString serverName, QObject *parent) {
 
         QObject::connect(m_rpcSocket, &QJsonRpcAbstractSocket::messageReceived, this, &LightningModel::rpcMessageReceived);
 
-        m_unixSocket->connectToServer(m_serverName);
+        m_unixSocket->connectToServer(m_lightningRpcSocket);
 
         if (m_unixSocket->waitForConnected())
         {
@@ -238,11 +262,61 @@ void LightningModel::rpcNotConnected()
     QObject::connect(m_connectionRetryTimer, &QTimer::timeout, this, &LightningModel::rpcNotConnected);
     m_connectionRetryTimer->start();
 
-    m_unixSocket->connectToServer(m_serverName);
+    m_unixSocket->connectToServer(m_lightningRpcSocket);
     if (m_unixSocket->waitForConnected())
     {
         rpcConnected();
     }
+}
+
+QString LightningModel::bitcoinDataPath() const
+{
+    return m_bitcoinDataPath;
+}
+
+void LightningModel::setBitcoinDataPath(const QString &bitcoinDataPath)
+{
+    m_bitcoinDataPath = bitcoinDataPath;
+}
+
+QString LightningModel::bitcoinCliPath() const
+{
+    return m_bitcoinCliPath;
+}
+
+void LightningModel::setBitcoinCliPath(const QString &bitcoinCliPath)
+{
+    m_bitcoinCliPath = bitcoinCliPath;
+}
+
+QString LightningModel::bitcoinRpcPassword() const
+{
+    return m_bitcoinRpcPassword;
+}
+
+void LightningModel::setBitcoinRpcPassword(const QString &bitcoinRpcPassword)
+{
+    m_bitcoinRpcPassword = bitcoinRpcPassword;
+}
+
+QString LightningModel::bitcoinRpcUser() const
+{
+    return m_bitcoinRpcUser;
+}
+
+void LightningModel::setBitcoinRpcUser(const QString &bitcoinRpcUser)
+{
+    m_bitcoinRpcUser = bitcoinRpcUser;
+}
+
+QString LightningModel::bitcoinRpcServerName() const
+{
+    return m_bitcoinRpcServerName;
+}
+
+void LightningModel::setBitcoinRpcServerName(const QString &bitcoinRpcServerName)
+{
+    m_bitcoinRpcServerName = bitcoinRpcServerName;
 }
 
 bool LightningModel::connectedToDaemon() const

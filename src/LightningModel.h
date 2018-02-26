@@ -48,6 +48,21 @@ public:
 
     bool connectedToDaemon() const;
 
+    QString bitcoinRpcServerName() const;
+    void setBitcoinRpcServerName(const QString &bitcoinRpcServerName);
+
+    QString bitcoinRpcUser() const;
+    void setBitcoinRpcUser(const QString &bitcoinRpcUser);
+
+    QString bitcoinRpcPassword() const;
+    void setBitcoinRpcPassword(const QString &bitcoinRpcPassword);
+
+    QString bitcoinCliPath() const;
+    void setBitcoinCliPath(const QString &bitcoinCliPath);
+
+    QString bitcoinDataPath() const;
+    void setBitcoinDataPath(const QString &bitcoinDataPath);
+
 private:
     void updateInfo();
     void launchDaemon();
@@ -63,7 +78,7 @@ private:
     InvoicesModel* m_invoicesModel;
     QTimer* m_updatesTimer;
 
-    QString m_serverName;
+    QString m_lightningRpcSocket;
     QTimer* m_connectionRetryTimer;
     bool m_connectedToDaemon;
 
@@ -75,6 +90,13 @@ private:
     QString m_version;
     int m_blockheight;
     QString m_network;
+
+    QString m_bitcoinRpcServerName;
+    QString m_bitcoinRpcUser;
+    QString m_bitcoinRpcPassword;
+
+    QString m_bitcoinCliPath;
+    QString m_bitcoinDataPath;
 
 
 private slots:
