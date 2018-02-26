@@ -63,13 +63,40 @@ void LightningModel::updateInfo()
 void LightningModel::launchDaemon()
 {
 #ifdef Q_OS_ANDROID
-#endif
+    QDir::home().mkdir("bitcoin-data");
+    QDir::home().mkdir("libexec");
+    qDebug() << QDir::home().entryList();
+
+    QDir libexecDir(QDir::homePath() + "/libexec");
+    libexecDir.mkdir("c-lightning");
+
+    QDir cLightningDir(libexecDir.absolutePath() + "/c-lightning");
 
     QDir programDir = QDir::home();
-
     programDir.cdUp();
 
-    QString program = programDir.absolutePath() + "/lib/liblightningd.so";
+    QStringList lightningBinaries;
+
+    lightningBinaries << "lightning_channeld"
+                      << "lightning_closingd"
+                      << "lightning_gossipd"
+                      << "lightning_hsmd"
+                      << "lightning_onchaind"
+                      << "lightning_openingd"
+                      << "lightningd";
+
+    foreach (QString binaryName, lightningBinaries) {
+        QFile::copy(programDir.absolutePath() + "/lib/lib" + binaryName + ".so",
+                    cLightningDir.absolutePath() + "/" + binaryName);
+    }
+
+    qDebug() << cLightningDir.entryList();
+
+    QString program = cLightningDir.absolutePath() + "/lightningd";
+#else
+    QDir programDir = QDir::home();
+    QString program = programDir.absolutePath() + "/lightningd";
+#endif
 
     qDebug() << "Starting: " << program;
     QStringList arguments;
@@ -86,7 +113,6 @@ void LightningModel::launchDaemon()
 
     qDebug() << "Arguments: " << arguments;
 
-    m_lightningDaemonProcess = new QProcess(this);
     m_lightningDaemonProcess->start(program, arguments);
     if (m_lightningDaemonProcess->waitForStarted())
     {
@@ -143,6 +169,8 @@ LightningModel::LightningModel(QString serverName, QObject *parent) {
         else {
             m_serverName = serverName;
         }
+
+        m_lightningDaemonProcess = new QProcess(this);
 
         m_connectedToDaemon = false;
 
@@ -242,5 +270,7 @@ void LightningModel::updateModels()
     m_peersModel->updatePeers();
 
     // Temporary daemon debug on android
+#ifdef Q_OS_ANDROID
     qDebug() << m_lightningDaemonProcess->readAllStandardOutput();
+#endif
 }
