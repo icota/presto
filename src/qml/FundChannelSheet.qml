@@ -7,24 +7,29 @@ import "." // QTBUG-34418
 Kirigami.OverlaySheet {
     property string peerToFund
 
+    header:
+        OverlaySheetHeader {
+        text: qsTr("Fund Channel")
+        width: parent.width
+        horizontalAlignment: Text.AlignHCenter
+    }
+
     ColumnLayout {
 
-        QQC2.Label {
-            
+        QQC2.Label {       
             wrapMode: Text.WordWrap
             Layout.alignment: Qt.AlignCenter
             Layout.fillWidth: parent
             font.pixelSize: 16
-            text: qsTr("Peer ID")
+            text: qsTr("Peer ID:")
         }
 
-        QQC2.Label {
-            
+        QQC2.Label {          
             wrapMode: Text.WordWrap
             Layout.alignment: Qt.AlignCenter
             Layout.fillWidth: parent
             font: fixedFont
-            text: peerToFund
+            text: peerToFund.substring(0, 10)
         }
 
         AmountTextField {
@@ -36,10 +41,11 @@ Kirigami.OverlaySheet {
 
         QQC2.Button {
             Layout.topMargin: 25
-            text: "Fund Channel"
+            text: qsTr("OK");
             Layout.alignment: Qt.AlignCenter
             Layout.fillWidth: parent
             font.pixelSize: 16
+            enabled: amountTextField.amount
             onClicked: {
                 peersModel.fundChannel(peerToFund, amountTextField.amount)
             }

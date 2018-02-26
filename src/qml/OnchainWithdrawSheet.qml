@@ -15,15 +15,15 @@ Kirigami.OverlaySheet {
             qrScannerViewfinder.camera.stop()
         }
     }
-    ColumnLayout {
-        QQC2.Label {
-            
-            id: scanLabel
-            Layout.alignment: Qt.AlignCenter
-            wrapMode: Text.WordWrap
-            text: qsTr("Scan QR Code")
-        }
 
+    header:
+        OverlaySheetHeader {
+        text: qsTr("Scan QR Code")
+        width: parent.width
+        horizontalAlignment: Text.AlignHCenter
+    }
+
+    ColumnLayout {
         QRScannerViewfinder {
             id: qrScannerViewfinder
             Layout.alignment: Qt.AlignCenter
@@ -41,23 +41,14 @@ Kirigami.OverlaySheet {
             Layout.alignment: Qt.AlignCenter
             Layout.fillWidth: true
             placeholderText: qsTr("Or Paste Address Here")
-            background: Rectangle {
-                anchors.fill: parent
-            }
             onTextChanged: {
                 checkIfValidOnChainAddress(text);
             }
         }
 
-        QQC2.TextArea {
-            id: amountTextArea
-            enabled: !withdrawAllSwitch.checked
-            Layout.alignment: Qt.AlignCenter
-            Layout.fillWidth: true
-            placeholderText: qsTr("Amount to Withdraw")
-            background: Rectangle {
-                anchors.fill: parent
-            }
+        AmountTextField {
+            milisatoshi: false
+            id: amountTextField
         }
 
         RowLayout {
@@ -67,13 +58,18 @@ Kirigami.OverlaySheet {
                 checked: false
                 onCheckedChanged: {
                     if (checked) {
-                        amountTextArea.text = walletModel.totalAvailableFunds
+                        amountTextField.enabled = false
+                        amountTextField.amount = walletModel.totalAvailableFunds
+                    }
+                    else
+                    {
+                        amountTextField.enabled = true
+
                     }
                 }
             }
 
-            QQC2.Label {
-                
+            QQC2.Label {            
                 text: qsTr("Withdraw All")
             }
 
@@ -84,10 +80,10 @@ Kirigami.OverlaySheet {
             enabled: pasteTextArea.text.length > 0
             Layout.alignment: Qt.AlignCenter
             Layout.fillWidth: true
-            text: qsTr("WITHDRAW")
+            text: qsTr("Withdraw")
             onClicked: {
                 walletModel.withdrawFunds(pasteTextArea.text,
-                                          withdrawAllSwitch.checked ? "all" : amountTextArea.text)
+                                          withdrawAllSwitch.checked ? "all" : amountTextField.amount)
             }
         }
     }

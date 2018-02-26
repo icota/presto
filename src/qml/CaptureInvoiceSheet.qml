@@ -16,22 +16,16 @@ Kirigami.OverlaySheet {
         }
     }
 
+    header:
+        OverlaySheetHeader {
+        text: qsTr("Scan QR Code")
+        width: parent.width
+        horizontalAlignment: Text.AlignHCenter
+    }
+
+
     ColumnLayout {
         id: columnLayout
-        // Make the sheet wider like this
-        //implicitWidth: parent.width * 0.75
-
-        // I have no idea what I'm doing
-        implicitHeight: qrScannerViewfinder.height + 30
-
-        QQC2.Label {
-            
-            id: scanLabel
-            Layout.alignment: Qt.AlignCenter
-            width: parent.width
-            text: qsTr("Scan Invoice")
-            font.pixelSize: 16
-        }
 
         QRScannerViewfinder {
             id: qrScannerViewfinder
@@ -50,10 +44,7 @@ Kirigami.OverlaySheet {
             selectByMouse: true
             Layout.alignment: Qt.AlignCenter
             Layout.fillWidth: true
-            placeholderText: qsTr("Or Paste Here")
-            background: Rectangle {
-                anchors.fill: parent
-            }
+            placeholderText: qsTr("Or Paste Invoice Here")
             onTextChanged: {
                 checkIfValidBolt11(text);
             }

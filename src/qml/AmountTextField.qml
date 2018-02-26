@@ -6,12 +6,17 @@ import "." // QTBUG-34418
 
 RowLayout {
     property bool milisatoshi: true
-    property alias amount: amountTextField.text
-    QQC2.TextField {
-        id: amountTextField
-        validator: IntValidator { bottom: 0; }
-        selectByMouse: true
-        placeholderText: milisatoshi ? qsTr("Enter Amount in satoshi") : qsTr("Enter Amount in milisatoshi")
+    property alias amount: amountSpinBox.value
+    QQC2.SpinBox {
+        id: amountSpinBox
+        Layout.fillWidth: true
+        editable: true
+        from: 0
+        to: 10000 * 100000
+        stepSize: milisatoshi ? 10000000 : 10000
+        textFromValue: function(value, locale) {
+            return milisatoshi ? value + qsTr(" mSAT") : value + qsTr(" SAT");
+        }
     }
     
     QQC2.Label {
@@ -19,8 +24,7 @@ RowLayout {
         
         wrapMode: Text.WordWrap
         Layout.alignment: Qt.AlignCenter
-        Layout.fillWidth: parent
-        text: ExchangeRate.getAmountInCurrency(milisatoshi ? amountTextField.text : (amountTextField.text / 1000))
+        text: ExchangeRate.getAmountInCurrency(milisatoshi ? (amountSpinBox.value / 1000) : amountSpinBox.value)
         font.pixelSize: 16
     }
 }

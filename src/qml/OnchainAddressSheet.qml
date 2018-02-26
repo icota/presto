@@ -6,22 +6,14 @@ import org.kde.kirigami 2.1 as Kirigami
 Kirigami.OverlaySheet {
     property string onchainAddress
 
+    header:
+        OverlaySheetHeader {
+        text: qsTr("Your On-Chain Address")
+        width: parent.width
+        horizontalAlignment: Text.AlignHCenter
+    }
+
     ColumnLayout {
-
-        QQC2.Label {
-            
-            visible: !walletModel.totalAvailableFunds
-            wrapMode: Text.WordWrap
-            text: "NO FUNDS"
-        }
-
-        QQC2.Label {
-            
-            Layout.alignment: Qt.AlignCenter
-            font.pixelSize: 22
-            text: qsTr("Your On-Chain Address")
-        }
-
         QRCode {
             Layout.alignment: Qt.AlignCenter
             width : 320

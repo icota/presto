@@ -18,27 +18,6 @@ RowLayout
         width: 25
         height: 25
         radius: width * 0.5
-
-        QQC2.ToolTip    {
-            text: indicatorTooltip
-            //id: tooltip
-            //delay: 1000
-            //timeout: 5000
-            //visible: mouseArea.hovered
-        }
-
-        MouseArea {
-            id: mouseArea
-            anchors.fill: parent
-            hoverEnabled: true
-
-            onEntered: {
-                //indicatorTooltip.visible = true
-                // fixhovershit propagateComposedEvents : bool??
-            }
-
-
-        }
     }
 
     ColumnLayout {

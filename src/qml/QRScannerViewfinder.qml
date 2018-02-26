@@ -8,7 +8,7 @@ import QZXing 2.3
 
 Rectangle {
     id: viewfinderRectangle
-    height: 200
+    height: 300 // this is tricky
     color: "black"
 
     property alias camera: camera
@@ -17,11 +17,18 @@ Rectangle {
     VideoOutput {
         id: viewfinderOutput
         source: camera
+        autoOrientation: true
         filters: [ zxingFilter ]
         anchors.fill: parent
-        onContentRectChanged: {
-            viewfinderRectangle.height = (contentRect.height / contentRect.width) * viewfinderRectangle.width
-        }
+    }
+
+    Rectangle {
+        id: captureZone
+        color: "red"
+        opacity: 0.2
+        width: parent.width / 2
+        height: parent.height / 2
+        anchors.centerIn: parent
     }
     
     Item {
@@ -45,9 +52,9 @@ Rectangle {
                 // setup bindings
                 viewfinderOutput.contentRect;
                 viewfinderOutput.sourceRect;
-                return viewfinderOutput.mapRectToSource(viewfinderOutput.mapNormalizedRectToItem(Qt.rect(
-                                                                                                     0.25, 0.25, 0.5, 0.5
-                                                                                                     )));
+                return viewfinderOutput.mapRectToSource(
+                            viewfinderOutput.mapNormalizedRectToItem(
+                                Qt.rect(0.25, 0.25, 0.5, 0.5)));
             }
             
             decoder {

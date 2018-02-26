@@ -93,10 +93,18 @@ Kirigami.ApplicationWindow {
 
 
             Kirigami.Action {
-                text: "Settings"
+                text: "Preferences"
                 iconName: "applications-system"
                 onTriggered: {
-                    settingsSheet.sheetOpen = true;
+                    preferencesSheet.sheetOpen = true;
+                }
+            },
+
+            Kirigami.Action {
+                text: "Network"
+                iconName: "network-workgroup"
+                onTriggered: {
+                    networkSheet.sheetOpen = true;
                 }
             },
             Kirigami.Action {
@@ -186,6 +194,14 @@ Kirigami.ApplicationWindow {
                     }
 
                     actions: [
+                        Kirigami.Action {
+                            iconName: "document-share"
+                            tooltip: qsTr("Share")
+                            onTriggered: {
+                                shareInvoiceSheet.bolt11 = hash;
+                                shareInvoiceSheet.sheetOpen = true;
+                            }
+                        },
                         Kirigami.Action {
                             iconName: "edit-delete"
                             tooltip: qsTr("Delete")
@@ -303,10 +319,17 @@ Kirigami.ApplicationWindow {
         id: onchainWithdrawSheet
     }
 
-    SettingsSheet {
-        id: settingsSheet
+    PreferencesSheet {
+        id: preferencesSheet
     }
 
+    NetworkSheet {
+        id: networkSheet
+    }
+
+    NodeSettingsSheet {
+        id: nodeSettingsSheet
+    }
 
     // Connections
     Connections {

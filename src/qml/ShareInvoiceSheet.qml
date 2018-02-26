@@ -6,25 +6,23 @@ import org.kde.kirigami 2.1 as Kirigami
 Kirigami.OverlaySheet {
     property string bolt11
 
+    header:
+        OverlaySheetHeader {
+        text: qsTr("Share Invoice")
+        width: parent.width
+        horizontalAlignment: Text.AlignHCenter
+    }
+
     ColumnLayout {
-
-        QQC2.Label {
-            wrapMode: Text.WordWrap
-            
-            text: "Share this invoice"
-        }
-
         QRCode {
             Layout.alignment: Qt.AlignCenter
-            //Layout.fillWidth: true
             width : 320
             height : 320
-            value : "lightning:" + bolt11
+            value : "lightning:" + bolt11  
         }
 
-        QQC2.Label {
-            
-            wrapMode: Text.WordWrap
+        QQC2.Label {         
+            wrapMode: Text.WrapAnywhere
             font: fixedFont
             text: bolt11
             MouseArea {

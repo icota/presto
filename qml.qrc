@@ -14,11 +14,14 @@
         <file>src/qml/OnchainWithdrawSheet.qml</file>
         <file>src/qml/BalanceItem.qml</file>
         <file>src/qml/ExchangeRate.qml</file>
-        <file>src/qml/SettingsSheet.qml</file>
         <file>src/qml/qmldir</file>
         <file>src/qml/QRScannerViewfinder.qml</file>
         <file>src/qml/GenericListDelegate.qml</file>
         <file>src/qml/MsatoshiAmountItem.qml</file>
         <file>src/qml/AmountTextField.qml</file>
+        <file>src/qml/OverlaySheetHeader.qml</file>
+        <file>src/qml/NetworkSheet.qml</file>
+        <file>src/qml/NodeSettingsSheet.qml</file>
+        <file>src/qml/PreferencesSheet.qml</file>
     </qresource>
 </RCC>

@@ -6,6 +6,12 @@ import Qt.labs.settings 1.0
 import "." // QTBUG-34418
 
 Kirigami.OverlaySheet {
+    header:
+        OverlaySheetHeader {
+        text: qsTr("Preferences")
+        width: parent.width
+        horizontalAlignment: Text.AlignHCenter
+    }
 
     ColumnLayout {
         Settings {
@@ -15,37 +21,6 @@ Kirigami.OverlaySheet {
 
         QQC2.Label {
             wrapMode: Text.WordWrap
-            text: "Network: "
-        }
-
-        QQC2.Label {
-            wrapMode: Text.WordWrap
-            font: fixedFont
-            text: lightningModel.network
-        }
-
-        QQC2.Label {
-            wrapMode: Text.WordWrap
-            text: "Your Node ID:"
-        }
-
-        QQC2.Label {
-            id: idLabel
-            wrapMode: Text.WordWrap
-            font: fixedFont
-            text: lightningModel.id
-            MouseArea {
-                anchors.fill: parent
-                onClicked: {
-                    clipboard.setText(idLabel.text)
-                    showPassiveNotification(qsTr("Node ID Copied to Clipboard"))
-                }
-            }
-        }
-
-        QQC2.Label {
-            wrapMode: Text.WordWrap
-
             text: qsTr("Currency Code:")
         }
 

@@ -17,17 +17,14 @@ Kirigami.OverlaySheet {
 
     property date currentDate: new Date()
 
+    header:
+        OverlaySheetHeader {
+        text: qsTr("Payment Details")
+        width: parent.width
+        horizontalAlignment: Text.AlignHCenter
+    }
+
     ColumnLayout {
-        QQC2.Label {
-            
-            wrapMode: Text.WordWrap
-            text: qsTr("Payment Details")
-            Layout.alignment: Qt.AlignCenter
-            Layout.fillWidth: parent
-            font.pixelSize: 16
-        }
-
-
 
         RowLayout {
             QQC2.Label {
@@ -63,8 +60,9 @@ Kirigami.OverlaySheet {
 
             QQC2.Button {
                 text: qsTr("Pay")
+                Layout.topMargin: 25
                 Layout.alignment: Qt.AlignCenter
-                Layout.fillWidth: parent
+                Layout.fillWidth: true
                 font.pixelSize: 16
                 onClicked: {
                     paymentsModel.pay(bolt11)

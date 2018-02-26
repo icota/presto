@@ -4,30 +4,35 @@ import QtQuick.Layouts 1.3
 import org.kde.kirigami 2.1 as Kirigami
 
 Kirigami.OverlaySheet {
-    ColumnLayout {
-        QQC2.Label {
-            
-            wrapMode: Text.WordWrap
-            text: "Create Invoice"
-        }
+    header:
+        OverlaySheetHeader {
+        text: qsTr("Create Invoice")
+        width: parent.width
+        horizontalAlignment: Text.AlignHCenter
+    }
 
+    ColumnLayout {
         QQC2.TextField {
             id: labelTextField
-            placeholderText: qsTr("Enter Label")
+            placeholderText: qsTr("Invoice Label")
         }
 
         QQC2.TextField {
             id: descriptionTextField
-            placeholderText: qsTr("Enter Description")
+            placeholderText: qsTr("Description")
         }
 
         AmountTextField {
+            milisatoshi: true
             id: amountTextField
             Layout.topMargin: 25
         }
 
         QQC2.Button {
-            text: "Pay"
+            Layout.topMargin: 25
+            text: qsTr("Create")
+            Layout.alignment: Qt.AlignCenter
+            Layout.fillWidth: true
             onClicked: {
                 invoicesModel.addInvoice(labelTextField.text,
                                          descriptionTextField.text,
