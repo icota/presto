@@ -20,6 +20,7 @@ QHash<int, QByteArray> InvoicesModel::roleNames() const
     roles[PaidAtTimestampRole] = "paidAtTimestamp";
     roles[ExpiryTimeRole] = "expiryTime";
     roles[ExpiresAtRole] = "expiresAt";
+    roles[Bolt11Role] = "bolt11";
     return roles;
 }
 
@@ -55,6 +56,8 @@ QVariant InvoicesModel::data(const QModelIndex &index, int role) const
         return invoice.expiryTime();
     else if (role == ExpiresAtRole)
         return invoice.expiresAtTime();
+    else if (role == Bolt11Role)
+        return invoice.bolt11();
     return QVariant();
 }
 
@@ -108,6 +111,7 @@ void InvoicesModel::populateInvoicesFromJson(QJsonArray jsonArray)
         invoice.setPaidAtTimestamp(invoiceJsonObject.value("paid_at").toInt());
         invoice.setExpiryTime(invoiceJsonObject.value("expiry_time").toInt());
         invoice.setExpiresAtTime(invoiceJsonObject.value("expires_at").toInt());
+        invoice.setBolt11(invoiceJsonObject.value("bolt11").toString());
 
         m_invoices.append(invoice);
 
@@ -296,4 +300,14 @@ int Invoice::expiresAtTime() const
 void Invoice::setExpiresAtTime(int expiresAtTime)
 {
     m_expiresAtTime = expiresAtTime;
+}
+
+QString Invoice::bolt11() const
+{
+    return m_bolt11;
+}
+
+void Invoice::setBolt11(const QString &bolt11)
+{
+    m_bolt11 = bolt11;
 }

@@ -53,6 +53,9 @@ public:
     int expiresAtTime() const;
     void setExpiresAtTime(int expiresAtTime);
 
+    QString bolt11() const;
+    void setBolt11(const QString &bolt11);
+
 private:
     QString m_label;
     QString m_hash;
@@ -64,6 +67,7 @@ private:
     int m_paidAtTimestamp;
     int m_expiryTime;
     int m_expiresAtTime;
+    QString m_bolt11;
 };
 
 class InvoicesModel : public QAbstractListModel
@@ -80,7 +84,8 @@ public:
         PaidTimestampRole,
         PaidAtTimestampRole,
         ExpiryTimeRole,
-        ExpiresAtRole
+        ExpiresAtRole,
+        Bolt11Role
     };
 
     InvoicesModel(QJsonRpcSocket* rpcSocket = 0);

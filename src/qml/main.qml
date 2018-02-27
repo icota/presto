@@ -189,7 +189,7 @@ Kirigami.ApplicationWindow {
                     GenericListDelegate {
                         indicator.color: status === Invoice.PAID ? "green" : "grey"
                         label.text: invoicelabel
-                        //status.text: paymentstatusstring
+                        status.text: qsTr("Expires at " + expiresAt);
                         msatoshiAmount.amount: msatoshi
                     }
 
@@ -198,7 +198,7 @@ Kirigami.ApplicationWindow {
                             iconName: "document-share"
                             tooltip: qsTr("Share")
                             onTriggered: {
-                                shareInvoiceSheet.bolt11 = hash;
+                                shareInvoiceSheet.bolt11 = bolt11;
                                 shareInvoiceSheet.sheetOpen = true;
                             }
                         },
