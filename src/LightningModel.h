@@ -105,10 +105,13 @@ private slots:
     void unixSocketError(QLocalSocket::LocalSocketError unixSocketError);
     void updateModels();
     void updateInfoRequestFinished();
+    void lightningProcessFinished(int exitCode);
 
 signals:
     void infoChanged();
     void serverNameChanged();
+    void errorString(QString error);
+    void rpcConnectionError();
 
 };
 

@@ -99,12 +99,18 @@ Kirigami.ApplicationWindow {
                     preferencesSheet.sheetOpen = true;
                 }
             },
-
             Kirigami.Action {
                 text: "Network"
                 iconName: "network-workgroup"
                 onTriggered: {
                     networkSheet.sheetOpen = true;
+                }
+            },
+            Kirigami.Action {
+                text: "Node Settings"
+                iconName: "network-workgroup"
+                onTriggered: {
+                    nodeSettingsSheet.sheetOpen = true;
                 }
             },
             Kirigami.Action {
@@ -393,6 +399,17 @@ Kirigami.ApplicationWindow {
 
         onErrorString: {
             showPassiveNotification(error)
+        }
+    }
+
+    Connections {
+        target: lightningModel
+        onErrorString: {
+            showPassiveNotification(error)
+        }
+
+        onRpcConnectionError: {
+            nodeSettingsSheet.sheetOpen = true;
         }
     }
 }

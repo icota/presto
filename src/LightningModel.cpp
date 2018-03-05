@@ -1,4 +1,5 @@
 #include <QDir>
+#include <QSettings>
 
 #include "LightningModel.h"
 #include "./3rdparty/qjsonrpc/src/qjsonrpcservicereply.h"
@@ -95,7 +96,7 @@ void LightningModel::launchDaemon()
     QString program = cLightningDir.absolutePath() + "/lightningd";
 #else
     QDir programDir = QDir::home();
-    QString program = programDir.absolutePath() + "/lightningd"; // Hardcode some location within a snap?
+    QString program = programDir.absolutePath() + "/Code/mine/lightning/lightningd/lightningd"; // Hardcode some location within a snap?
 #endif
 
     qDebug() << "Starting: " << program;
@@ -179,6 +180,18 @@ void LightningModel::updateInfoRequestFinished()
     }
 }
 
+void LightningModel::lightningProcessFinished(int exitCode)
+{
+    qDebug() << "Lightning daemon finished, exit code: " << exitCode;
+    //qDebug() << m_lightningDaemonProcess->readAllStandardOutput();
+    QString stdError = m_lightningDaemonProcess->readAllStandardError();
+    if (stdError.contains("Could not locate RPC credentials")) {
+        emit errorString("Wrong RPC Credentials"); // Fixme: handle this properly
+        emit rpcConnectionError();
+    }
+    qDebug() << stdError;
+}
+
 LightningModel::LightningModel(QString serverName, QObject *parent) {
     {
         Q_UNUSED(parent);
@@ -194,7 +207,15 @@ LightningModel::LightningModel(QString serverName, QObject *parent) {
             m_lightningRpcSocket = serverName;
         }
 
+        QSettings settings;
+
+        m_bitcoinRpcServerName = settings.value("nodeAddress").toString();
+        m_bitcoinRpcUser = settings.value("nodeRpcUsername").toString();
+        m_bitcoinRpcPassword = settings.value("nodeRpcPassword").toString();
+
         m_lightningDaemonProcess = new QProcess(this);
+        QObject::connect(m_lightningDaemonProcess, SIGNAL(finished(int)),
+                         this, SLOT(lightningProcessFinished(int)));
 
         m_connectedToDaemon = false;
 
@@ -331,7 +352,7 @@ void LightningModel::rpcMessageReceived(QJsonRpcMessage message)
 
 void LightningModel::unixSocketError(QLocalSocket::LocalSocketError socketError)
 {
-    qDebug() << socketError;
+    qDebug() << "Couldn't connect to daemon: " << socketError;
 }
 
 void LightningModel::updateModels()

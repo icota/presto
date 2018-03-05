@@ -15,6 +15,10 @@ int main(int argc, char *argv[])
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     QGuiApplication app(argc, argv);
 
+    app.setOrganizationName("Codex Apertus");
+    app.setOrganizationDomain("codexapertus.com");
+    app.setApplicationName("Presto!");
+
     LightningModel* lightningModel = new LightningModel;
 
     QQmlApplicationEngine engine;
