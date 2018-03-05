@@ -13,7 +13,10 @@ Kirigami.OverlaySheet {
         horizontalAlignment: Text.AlignHCenter
     }
 
+
+
     ColumnLayout {
+
         Settings {
             id: settings
             property string currencyCode: currencyCodeTextField.text
