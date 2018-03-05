@@ -19,3 +19,6 @@
 [submodule "3rdparty/papirus"]
 	path = 3rdparty/papirus
 	url = git@github.com:PapirusDevelopmentTeam/papirus-icon-theme.git
+[submodule "3rdparty/material-icons"]
+	path = 3rdparty/material-icons
+	url = git@github.com:google/material-design-icons.git
