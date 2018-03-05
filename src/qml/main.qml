@@ -212,7 +212,7 @@ Kirigami.ApplicationWindow {
                             iconName: "edit-delete"
                             tooltip: qsTr("Delete")
                             onTriggered: {
-                                invoicesModel.deleteInvoice(invoicelabel, status)
+                                invoicesModel.deleteInvoice(invoicelabel, statusString)
                             }
                         }
                     ]

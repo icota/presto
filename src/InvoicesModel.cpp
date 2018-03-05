@@ -14,6 +14,7 @@ QHash<int, QByteArray> InvoicesModel::roleNames() const
     roles[HashRole] = "hash";
     roles[MSatoshiRole] = "msatoshi";
     roles[StatusRole] = "status";
+    roles[StatusStringRole] = "statusString";
     roles[PayIndexRole] = "payIndex";
     roles[MSatishiReceivedRole] = "msatoshiReceived";
     roles[PaidTimestampRole] = "paidTimestamp";
@@ -44,6 +45,8 @@ QVariant InvoicesModel::data(const QModelIndex &index, int role) const
         return invoice.msatoshi();
     else if (role == StatusRole)
         return invoice.status();
+    else if (role == StatusStringRole)
+        return invoice.statusString();
     else if (role == PayIndexRole)
         return invoice.payIndex();
     else if (role == MSatishiReceivedRole)
@@ -101,9 +104,12 @@ void InvoicesModel::populateInvoicesFromJson(QJsonArray jsonArray)
         invoice.setMsatoshi(invoiceJsonObject.value("msatoshi").toInt());
 
         QString status = invoiceJsonObject.value("status").toString();
+
         if (status.toLower() == "paid") invoice.setStatus(InvoiceTypes::InvoiceStatus::PAID);
         else if (status.toLower() == "unpaid") invoice.setStatus(InvoiceTypes::InvoiceStatus::UNPAID);
         else if (status.toLower() == "expired") invoice.setStatus(InvoiceTypes::InvoiceStatus::EXPIRED);
+
+        invoice.setStatusString(status);
 
         invoice.setPayIndex(invoiceJsonObject.value("pay_index").toInt());
         invoice.setMsatoshiReceived(invoiceJsonObject.value("msatoshi_received").toInt());
@@ -193,8 +199,7 @@ void InvoicesModel::deleteInvoiceRequestFinished()
 
         if (jsonObject.contains("result"))
         {
-            QJsonObject resultObject = jsonObject.value("result").toObject();
-            populateInvoicesFromJson(resultObject.value("invoices").toArray());
+            updateInvoices();
         }
     }
 }
@@ -310,4 +315,14 @@ QString Invoice::bolt11() const
 void Invoice::setBolt11(const QString &bolt11)
 {
     m_bolt11 = bolt11;
+}
+
+QString Invoice::statusString() const
+{
+    return m_statusString;
+}
+
+void Invoice::setStatusString(const QString &statusString)
+{
+    m_statusString = statusString;
 }

@@ -56,11 +56,15 @@ public:
     QString bolt11() const;
     void setBolt11(const QString &bolt11);
 
+    QString statusString() const;
+    void setStatusString(const QString &statusString);
+
 private:
     QString m_label;
     QString m_hash;
     int m_msatoshi;
     InvoiceTypes::InvoiceStatus m_status;
+    QString m_statusString;
     int m_payIndex;
     int m_msatoshiReceived;
     int m_paidTimestamp;
@@ -79,6 +83,7 @@ public:
         HashRole,
         MSatoshiRole,
         StatusRole,
+        StatusStringRole,
         PayIndexRole,
         MSatishiReceivedRole,
         PaidTimestampRole,
