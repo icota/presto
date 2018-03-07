@@ -66,7 +66,7 @@ public:
 private:
     void updateInfo();
     void launchDaemon();
-    void rpcNotConnected();
+    void retryRpcConnection();
 
 private:
     QLocalSocket* m_unixSocket;

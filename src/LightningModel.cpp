@@ -138,6 +138,7 @@ void LightningModel::launchDaemon()
     if (m_lightningDaemonProcess->waitForStarted())
     {
         qDebug()<<"Daemon started";
+        retryRpcConnection();
     }
     else
     {
@@ -250,7 +251,6 @@ LightningModel::LightningModel(QString serverName, QObject *parent) {
         {
             // No daemon so lets launch our own
             launchDaemon();
-            rpcNotConnected();
         }
 
     }
@@ -271,16 +271,16 @@ void LightningModel::rpcConnected()
     m_updatesTimer->start();
 }
 
-void LightningModel::rpcNotConnected()
+void LightningModel::retryRpcConnection()
 {
     m_connectionRetryTimer->stop();
 
-    // Let's retry every 30 secs
-    m_connectionRetryTimer->setInterval(30000);
+    // Let's retry every sec
+    m_connectionRetryTimer->setInterval(1000);
     m_connectionRetryTimer->setSingleShot(true);
 
     // Reentrant slot right here
-    QObject::connect(m_connectionRetryTimer, &QTimer::timeout, this, &LightningModel::rpcNotConnected);
+    QObject::connect(m_connectionRetryTimer, &QTimer::timeout, this, &LightningModel::retryRpcConnection);
     m_connectionRetryTimer->start();
 
     m_unixSocket->connectToServer(m_lightningRpcSocket);
@@ -353,7 +353,9 @@ void LightningModel::rpcMessageReceived(QJsonRpcMessage message)
 void LightningModel::unixSocketError(QLocalSocket::LocalSocketError socketError)
 {
     qDebug() << "Couldn't connect to daemon: " << socketError;
-    launchDaemon();
+    if (socketError != QLocalSocket::OperationError) {
+        launchDaemon();
+    }
 }
 
 void LightningModel::updateModels()
