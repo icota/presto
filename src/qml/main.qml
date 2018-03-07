@@ -133,7 +133,7 @@ Kirigami.ApplicationWindow {
             actions {
                 main: Kirigami.Action {
                     visible: lightningModel.connectedToDaemon
-                    iconName: captureInvoiceSheet.sheetOpen ? "dialog-cancel" : "document-send"
+                    iconName: "document-send"
                     text: qsTr("Pay")
                     onTriggered: {
                         captureInvoiceSheet.sheetOpen = !captureInvoiceSheet.sheetOpen
@@ -178,7 +178,7 @@ Kirigami.ApplicationWindow {
             actions {
                 main: Kirigami.Action {
                     visible: lightningModel.connectedToDaemon
-                    iconName: sendInvoiceSheet.sheetOpen ? "dialog-cancel" : "document-new"
+                    iconName: "document-new"
                     text: qsTr("Create a new Invoice")
                     onTriggered: {
                         sendInvoiceSheet.sheetOpen = !sendInvoiceSheet.sheetOpen
@@ -231,7 +231,7 @@ Kirigami.ApplicationWindow {
             actions {
                 main: Kirigami.Action {
                     visible: lightningModel.connectedToDaemon
-                    iconName: connectToPeerSheet.sheetOpen ? "dialog-cancel" : "list-add"
+                    iconName: "list-add"
                     text: qsTr("Connect to a Peer")
                     onTriggered: {
                         connectToPeerSheet.sheetOpen = !connectToPeerSheet.sheetOpen
