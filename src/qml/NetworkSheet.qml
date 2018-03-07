@@ -6,9 +6,15 @@ import Qt.labs.settings 1.0
 import "." // QTBUG-34418
 
 Kirigami.OverlaySheet {
+    property string nodeURI: lightningModel.id +
+                             "@" +
+                             lightningModel.address +
+                             ":" +
+                             lightningModel.port
+
     header:
         OverlaySheetHeader {
-        text: qsTr("Network")
+        text: qsTr("My Node")
         width: parent.width
         horizontalAlignment: Text.AlignHCenter
     }
@@ -19,21 +25,25 @@ Kirigami.OverlaySheet {
             // we will add stuff to change rgb and node alias
         }
 
-
-        QQC2.Label {
-            wrapMode: Text.WordWrap
-            font: fixedFont
-            text: lightningModel.network
-        }
-
-        QQC2.Label {
-            wrapMode: Text.WordWrap
-            text: "Your Node ID:"
+        QRCode {
+            Layout.alignment: Qt.AlignCenter
+            width : 320
+            height : 320
+            // This is the URI format Eclair wallet supports
+            value : nodeURI
+            MouseArea {
+                anchors.fill: parent
+                onClicked: {
+                    clipboard.setText(nodeURI)
+                    showPassiveNotification(qsTr("Node URI Copied to Clipboard"))
+                }
+            }
         }
 
         QQC2.Label {
             id: idLabel
             wrapMode: Text.WordWrap
+            Layout.alignment: Qt.AlignCenter
             font: fixedFont
             text: lightningModel.id.substring(0, 10)
             MouseArea {
@@ -44,5 +54,13 @@ Kirigami.OverlaySheet {
                 }
             }
         }
+
+        QQC2.Label {
+            wrapMode: Text.WordWrap
+            font: fixedFont
+            text: lightningModel.network
+            Layout.alignment: Qt.AlignCenter
+        }
+
     }
 }
