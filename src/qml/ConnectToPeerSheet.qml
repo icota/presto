@@ -19,6 +19,14 @@ Kirigami.OverlaySheet {
             selectByMouse: true
             font: fixedFont
             placeholderText: qsTr("Peer ID")
+            onTextEdited: {
+                if (text.includes("@"))
+                {
+                    var addressStringSplit = text.split("@")
+                    text = addressStringSplit[0]
+                    addressTextField.text = addressStringSplit[1].replace(/(\r\n|\n|\r)/gm,""); // Remove any newlines left after pasting from the browser
+                }
+            }
         }
 
         QQC2.TextField {
