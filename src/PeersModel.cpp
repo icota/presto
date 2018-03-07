@@ -211,11 +211,17 @@ void PeersModel::populatePeersFromJson(QJsonArray jsonArray)
         else if (state == "WHATEVER") peer.setState(Peer::PeerState::UNINITIALIZED);
 
         peer.setState((Peer::PeerState)peerJsonObject.value("state").toInt());
+
         m_peers.append(peer);
+        dataChanged(index(0, 0), index(rowCount() - 1, 0));
     }
 
-    if (m_peers.count() != previousPeerCount) {
+    if (m_peers.count() > previousPeerCount) {
         endInsertRows();
+    }
+
+    if (m_peers.count() < previousPeerCount) {
+        endRemoveRows();
     }
 
     emit totalAvailableFundsChanged();
