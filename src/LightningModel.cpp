@@ -96,7 +96,7 @@ void LightningModel::launchDaemon()
     QString program = cLightningDir.absolutePath() + "/lightningd";
 #else
     QDir programDir = QDir::home();
-    QString program = programDir.absolutePath() + "/Code/mine/lightning/lightningd/lightningd"; // Hardcode some location within a snap?
+    QString program = programDir.absolutePath() + "/Code/lightning/lightningd/lightningd"; // Hardcode some location within a snap?
 #endif
 
     qDebug() << "Starting: " << program;
@@ -347,12 +347,13 @@ bool LightningModel::connectedToDaemon() const
 
 void LightningModel::rpcMessageReceived(QJsonRpcMessage message)
 {
-    qDebug() << message.toJson();
+    //qDebug() << message.toJson();
 }
 
 void LightningModel::unixSocketError(QLocalSocket::LocalSocketError socketError)
 {
     qDebug() << "Couldn't connect to daemon: " << socketError;
+    launchDaemon();
 }
 
 void LightningModel::updateModels()
