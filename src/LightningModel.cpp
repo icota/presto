@@ -102,9 +102,6 @@ void LightningModel::launchDaemon()
     qDebug() << "Starting: " << program;
     QStringList arguments;
     arguments << "--network=testnet"
-//              << "--bitcoin-rpcconnect=192.168.0.12"
-//              << "--bitcoin-rpcuser=igor"
-//              << "--bitcoin-rpcpassword=test"
               << "--log-level=debug";
 
 #ifdef Q_OS_ANDROID
