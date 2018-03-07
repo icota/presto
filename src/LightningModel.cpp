@@ -167,7 +167,10 @@ void LightningModel::updateInfoRequestFinished()
     {
         QJsonObject resultsObject = message.toObject().value("result").toObject();
 
-        m_address = resultsObject.value("address").toString();
+        QJsonArray addressesArray = resultsObject.value("address").toArray();
+
+
+        m_address = addressesArray[0].toObject().value("address").toString();
         m_blockheight = resultsObject.value("blockheight").toInt();
         m_id = resultsObject.value("id").toString();
         m_network = resultsObject.value("network").toString();
