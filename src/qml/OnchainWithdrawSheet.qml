@@ -27,7 +27,8 @@ Kirigami.OverlaySheet {
         QRScannerViewfinder {
             id: qrScannerViewfinder
             Layout.alignment: Qt.AlignCenter
-            Layout.fillWidth: true
+            width: parent.width
+            height: width
             zxingFilter.decoder.onTagFound: {
                 if (tag.startsWith("bitcoin:")) {
                     pasteTextArea.text = tag.substring(8);

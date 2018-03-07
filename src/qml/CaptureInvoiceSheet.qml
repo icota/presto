@@ -29,8 +29,9 @@ Kirigami.OverlaySheet {
 
         QRScannerViewfinder {
             id: qrScannerViewfinder
+            width: parent.width
+            height: width
             Layout.alignment: Qt.AlignCenter
-            Layout.fillWidth: true
             zxingFilter.decoder.onTagFound: {
                 checkIfValidBolt11(tag)
             }
@@ -52,6 +53,10 @@ Kirigami.OverlaySheet {
     }
 
     function checkIfValidBolt11(text) {
+        if (text.startsWith("lightning:")) {
+            text = text.slice(10)
+        }
+
         payInvoiceSheet.bolt11 = text
         paymentsModel.decodePayment(text);
     }

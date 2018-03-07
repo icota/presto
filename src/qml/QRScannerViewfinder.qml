@@ -8,7 +8,6 @@ import QZXing 2.3
 
 Rectangle {
     id: viewfinderRectangle
-    height: 300 // this is tricky
     color: "black"
 
     property alias camera: camera
@@ -20,6 +19,7 @@ Rectangle {
         autoOrientation: true
         filters: [ zxingFilter ]
         anchors.fill: parent
+        fillMode: VideoOutput.PreserveAspectCrop
     }
 
     Rectangle {
