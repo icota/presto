@@ -182,8 +182,8 @@ QVariant PeersModel::data(const QModelIndex &index, int role) const
 
 void PeersModel::populatePeersFromJson(QJsonArray jsonArray)
 {
+    int previousPeerCount = m_peers.count();
     m_peers.clear();
-    endResetModel();
 
     foreach (const QJsonValue &v, jsonArray)
     {
@@ -212,7 +212,9 @@ void PeersModel::populatePeersFromJson(QJsonArray jsonArray)
 
         peer.setState((Peer::PeerState)peerJsonObject.value("state").toInt());
         m_peers.append(peer);
+    }
 
+    if (m_peers.count() != previousPeerCount) {
         endInsertRows();
     }
 
