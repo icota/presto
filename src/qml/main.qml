@@ -255,15 +255,23 @@ Kirigami.ApplicationWindow {
                         indicator.color: connected && peerstatestring == "CHANNELD_NORMAL" ? "green" : connected ? "orange" : "red"
                         indicatorTooltip: connected ?
                                               qsTr("Connected Status") + ": " + peerstatestring : qsTr("Disconnected")
-                        label.text: peerid.substring(0, 10) + (connected ? " (" + netaddress + ")" : "")
+                        label.text: peerid.substring(0, 10) + (connected ? " (" + netaddress + ")" : qsTr(" (Disconnected)"))
                         status.text: peerstatestring
                         msatoshiAmount.amount: msatoshitous
                     }
 
                     actions: [
                         Kirigami.Action {
+                            iconName: "network-wired"
+                            text: qsTr("Connect to Peer")
+                            enabled: !connected
+                            onTriggered: {
+                                peersModel.connectToPeer(peerid, netaddress)
+                            }
+                        },
+                        Kirigami.Action {
                             iconName: "list-add"
-                            text: qsTr("Fund the Channel")
+                            text: qsTr("Fund a Channel")
                             onTriggered: {
                                 fundChannelSheet.peerToFund = peerid
                                 fundChannelSheet.sheetOpen = !fundChannelSheet.sheetOpen
