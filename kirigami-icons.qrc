@@ -1,5 +1,5 @@
 <RCC>
     <qresource prefix="/org/kde/kirigami/icons">
-        <file alias="applications-system.svg">icons/action/svg/production/ic_settings_48px.svg</file>
+        <file>3rdparty/material-icons/action/svg/production/ic_settings_48px.svg</file>
     </qresource>
 </RCC>
