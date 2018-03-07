@@ -93,28 +93,28 @@ Kirigami.ApplicationWindow {
 
 
             Kirigami.Action {
-                text: "Preferences"
+                text: qsTr("Preferences")
                 iconName: "applications-system"
                 onTriggered: {
                     preferencesSheet.sheetOpen = true;
                 }
             },
             Kirigami.Action {
-                text: "Network"
+                text: qsTr("My Node")
                 iconName: "network-workgroup"
                 onTriggered: {
                     networkSheet.sheetOpen = true;
                 }
             },
             Kirigami.Action {
-                text: "Node Settings"
+                text: qsTr("Settings")
                 iconName: "network-workgroup"
                 onTriggered: {
                     nodeSettingsSheet.sheetOpen = true;
                 }
             },
             Kirigami.Action {
-                text: "About"
+                text: qsTr("About")
                 iconName: "help-about"
                 enabled: false
                 onTriggered: {
