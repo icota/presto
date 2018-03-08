@@ -39,7 +39,7 @@ Kirigami.OverlaySheet {
 
         QQC2.TextArea {
             anchors.top: qrScannerViewfinder.bottom
-            anchors.topMargin: 10
+            anchors.topMargin: Kirigami.Units.gridUnit / 2
             id: pasteTextArea
             font: fixedFont
             selectByMouse: true
