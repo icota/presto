@@ -33,6 +33,7 @@ Kirigami.OverlaySheet {
             wrapMode: Text.WordWrap
             text: settings.currencyCode
             inputMask: "AAA" // ISO 4217
+            placeholderText: "USD"
 
             onTextChanged: {
                 ExchangeRate.currencyCode = text.toUpperCase()

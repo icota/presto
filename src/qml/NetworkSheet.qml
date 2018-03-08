@@ -42,8 +42,9 @@ Kirigami.OverlaySheet {
             id: idLabel
             wrapMode: Text.WordWrap
             Layout.alignment: Qt.AlignCenter
+            width: 100
             font: fixedFont
-            text: lightningModel.id.substring(0, 10)
+            text: lightningModel.id//.substring(0, 10)
             MouseArea {
                 anchors.fill: parent
                 onClicked: {
@@ -56,7 +57,7 @@ Kirigami.OverlaySheet {
         QQC2.Label {
             wrapMode: Text.WordWrap
             font: fixedFont
-            text: lightningModel.network
+            text: "(" + lightningModel.network + ")"
             Layout.alignment: Qt.AlignCenter
         }
 

@@ -264,6 +264,7 @@ Kirigami.ApplicationWindow {
                         Kirigami.Action {
                             iconName: "network-wired"
                             text: qsTr("Connect to Peer")
+                            visible: false // Not sure if we need this
                             enabled: !connected
                             onTriggered: {
                                 peersModel.connectToPeer(peerid, netaddress)
