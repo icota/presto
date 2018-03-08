@@ -1,14 +1,21 @@
 pragma Singleton
 import QtQuick 2.0
+import Qt.labs.settings 1.0
 
 Item {
     id: exchangeRate
+
+    Settings {
+        id: settings
+        property real lastRate: rate
+    }
+
 
     // Get this from main window
     property var locale
     property string cryptoCurrencyCode: "BTC"
     property string currencyCode: "USD"
-    property real rate: 0.0
+    property real rate: settings.lastRate
 
     // Update every hour
     property int updateInterval: 3600 * 1000
