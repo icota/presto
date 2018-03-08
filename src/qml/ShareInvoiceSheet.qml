@@ -16,8 +16,6 @@ Kirigami.OverlaySheet {
     ColumnLayout {
         QRCode {
             Layout.alignment: Qt.AlignCenter
-            width : 320
-            height : 320
             value : "lightning:" + bolt11  
         }
 

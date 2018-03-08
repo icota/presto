@@ -8,7 +8,7 @@ Kirigami.OverlaySheet {
 
     header:
         OverlaySheetHeader {
-        text: qsTr("Your On-Chain Address")
+        text: qsTr("My Address")
         width: parent.width
         horizontalAlignment: Text.AlignHCenter
     }
@@ -16,8 +16,6 @@ Kirigami.OverlaySheet {
     ColumnLayout {
         QRCode {
             Layout.alignment: Qt.AlignCenter
-            width : 320
-            height : 320
             value : "bitcoin:" + onchainAddress
         }
 

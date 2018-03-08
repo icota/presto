@@ -27,8 +27,6 @@ Kirigami.OverlaySheet {
 
         QRCode {
             Layout.alignment: Qt.AlignCenter
-            width : 320
-            height : 320
             // This is the URI format Eclair wallet supports
             value : nodeURI
             MouseArea {
