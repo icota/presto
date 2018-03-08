@@ -37,10 +37,7 @@ void PeersModel::listPeersRequestFinished()
         QJsonObject jsonObject = message.toObject();
 
         QJsonArray peersArray = jsonObject.value("result").toObject().value("peers").toArray();
-        if (peersArray.count() > 0)
-        {
-            populatePeersFromJson(peersArray);
-        }
+        populatePeersFromJson(peersArray);
     }
 }
 
@@ -248,15 +245,19 @@ void PeersModel::populatePeersFromJson(QJsonArray jsonArray)
         dataChanged(index(0, 0), index(rowCount() - 1, 0));
     }
 
+    emit totalAvailableFundsChanged();
+
     if (m_peers.count() > previousPeerCount) {
         endInsertRows();
+        return;
     }
-
-    if (m_peers.count() < previousPeerCount) {
+    else if (m_peers.count() == 0) {
+        endResetModel();
+        return;
+    }
+    else if (m_peers.count() < previousPeerCount) {
         endRemoveRows();
     }
-
-    emit totalAvailableFundsChanged();
 }
 
 int PeersModel::totalAvailableFunds()
