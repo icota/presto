@@ -123,12 +123,44 @@ void PeersModel::closeChannel(QString peerId)
     QJsonObject paramsObject;
     paramsObject.insert("id", peerId);
 
+    foreach (Peer peer, m_peers) {
+        if (peer.id() == peerId) {
+            if (peer.stateString().isEmpty()) {
+                QJsonRpcMessage message = QJsonRpcMessage::createRequest("disconnect", paramsObject);
+                QJsonRpcServiceReply* reply = m_rpcSocket->sendMessage(message);
+                QObject::connect(reply, &QJsonRpcServiceReply::finished, this, &PeersModel::disconnectRequestFinished);
+                return;
+            }
+        }
+    }
+
     QJsonRpcMessage message = QJsonRpcMessage::createRequest("close", paramsObject);
     QJsonRpcServiceReply* reply = m_rpcSocket->sendMessage(message);
     QObject::connect(reply, &QJsonRpcServiceReply::finished, this, &PeersModel::closeChannelRequestFinished);
 }
 
 void PeersModel::closeChannelRequestFinished()
+{
+    QJsonRpcServiceReply *reply = static_cast<QJsonRpcServiceReply *>(sender());
+    QJsonRpcMessage message = reply->response();
+
+    if (message.type() == QJsonRpcMessage::Error)
+    {
+        emit errorString(message.toObject().value("error").toObject().value("message").toString());
+    }
+
+    if (message.type() == QJsonRpcMessage::Response)
+    {
+        QJsonObject jsonObject = message.toObject();
+
+        if (jsonObject.contains("result"))
+        {
+            updatePeers();
+        }
+    }
+}
+
+void PeersModel::disconnectRequestFinished()
 {
     QJsonRpcServiceReply *reply = static_cast<QJsonRpcServiceReply *>(sender());
     QJsonRpcMessage message = reply->response();

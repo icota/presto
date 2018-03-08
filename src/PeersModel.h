@@ -120,6 +120,7 @@ private slots:
     void connectToPeerRequestFinished();
     void fundChannelRequestFinished();
     void closeChannelRequestFinished();
+    void disconnectRequestFinished();
 
 private:
     QList<Peer> m_peers;
