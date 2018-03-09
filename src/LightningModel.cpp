@@ -66,7 +66,6 @@ void LightningModel::launchDaemon()
 #ifdef Q_OS_ANDROID
     QDir::home().mkdir("bitcoin-data");
     QDir::home().mkdir("libexec");
-    qDebug() << QDir::home().entryList();
 
     QDir libexecDir(QDir::homePath() + "/libexec");
     libexecDir.mkdir("c-lightning");
@@ -76,22 +75,24 @@ void LightningModel::launchDaemon()
     QDir programDir = QDir::home();
     programDir.cdUp();
 
-    QStringList lightningBinaries;
+    if (m_firstStart) {
+        QStringList lightningBinaries;
 
-    lightningBinaries << "lightning_channeld"
-                      << "lightning_closingd"
-                      << "lightning_gossipd"
-                      << "lightning_hsmd"
-                      << "lightning_onchaind"
-                      << "lightning_openingd"
-                      << "lightningd";
+        lightningBinaries << "lightning_channeld"
+                          << "lightning_closingd"
+                          << "lightning_gossipd"
+                          << "lightning_hsmd"
+                          << "lightning_onchaind"
+                          << "lightning_openingd"
+                          << "lightningd";
 
-    foreach (QString binaryName, lightningBinaries) {
-        QFile::copy(programDir.absolutePath() + "/lib/lib" + binaryName + ".so",
-                    cLightningDir.absolutePath() + "/" + binaryName);
+        foreach (QString binaryName, lightningBinaries) {
+            QFile::copy(programDir.absolutePath() + "/lib/lib" + binaryName + ".so",
+                        cLightningDir.absolutePath() + "/" + binaryName);
+        }
+
+        m_firstStart = false;
     }
-
-    qDebug() << cLightningDir.entryList();
 
     QString program = cLightningDir.absolutePath() + "/lightningd";
 #else
@@ -208,6 +209,8 @@ LightningModel::LightningModel(QString serverName, QObject *parent) {
             m_lightningRpcSocket = serverName;
         }
 
+        m_firstStart = true;
+
         QSettings settings;
 
         m_bitcoinRpcServerName = settings.value("nodeAddress").toString();
@@ -289,10 +292,12 @@ void LightningModel::retryRpcConnection()
     QObject::connect(m_connectionRetryTimer, &QTimer::timeout, this, &LightningModel::retryRpcConnection);
     m_connectionRetryTimer->start();
 
-    m_unixSocket->connectToServer(m_lightningRpcSocket);
-    if (m_unixSocket->waitForConnected())
-    {
-        rpcConnected();
+    if (m_unixSocket->state() == QLocalSocket::UnconnectedState) {
+        m_unixSocket->connectToServer(m_lightningRpcSocket);
+        if (m_unixSocket->waitForConnected())
+        {
+            rpcConnected();
+        }
     }
 }
 
@@ -317,7 +322,7 @@ void LightningModel::startAutopilot(int amountSatoshi)
 
         QObject::connect(m_peersModel, &PeersModel::connectedToPeer,
                          [=] (QString peerId) { if (peerId == m_autopilotPeerId)
-                                                m_peersModel->fundChannel(peerId, QString::number(m_autopilotChannelAmount)); });
+                m_peersModel->fundChannel(peerId, QString::number(m_autopilotChannelAmount)); });
 
         m_peersModel->connectToPeer(m_autopilotPeerId, randomNode.nodeAddressList().at(0).address());
     }
@@ -391,9 +396,4 @@ void LightningModel::updateModels()
     updateInfo();
     // This calls needs to go last cause it hates concurrency
     m_peersModel->updatePeers();
-
-    // Temporary daemon debug on android
-#ifdef Q_OS_ANDROID
-    qDebug() << m_lightningDaemonProcess->readAllStandardOutput();
-#endif
 }

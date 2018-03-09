@@ -109,6 +109,8 @@ private:
     int m_autopilotChannelAmount;
     QString m_autopilotPeerId;
 
+    bool m_firstStart;
+
 
 private slots:
     void rpcConnected();
