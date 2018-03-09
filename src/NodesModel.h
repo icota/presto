@@ -11,8 +11,8 @@ class NodeAddress
     public:
 
     enum AddressType {
-        ipV4,
-        ipV6
+        IPv4,
+        IPv6
     };
 
     NodeAddress();
@@ -49,6 +49,9 @@ public:
     int lastTimestamp() const;
     void setLastTimestamp(int lastTimestamp);
 
+    QList<NodeAddress> nodeAddressList() const;
+    void setNodeAddressList(const QList<NodeAddress> &nodeAddressList);
+
 private:
     QString m_id;
     QString m_alias;
@@ -63,6 +66,9 @@ class NodesModel : public QObject
 public:
     NodesModel(QJsonRpcSocket *rpcSocket);
     void updateNodes();
+
+
+    Node getRandomAutoconnectNode();
 
 private slots:
     void listNodesRequestFinished();

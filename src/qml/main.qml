@@ -235,6 +235,7 @@ Kirigami.ApplicationWindow {
                     text: qsTr("Autoconnect")
                     onTriggered: {
                         // autopilot here
+                        lightningModel.startAutopilot(5000)
                     }
                 }
                 right: Kirigami.Action {

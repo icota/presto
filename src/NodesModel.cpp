@@ -14,6 +14,24 @@ void NodesModel::updateNodes()
     QObject::connect(reply, &QJsonRpcServiceReply::finished, this, &NodesModel::listNodesRequestFinished);
 }
 
+Node NodesModel::getRandomAutoconnectNode()
+{
+    if (!m_nodes.count()) {
+        return Node();
+    }
+
+    // Only return those that have
+    for (int i = 0; ++i; i < m_nodes.count())
+    {
+        Node randomNode = m_nodes.at(qrand() % m_nodes.size());
+        if (!randomNode.nodeAddressList().isEmpty()) {
+            return randomNode;
+        }
+    }
+
+    return Node();
+}
+
 void NodesModel::listNodesRequestFinished()
 {
     QJsonRpcServiceReply *reply = static_cast<QJsonRpcServiceReply *>(sender());
@@ -38,27 +56,36 @@ void NodesModel::populateNodesFromJson(QJsonArray jsonArray)
     foreach (const QJsonValue &v, jsonArray)
     {
 
-        QJsonObject NodeJsonObject = v.toObject();
+        QJsonObject nodeJsonObject = v.toObject();
         Node node;
-//        Node.setLabel(NodeJsonObject.value("label").toString());
-//        Node.setHash(NodeJsonObject.value("payment_hash").toString());
-//        Node.setMsatoshi(NodeJsonObject.value("msatoshi").toInt());
 
-        QString status = NodeJsonObject.value("status").toString();
+        node.setAlias(nodeJsonObject.value("alias").toString());
+        node.setColor(nodeJsonObject.value("color").toString());
+        node.setLastTimestamp(nodeJsonObject.value("last_timestamp").toInt());
+        node.setId(nodeJsonObject.value("nodeid").toString());
 
-//        if (status.toLower() == "paid") Node.setStatus(NodeTypes::NodeStatus::PAID);
-//        else if (status.toLower() == "unpaid") Node.setStatus(NodeTypes::NodeStatus::UNPAID);
-//        else if (status.toLower() == "expired") Node.setStatus(NodeTypes::NodeStatus::EXPIRED);
+        QJsonArray nodeAddressesArray = nodeJsonObject.value("addresses").toArray();
 
-//        Node.setStatusString(status);
+        QList<NodeAddress> addressList;
 
-//        Node.setPayIndex(NodeJsonObject.value("pay_index").toInt());
-//        Node.setMsatoshiReceived(NodeJsonObject.value("msatoshi_received").toInt());
-//        Node.setPaidTimestamp(NodeJsonObject.value("paid_timestamp").toInt()); // TODO: Fix this
-//        Node.setPaidAtTimestamp(NodeJsonObject.value("paid_at").toInt());
-//        Node.setExpiryTime(NodeJsonObject.value("expiry_time").toInt());
-//        Node.setExpiresAtTime(NodeJsonObject.value("expires_at").toInt());
-//        Node.setBolt11(NodeJsonObject.value("bolt11").toString());
+        foreach (QJsonValue addressValue, nodeAddressesArray) {
+            QJsonObject addressObject = addressValue.toObject();
+
+            NodeAddress address;
+            address.setPort(addressObject.value("port").toInt());
+            address.setAddress(addressObject.value("address").toString());
+
+            if (addressObject.value("type").toString() == "ipv4") {
+                address.setAddressType(NodeAddress::IPv4);
+            }
+            else {
+                address.setAddressType(NodeAddress::IPv6);
+            }
+
+            addressList.append(address);
+        }
+
+        node.setNodeAddressList(addressList);
 
         m_nodes.append(node);
     }
@@ -105,6 +132,21 @@ int Node::lastTimestamp() const
 void Node::setLastTimestamp(int lastTimestamp)
 {
     m_lastTimestamp = lastTimestamp;
+}
+
+QList<NodeAddress> Node::nodeAddressList() const
+{
+    return m_nodeAddressList;
+}
+
+void Node::setNodeAddressList(const QList<NodeAddress> &nodeAddressList)
+{
+    m_nodeAddressList = nodeAddressList;
+}
+
+NodeAddress::NodeAddress()
+{
+
 }
 
 NodeAddress::AddressType NodeAddress::addressType() const

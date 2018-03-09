@@ -106,6 +106,9 @@ private:
     QString m_bitcoinCliPath;
     QString m_bitcoinDataPath;
 
+    int m_autopilotChannelAmount;
+    QString m_autopilotPeerId;
+
 
 private slots:
     void rpcConnected();

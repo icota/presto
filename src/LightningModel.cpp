@@ -264,6 +264,10 @@ void LightningModel::rpcConnected()
     m_connectedToDaemon = true;
 
     updateModels();
+
+    // Don't update the nodes all the time
+    m_nodesModel->updateNodes();
+
     m_updatesTimer = new QTimer();
 
     // Update the models every 15 secs
@@ -304,6 +308,20 @@ void LightningModel::setBitcoinDataPath(const QString &bitcoinDataPath)
 
 void LightningModel::startAutopilot(int amountSatoshi)
 {
+    m_autopilotChannelAmount = amountSatoshi;
+
+    Node randomNode = m_nodesModel->getRandomAutoconnectNode();
+
+    if (!randomNode.id().isEmpty()) {
+        m_autopilotPeerId = randomNode.id();
+
+        QObject::connect(m_peersModel, &PeersModel::connectedToPeer,
+                         [=] (QString peerId) { if (peerId == m_autopilotPeerId)
+                                                m_peersModel->fundChannel(peerId, QString::number(m_autopilotChannelAmount)); });
+
+        m_peersModel->connectToPeer(m_autopilotPeerId, randomNode.nodeAddressList().at(0).address());
+    }
+
     m_nodesModel->updateNodes();
 }
 
