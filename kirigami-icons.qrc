@@ -1,5 +1,8 @@
 <RCC>
     <qresource prefix="/org/kde/kirigami/icons">
-        <file>3rdparty/material-icons/action/svg/production/ic_settings_48px.svg</file>
+        <file alias="settings.svg">3rdparty/material-icons/action/svg/production/ic_settings_24px.svg</file>
+        <file alias="loop.svg">3rdparty/material-icons/av/svg/production/ic_loop_24px.svg</file>
+        <file alias="wallet.svg">3rdparty/material-icons/action/svg/production/ic_account_balance_wallet_24px.svg</file>
+        <file alias="view-list-icons.svg">3rdparty/material-icons/navigation/svg/production/ic_apps_24px.svg</file>
     </qresource>
 </RCC>
