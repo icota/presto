@@ -10,6 +10,8 @@
 #include "WalletModel.h"
 #include "InvoicesModel.h"
 
+#include "NodesModel.h"
+
 #include "./3rdparty/qjsonrpc/src/qjsonrpcsocket.h"
 #include "./3rdparty/qjsonrpc/src/qjsonrpcmessage.h"
 
@@ -63,6 +65,9 @@ public:
     QString bitcoinDataPath() const;
     void setBitcoinDataPath(const QString &bitcoinDataPath);
 
+public slots:
+    void startAutopilot(int amountSatoshi);
+
 private:
     void updateInfo();
     void launchDaemon();
@@ -76,6 +81,9 @@ private:
     PaymentsModel* m_paymentsModel;
     WalletModel* m_walletModel;
     InvoicesModel* m_invoicesModel;
+
+    NodesModel* m_nodesModel;
+
     QTimer* m_updatesTimer;
 
     QString m_lightningRpcSocket;

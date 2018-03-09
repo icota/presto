@@ -236,6 +236,8 @@ LightningModel::LightningModel(QString serverName, QObject *parent) {
         m_walletModel = new WalletModel(m_rpcSocket);
         m_invoicesModel = new InvoicesModel(m_rpcSocket);
 
+        m_nodesModel = new NodesModel(m_rpcSocket);
+
         QObject::connect(m_unixSocket, SIGNAL(error(QLocalSocket::LocalSocketError)),
                          this, SLOT(unixSocketError(QLocalSocket::LocalSocketError)));
 
@@ -298,6 +300,11 @@ QString LightningModel::bitcoinDataPath() const
 void LightningModel::setBitcoinDataPath(const QString &bitcoinDataPath)
 {
     m_bitcoinDataPath = bitcoinDataPath;
+}
+
+void LightningModel::startAutopilot(int amountSatoshi)
+{
+    m_nodesModel->updateNodes();
 }
 
 QString LightningModel::bitcoinCliPath() const

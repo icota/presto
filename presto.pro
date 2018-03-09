@@ -58,7 +58,8 @@ HEADERS += \
     src/PeersModel.h \
     src/WalletModel.h \
     src/InvoicesModel.h \
-    src/QClipboardProxy.h
+    src/QClipboardProxy.h \
+    src/NodesModel.h
 
 SOURCES += \
     $${QJSONRPC_SOURCES} \
@@ -68,7 +69,8 @@ SOURCES += \
     src/PeersModel.cpp \
     src/WalletModel.cpp \
     src/InvoicesModel.cpp \
-    src/QClipboardProxy.cpp
+    src/QClipboardProxy.cpp \
+    src/NodesModel.cpp
 
 DISTFILES += \
     src/qml/qmldir \

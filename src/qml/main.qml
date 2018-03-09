@@ -231,6 +231,14 @@ Kirigami.ApplicationWindow {
             actions {
                 main: Kirigami.Action {
                     visible: lightningModel.connectedToDaemon
+                    iconName: "autorenew"
+                    text: qsTr("Autoconnect")
+                    onTriggered: {
+                        // autopilot here
+                    }
+                }
+                right: Kirigami.Action {
+                    visible: lightningModel.connectedToDaemon
                     iconName: "list-add"
                     text: qsTr("Connect to a Peer")
                     onTriggered: {
