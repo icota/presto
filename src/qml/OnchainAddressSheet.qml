@@ -22,7 +22,7 @@ Kirigami.OverlaySheet {
         QQC2.Label {
             
             Layout.alignment: Qt.AlignCenter
-            wrapMode: Text.WordWrap
+            wrapMode: Text.Wrap
             font: fixedFont
             text: onchainAddress
 

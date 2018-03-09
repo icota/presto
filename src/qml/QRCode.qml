@@ -12,7 +12,7 @@ Canvas {
     // value to be encoded in the generated QR code
     property string value : ""
 
-    width: 350
+    //width: 350
     height: width
 
     onPaint : {

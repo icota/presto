@@ -4,6 +4,14 @@ import QtQuick.Layouts 1.3
 import org.kde.kirigami 2.1 as Kirigami
 
 Kirigami.OverlaySheet {
+    onSheetOpenChanged: {
+        if (sheetOpen) {
+        }
+        else {
+            resetSheet()
+        }
+    }
+
     header:
         OverlaySheetHeader {
         text: qsTr("Create Invoice")
@@ -39,5 +47,11 @@ Kirigami.OverlaySheet {
                                          amountTextField.amount)
             }
         }
+    }
+
+    function resetSheet () {
+        labelTextField.text = ""
+        descriptionTextField.text = ""
+        amountTextField.amount = 0
     }
 }

@@ -17,7 +17,7 @@ Kirigami.OverlaySheet {
     ColumnLayout {
 
         QQC2.Label {       
-            wrapMode: Text.WordWrap
+            wrapMode: Text.Wrap
             Layout.alignment: Qt.AlignCenter
             Layout.fillWidth: parent
             font.pixelSize: 16
@@ -25,7 +25,7 @@ Kirigami.OverlaySheet {
         }
 
         QQC2.Label {          
-            wrapMode: Text.WordWrap
+            wrapMode: Text.Wrap
             Layout.alignment: Qt.AlignCenter
             Layout.fillWidth: parent
             font: fixedFont

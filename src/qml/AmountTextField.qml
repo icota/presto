@@ -22,7 +22,7 @@ RowLayout {
     QQC2.Label {
         id: currencyAmountLabel
         
-        wrapMode: Text.WordWrap
+        wrapMode: Text.Wrap
         Layout.alignment: Qt.AlignCenter
         text: ExchangeRate.getAmountInCurrency(milisatoshi ? (amountSpinBox.value / 1000) : amountSpinBox.value)
         font.pixelSize: 16

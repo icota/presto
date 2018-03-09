@@ -23,14 +23,14 @@ Kirigami.OverlaySheet {
         }
 
         QQC2.Label {
-            wrapMode: Text.WordWrap
+            wrapMode: Text.Wrap
             text: qsTr("Currency Code:")
         }
 
         QQC2.TextField {
             id: currencyCodeTextField
             font.capitalization: Font.AllUppercase
-            wrapMode: Text.WordWrap
+            wrapMode: Text.Wrap
             text: settings.currencyCode
             inputMask: "AAA" // ISO 4217
             placeholderText: "USD"

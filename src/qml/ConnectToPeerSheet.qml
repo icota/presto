@@ -4,6 +4,13 @@ import QtQuick.Layouts 1.3
 import org.kde.kirigami 2.1 as Kirigami
 
 Kirigami.OverlaySheet {
+    onSheetOpenChanged: {
+        if (sheetOpen) {
+        }
+        else {
+            resetSheet()
+        }
+    }
     header:
         OverlaySheetHeader {
         text: qsTr("Add Peer")
@@ -63,19 +70,25 @@ Kirigami.OverlaySheet {
                 target: peersModel
 
                 onErrorString: {
-                    connectButton.reEnableButton()
+                    connectButton.reEnable()
                 }
 
                 onConnectedToPeer: {
-                    connectButton.reEnableButton()
+                    connectButton.reEnable()
                 }
             }
 
-            function reEnableButton () {
+            function reEnable () {
                 busyIndicator.visible = false
                 connectButton.enabled = true
                 text = qsTr("Connect")
             }
         }
+    }
+
+    function resetSheet () {
+        idTextField.text = ""
+        addressTextField.text = ""
+        connectButton.reEnable()
     }
 }

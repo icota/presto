@@ -29,7 +29,7 @@ Kirigami.OverlaySheet {
 
         QRScannerViewfinder {
             id: qrScannerViewfinder
-            width: parent.width
+            width: parent.width * 0.9
             height: width
             Layout.alignment: Qt.AlignCenter
             zxingFilter.decoder.onTagFound: {
@@ -38,12 +38,11 @@ Kirigami.OverlaySheet {
         }
 
         QQC2.TextArea {
-            anchors.top: qrScannerViewfinder.bottom
-            anchors.topMargin: Kirigami.Units.gridUnit / 2
+            Layout.topMargin: Kirigami.Units.gridUnit / 2
             id: pasteTextArea
             font: fixedFont
             selectByMouse: true
-            Layout.alignment: Qt.AlignCenter
+            Layout.alignment: Qt.AlignHCenter
             Layout.fillWidth: true
             placeholderText: qsTr("Or Paste Invoice Here")
             onTextChanged: {
