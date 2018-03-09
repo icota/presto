@@ -42,7 +42,7 @@ Kirigami.ApplicationWindow {
                 text: "Lightning Network (" +
                       (peersModel.totalAvailableFunds / 1000).toLocaleString(locale, 'f', 0) +
                       " SAT)"
-                iconName: "view-list-icons"
+                iconName: Kirigami.Settings.isMobile ? "wallet" : "view-list-icons"
                 Kirigami.Action {
                     text: qsTr("Connect to Peer")
                     iconName: "contact-new"
@@ -108,7 +108,7 @@ Kirigami.ApplicationWindow {
             },
             Kirigami.Action {
                 text: qsTr("Settings")
-                iconName: "network-workgroup"
+                iconName: "settings"
                 onTriggered: {
                     nodeSettingsSheet.sheetOpen = true;
                 }
@@ -231,7 +231,7 @@ Kirigami.ApplicationWindow {
             actions {
                 main: Kirigami.Action {
                     visible: lightningModel.connectedToDaemon
-                    iconName: "autorenew"
+                    iconName: "loop"
                     text: qsTr("Autoconnect")
                     onTriggered: {
                         // autopilot here
