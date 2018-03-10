@@ -17,7 +17,7 @@ QHash<int, QByteArray> PeersModel::roleNames() const {
 PeersModel::PeersModel(QJsonRpcSocket *rpcSocket)
 {
     m_rpcSocket = rpcSocket;
-    m_peers = QList<Peer>();
+    m_peers = QMap<QString, Peer>();
 }
 
 void PeersModel::updatePeers()
@@ -189,7 +189,7 @@ QVariant PeersModel::data(const QModelIndex &index, int role) const
     if (index.row() < 0 || index.row() >= m_peers.count())
         return QVariant();
 
-    const Peer &peer = m_peers[index.row()];
+    const Peer &peer = m_peers[m_peers.keys()[index.row()]];
     if (role == ChannelRole)
         return peer.channel();
     else if (role == ConnectedRole)
@@ -211,13 +211,28 @@ QVariant PeersModel::data(const QModelIndex &index, int role) const
 
 void PeersModel::populatePeersFromJson(QJsonArray jsonArray)
 {
-    int previousPeerCount = m_peers.count();
-    m_peers.clear();
+    // Let's make a list of ids from JSON
+    QStringList jsonIds;
+    foreach (const QJsonValue &v, jsonArray) {
+        QJsonObject peerJsonObject = v.toObject();
+        jsonIds.append(peerJsonObject.value("id").toString());
+    }
+
+    // Remove the ones not in JSON
+    foreach (QString id, m_peers.keys()) {
+            if (!jsonIds.contains(id)) {
+            // not there remove his
+            beginRemoveRows(QModelIndex(),
+                            m_peers.keys().indexOf(id),
+                            m_peers.keys().indexOf(id));
+            m_peers.remove(id);
+            endRemoveRows();
+        }
+    }
+
 
     foreach (const QJsonValue &v, jsonArray)
     {
-        beginInsertRows(QModelIndex(), rowCount(), rowCount());
-
         QJsonObject peerJsonObject = v.toObject();
 
         Peer peer;
@@ -241,23 +256,25 @@ void PeersModel::populatePeersFromJson(QJsonArray jsonArray)
 
         peer.setState((Peer::PeerState)peerJsonObject.value("state").toInt());
 
-        m_peers.append(peer);
-        dataChanged(index(0, 0), index(rowCount() - 1, 0));
+        if (m_peers.contains(peer.id())) {
+            m_peers.insert(peer.id(), peer);
+            // TODO: how to call this bastard
+            dataChanged(index(0, 0), index(rowCount() - 1, 0));
+        }
+        else {
+            beginInsertRows(QModelIndex(), rowCount(), rowCount());
+            m_peers.insert(peer.id(), peer);
+            endInsertRows();
+        }
     }
 
     emit totalAvailableFundsChanged();
 
-    if (m_peers.count() > previousPeerCount) {
-        endInsertRows();
-        return;
-    }
-    else if (m_peers.count() == 0) {
-        endResetModel();
-        return;
-    }
-    else if (m_peers.count() < previousPeerCount) {
-        endRemoveRows();
-    }
+    //    else if (m_peers.count() < previousPeerCount) {
+    //        // FIXXX
+    //        //beginRemoveRows(index, 0, previousPeerCount);
+    //        endRemoveRows();
+    //    }
 }
 
 int PeersModel::totalAvailableFunds()

@@ -123,7 +123,7 @@ private slots:
     void disconnectRequestFinished();
 
 private:
-    QList<Peer> m_peers;
+    QMap<QString, Peer> m_peers;
     QJsonRpcSocket* m_rpcSocket;
 };
 
