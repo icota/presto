@@ -384,7 +384,7 @@ void LightningModel::unixSocketError(QLocalSocket::LocalSocketError socketError)
 {
     //qDebug() << "Couldn't connect to daemon: " << socketError;
     if (socketError != QLocalSocket::OperationError) {
-        launchDaemon();
+        //launchDaemon();
     }
 }
 
