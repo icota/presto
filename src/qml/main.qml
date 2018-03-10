@@ -94,7 +94,7 @@ Kirigami.ApplicationWindow {
 
             Kirigami.Action {
                 text: qsTr("Preferences")
-                iconName: "applications-system"
+                iconName: Kirigami.Settings.isMobile ? "timeline" : "applications-system"
                 onTriggered: {
                     preferencesSheet.sheetOpen = true;
                 }
@@ -108,7 +108,7 @@ Kirigami.ApplicationWindow {
             },
             Kirigami.Action {
                 text: qsTr("Settings")
-                iconName: "settings"
+                iconName: Kirigami.Settings.isMobile ? "settings" : "applications-system"
                 onTriggered: {
                     nodeSettingsSheet.sheetOpen = true;
                 }
@@ -133,7 +133,7 @@ Kirigami.ApplicationWindow {
             actions {
                 main: Kirigami.Action {
                     visible: lightningModel.connectedToDaemon
-                    iconName: "document-send"
+                    iconName: Kirigami.Settings.isMobile ? "send" : "document-send"
                     text: qsTr("Pay")
                     onTriggered: {
                         captureInvoiceSheet.sheetOpen = !captureInvoiceSheet.sheetOpen
@@ -263,8 +263,8 @@ Kirigami.ApplicationWindow {
                     GenericListDelegate {
                         indicator.color: connected && peerstatestring == "CHANNELD_NORMAL" ? "green" : connected ? "orange" : "red"
                         indicatorTooltip: connected ?
-                                              qsTr("Connected Status") + ": " + peerstatestring : qsTr("Disconnected")
-                        label.text: peerid.substring(0, 10) + (connected ? " (" + netaddress + ")" : qsTr(" (Disconnected)"))
+                                              qsTr("Connected Status") + ": " + peerstatestring : qsTr("disconnected")
+                        label.text: peerid.substring(0, 10) + (connected ? " (" + netaddress + ")" : qsTr(" (disconnected)"))
                         status.text: peerstatestring
                         msatoshiAmount.amount: msatoshitous
                     }

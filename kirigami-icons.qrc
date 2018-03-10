@@ -4,5 +4,11 @@
         <file alias="loop.svg">3rdparty/material-icons/av/svg/production/ic_loop_24px.svg</file>
         <file alias="wallet.svg">3rdparty/material-icons/action/svg/production/ic_account_balance_wallet_24px.svg</file>
         <file alias="view-list-icons.svg">3rdparty/material-icons/navigation/svg/production/ic_apps_24px.svg</file>
+        <file alias="send.svg">3rdparty/material-icons/content/svg/production/ic_send_24px.svg</file>
+        <file alias="help-about.svg">3rdparty/material-icons/action/svg/production/ic_help_24px.svg</file>
+        <file alias="contact-new.svg">3rdparty/material-icons/social/svg/production/ic_person_add_24px.svg</file>
+        <file alias="document-new.svg">3rdparty/material-icons/action/svg/production/ic_note_add_24px.svg</file>
+        <file alias="network-workgroup.svg">3rdparty/material-icons/action/svg/production/ic_account_circle_24px.svg</file>
+        <file alias="timeline.svg">3rdparty/material-icons/action/svg/production/ic_timeline_24px.svg</file>
     </qresource>
 </RCC>
