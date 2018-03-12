@@ -14,13 +14,11 @@ Kirigami.ApplicationWindow {
     header: Kirigami.ApplicationHeader {
         headerStyle: Kirigami.ApplicationHeaderStyle.TabBar
         backButtonEnabled: false
-        minimumHeight: Kirigami.Units.gridUnit * 2.5
-        preferredHeight: Kirigami.Units.gridUnit * 2.5
-        maximumHeight: Kirigami.Units.gridUnit * 2.5
+        minimumHeight: Kirigami.Settings.isMobile ? Kirigami.Units.gridUnit * 1.8 : Kirigami.Units.gridUnit * 2.5
+        preferredHeight: Kirigami.Settings.isMobile ? Kirigami.Units.gridUnit * 1.8 : Kirigami.Units.gridUnit * 2.5
+        maximumHeight: Kirigami.Settings.isMobile ? Kirigami.Units.gridUnit * 1.8 : Kirigami.Units.gridUnit * 2.5
     }
     globalDrawer: Kirigami.GlobalDrawer {
-        // Depends on the screen
-        //drawerOpen: false
         id: globalDrawer
 
         topContent: [
@@ -129,7 +127,7 @@ Kirigami.ApplicationWindow {
         id: transactionsPageComponent
 
         Kirigami.ScrollablePage {
-            title: qsTr("Payments") + " (" + paymentsListView.count + ")"
+            title: Kirigami.Settings.isMobile ? qsTr("PAYMENTS") : qsTr("Payments") + " (" + paymentsListView.count + ")"
             actions {
                 main: Kirigami.Action {
                     visible: lightningModel.connectedToDaemon
@@ -173,7 +171,7 @@ Kirigami.ApplicationWindow {
         id: invoicesPageComponent
 
         Kirigami.ScrollablePage {
-            title: qsTr("Invoices") + " (" + invoicesListView.count + ")"
+            title: Kirigami.Settings.isMobile ? qsTr("INVOICES") : qsTr("Invoices") + " (" + invoicesListView.count + ")"
 
             actions {
                 main: Kirigami.Action {
@@ -226,7 +224,7 @@ Kirigami.ApplicationWindow {
 
         Kirigami.ScrollablePage {
             id: peersScrollablePage
-            title: qsTr("Peers") + " (" + peersListView.count + ")"
+            title: Kirigami.Settings.isMobile ? qsTr("PEERS") : qsTr("Peers") + " (" + peersListView.count + ")"
 
             actions {
                 main: Kirigami.Action {
