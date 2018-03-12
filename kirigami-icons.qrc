@@ -10,5 +10,14 @@
         <file alias="document-new.svg">3rdparty/material-icons/action/svg/production/ic_note_add_24px.svg</file>
         <file alias="network-workgroup.svg">3rdparty/material-icons/action/svg/production/ic_account_circle_24px.svg</file>
         <file alias="timeline.svg">3rdparty/material-icons/action/svg/production/ic_timeline_24px.svg</file>
+        <file alias="go-previous-symbolic.svg">3rdparty/material-icons/navigation/svg/production/ic_chevron_left_24px.svg</file>
+        <file alias="go-next-symbolic.svg">3rdparty/material-icons/navigation/svg/production/ic_chevron_right_24px.svg</file>
+        <file>3rdparty/material-icons/navigation/svg/production/ic_arrow_back_24px.svg</file>
+        <file alias="go-down.svg">3rdparty/material-icons/navigation/svg/production/ic_arrow_downward_24px.svg</file>
+        <file>3rdparty/material-icons/navigation/svg/production/ic_arrow_forward_24px.svg</file>
+        <file alias="go-up.svg">3rdparty/material-icons/navigation/svg/production/ic_arrow_upward_24px.svg</file>
+        <file alias="dialog-close.svg">3rdparty/material-icons/navigation/svg/production/ic_close_24px.svg</file>
+        <file alias="list-add.svg">3rdparty/material-icons/content/svg/production/ic_add_24px.svg</file>
+        <file alias="overflow-menu.svg">3rdparty/material-icons/navigation/svg/production/ic_more_horiz_24px.svg</file>
     </qresource>
 </RCC>
