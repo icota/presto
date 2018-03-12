@@ -284,8 +284,8 @@ void LightningModel::retryRpcConnection()
 {
     m_connectionRetryTimer->stop();
 
-    // Let's retry every sec
-    m_connectionRetryTimer->setInterval(1000);
+    // Let's retry every 10 secs
+    m_connectionRetryTimer->setInterval(10000);
     m_connectionRetryTimer->setSingleShot(true);
 
     // Reentrant slot right here
