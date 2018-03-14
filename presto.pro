@@ -59,7 +59,8 @@ HEADERS += \
     src/WalletModel.h \
     src/InvoicesModel.h \
     src/QClipboardProxy.h \
-    src/NodesModel.h
+    src/NodesModel.h \
+    src/AndroidHelper.h
 
 SOURCES += \
     $${QJSONRPC_SOURCES} \
@@ -80,6 +81,7 @@ DISTFILES += \
     android/res/values/libs.xml \
     android/build.gradle \
     android/gradle/wrapper/gradle-wrapper.properties \
-    android/gradlew.bat
+    android/gradlew.bat \
+    android/src/com/codexapertus/presto/PrestoActivity.java
 
 ANDROID_PACKAGE_SOURCE_DIR = $$PWD/android

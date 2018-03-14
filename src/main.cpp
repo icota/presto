@@ -6,6 +6,7 @@
 
 #include "LightningModel.h"
 #include "QClipboardProxy.h"
+#include "AndroidHelper.h"
 
 #include "./3rdparty/kirigami/src/kirigamiplugin.h"
 #include "./3rdparty/qzxing/src/QZXing.h"
