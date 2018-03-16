@@ -1,0 +1,4 @@
+<resources>
+    <string name="lightning_apdu_service">Lightning Network NFC Service</string>
+    <string name="lightning_apdu_service_description">Quick and Easy Payments over Lightning Network</string>
+</resources>
