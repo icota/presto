@@ -6,7 +6,11 @@
 
 #include "LightningModel.h"
 #include "QClipboardProxy.h"
-#include "AndroidHelper.h"
+
+// Do we need to include this?
+//#include "AndroidHelper.h"
+
+#include "NfcSocket.h"
 
 #include "./3rdparty/kirigami/src/kirigamiplugin.h"
 #include "./3rdparty/qzxing/src/QZXing.h"
@@ -23,6 +27,8 @@ int main(int argc, char *argv[])
     LightningModel* lightningModel = new LightningModel;
 
     QQmlApplicationEngine engine;
+
+    NfcSocket nfcSocket;
 
     engine.rootContext()->setContextProperty("lightningModel", lightningModel);
 

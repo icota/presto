@@ -22,3 +22,6 @@
 [submodule "3rdparty/material-icons"]
 	path = 3rdparty/material-icons
 	url = git@github.com:google/material-design-icons.git
+[submodule "3rdparty/linux_libnfc-nci"]
+	path = 3rdparty/linux_libnfc-nci
+	url = git@github.com:NXPNFCLinux/linux_libnfc-nci.git

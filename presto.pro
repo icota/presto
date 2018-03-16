@@ -4,7 +4,10 @@ CONFIG += c++11
 android {
 message("Building for Android...")
 QT += androidextras
+HEADERS += src/AndroidHelper.h
 }
+
+LIBS += -L/usr/local/lib -lnfc_nci_linux
 
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which as been marked deprecated (the exact warnings
@@ -60,7 +63,7 @@ HEADERS += \
     src/InvoicesModel.h \
     src/QClipboardProxy.h \
     src/NodesModel.h \
-    src/AndroidHelper.h
+    src/NfcSocket.h
 
 SOURCES += \
     $${QJSONRPC_SOURCES} \
@@ -71,7 +74,8 @@ SOURCES += \
     src/WalletModel.cpp \
     src/InvoicesModel.cpp \
     src/QClipboardProxy.cpp \
-    src/NodesModel.cpp
+    src/NodesModel.cpp \
+    src/NfcSocket.cpp
 
 DISTFILES += \
     src/qml/qmldir \
