@@ -33,6 +33,8 @@ class LightningModel : public QObject
 public:
     LightningModel(QString serverName = QString(""), QObject *parent = 0);
 
+    static LightningModel* instance();
+
     PeersModel *peersModel() const;
     PaymentsModel *paymentsModel() const;
     WalletModel *walletModel() const;
@@ -64,6 +66,9 @@ public:
 
     QString bitcoinDataPath() const;
     void setBitcoinDataPath(const QString &bitcoinDataPath);
+
+private:
+    static LightningModel *sInstance;
 
 public slots:
     void startAutopilot(int amountSatoshi);

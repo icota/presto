@@ -4,6 +4,8 @@
 #include "LightningModel.h"
 #include "./3rdparty/qjsonrpc/src/qjsonrpcservicereply.h"
 
+LightningModel *LightningModel::sInstance = 0;
+
 PeersModel *LightningModel::peersModel() const
 {
     return m_peersModel;
@@ -198,6 +200,8 @@ LightningModel::LightningModel(QString serverName, QObject *parent) {
     {
         Q_UNUSED(parent);
 
+        sInstance = this;
+
         if (serverName.isEmpty()) {
 #ifdef Q_OS_ANDROID
             m_lightningRpcSocket = QDir::homePath() + "/lightning-rpc";
@@ -259,6 +263,11 @@ LightningModel::LightningModel(QString serverName, QObject *parent) {
         }
 
     }
+}
+
+LightningModel *LightningModel::instance()
+{
+    return sInstance;
 }
 
 void LightningModel::rpcConnected()
