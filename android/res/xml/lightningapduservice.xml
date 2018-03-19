@@ -6,6 +6,6 @@
         android:category="other"
         android:description="@string/lightning_apdu_service_description">
         >
-        <aid-filter android:name="F0ABCDEF0000"/>
+        <aid-filter android:name="F04C494748544E494E47"/>
     </aid-group>
 </host-apdu-service>

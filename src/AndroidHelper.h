@@ -10,8 +10,8 @@ extern "C" {
 #endif
     JNIEXPORT void JNICALL Java_com_codexapertus_presto_PrestoActivity_bolt11Received(JNIEnv *env, jobject obj, jstring Param1)
     {
-        QString bolt11 = env->GetStringUTFChars(Param1, 0);
-        qDebug() << "WE'RE IN" << bolt11 << Param1;
+        QAndroidJniObject bolt11String = QAndroidJniObject::fromLocalRef(Param1);
+        qDebug() << "WE'RE IN" << bolt11String.toString();
     }
 #ifdef __cplusplus
 }

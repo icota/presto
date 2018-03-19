@@ -12,6 +12,8 @@ import android.nfc.NfcAdapter;
 import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
 
+import com.codexapertus.presto.LightningApduService;
+
 public class PrestoActivity extends org.qtproject.qt5.android.bindings.QtActivity
 {
     public static native void bolt11Received(String bolt11);
@@ -36,6 +38,13 @@ public class PrestoActivity extends org.qtproject.qt5.android.bindings.QtActivit
                     catch(UnsupportedEncodingException exc) {
                 }
 
+                bolt11Received(bolt11);
+            }
+        }
+
+        if (intent != null && LightningApduService.ACTION_BOLT11_RECEIVED.equals(intent.getAction())) {
+            String bolt11 = intent.getStringExtra("bolt11");
+            if (bolt11 != null) {
                 bolt11Received(bolt11);
             }
         }

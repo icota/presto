@@ -62,8 +62,7 @@ HEADERS += \
     src/WalletModel.h \
     src/InvoicesModel.h \
     src/QClipboardProxy.h \
-    src/NodesModel.h \
-    src/NfcSocket.h
+    src/NodesModel.h
 
 SOURCES += \
     $${QJSONRPC_SOURCES} \
@@ -74,8 +73,7 @@ SOURCES += \
     src/WalletModel.cpp \
     src/InvoicesModel.cpp \
     src/QClipboardProxy.cpp \
-    src/NodesModel.cpp \
-    src/NfcSocket.cpp
+    src/NodesModel.cpp
 
 DISTFILES += \
     src/qml/qmldir \
@@ -86,6 +84,12 @@ DISTFILES += \
     android/build.gradle \
     android/gradle/wrapper/gradle-wrapper.properties \
     android/gradlew.bat \
-    android/src/com/codexapertus/presto/PrestoActivity.java
+    android/src/com/codexapertus/presto/PrestoActivity.java \
+    android/src/com/codexapertus/presto/HexEncoder.java \
+    android/src/com/codexapertus/presto/HttpTunnelActivity.java \
+    android/src/com/codexapertus/presto/PrestoActivity.java \
+    android/res/xml/lightningapduservice.xml \
+    android/res/values/strings.xml \
+    android/src/com/codexapertus/presto/LightningApduService.java
 
 ANDROID_PACKAGE_SOURCE_DIR = $$PWD/android
