@@ -1,31 +1,38 @@
-#include "NfcSocket.h"
+﻿#include "NfcSocket.h"
+#include "NfcController.h"
 
-static nfcHostCardEmulationCallback_t nfcHceCallback;
+unsigned char SELECT_LIGHTNING[] = {0x00,0xA4,0x04,0x00,0x0A,0xF0, // Select custom AID
+                                    0x4C, // L
+                                    0x49, // I
+                                    0x47, // G
+                                    0x48, // H
+                                    0x54, // T
+                                    0x4E, // N
+                                    0x49, // I
+                                    0x4E, // N
+                                    0x47};// G
 
-void onHceDataReceived(unsigned char *data, unsigned int data_length)
-{
-    qDebug() << "(HCE)<<<:" << data;
-}
+unsigned char SELECT_OK[] = {0x90, 0x00};
+unsigned char BOLT11_COMMAND = 0x01; // Followed by BOLT11 string
+unsigned char NFC_SOCKET_COMMAND = 0x02; // Followed by peer ID
+unsigned char BOLT11_RECEIVED_NO_SOCKET = 0x03;
 
-void onHostCardEmulationActivated()
-{
+static const int packetSize = 128; // Need to keep this below 189 for some reason
 
-}
-
-void onHostCardEmulationDeactivated()
-{
-
-}
 
 NfcSocket::NfcSocket(QObject *parent) : QObject(parent)
 {
-    nfcHceCallback.onDataReceived = onHceDataReceived;
-    nfcHceCallback.onHostCardEmulationActivated = onHostCardEmulationActivated;
-    nfcHceCallback.onHostCardEmulationDeactivated = onHostCardEmulationDeactivated;
-    nfcHce_registerHceCallback(&nfcHceCallback);
+    bolt11 = "lntb15u1pd276zcpp5mnkhsg09uraqjyvw636emw8aga6yg7smmr6d6u26yg4t9dxkdyvqdq4"
+             "xysyymr0vd4kzcmrd9hx7cqp2p6nuyvw0yg96dx6l9zg4mffdtl53tval406lqwe8hu85rrle"
+             "dmspwnmgw73emnccg4skel56me6wy40mhf0024qzrwpxhmsv4sfvtqspe3mgsy";
 
-    int ret = nfcManager_doInitialize();
-    qDebug() << "nfc init: " << ret;
+    initializeNfc();
+
+    m_tagStatusCheckTimer = new QTimer();
+    m_tagStatusCheckTimer->setSingleShot(false);
+    m_tagStatusCheckTimer->setInterval(100);
+    connect(m_tagStatusCheckTimer, &QTimer::timeout, this, &NfcSocket::nfcTagStatusCheck);
+    m_tagStatusCheckTimer->start();
 
     m_socketServer = new QLocalServer(this);
     m_socketServer->setSocketOptions(QLocalServer::WorldAccessOption);
@@ -34,6 +41,60 @@ NfcSocket::NfcSocket(QObject *parent) : QObject(parent)
     }
     else {
         qDebug() << "failed!";
+    }
+}
+
+void NfcSocket::onNfcTagArrival()
+{
+    unsigned char response[2];
+    int res = nfcTag_transceive(currentTagInfo.handle, SELECT_LIGHTNING, sizeof(SELECT_LIGHTNING), response, sizeof(response), 2000);
+    if (res == 0) {
+        qDebug() << "NFC transcieve failure!";
+    }
+    else {
+        qDebug() << "NFC received: " << response[0] << response[1];
+        if (memcmp(response, SELECT_OK, sizeof(res))){
+            qDebug() << "NFC device has lightning support, sending BOLT11";
+            sendBolt11ToHceDevice();
+        }
+    }
+}
+
+void NfcSocket::onNfcTagDeparture()
+{
+
+}
+
+void NfcSocket::sendBolt11ToHceDevice()
+{
+    QByteArray bolt11Bytes = QByteArray(bolt11);
+
+    int payloadSize = packetSize - 3;
+    int numberOfPackets = (bolt11Bytes.size() / payloadSize) + 1;
+
+    for (int i = 0; i < numberOfPackets; i++)
+    {
+        QByteArray bolt11Chunk = bolt11Bytes.left(payloadSize);
+        bolt11Bytes = bolt11Bytes.mid(payloadSize);
+
+        unsigned char command [3 + bolt11Chunk.length()];
+        command[0] = BOLT11_COMMAND;
+        command[1] = i;
+        command[2] = numberOfPackets;
+        memcpy(&command[3], (unsigned char*)bolt11Chunk.data(), bolt11Chunk.length());
+
+        unsigned char response[100];
+        int res = nfcTag_transceive(currentTagInfo.handle, command, sizeof(command), response, sizeof(response), 2000);
+
+        if (res == 0) {
+            qDebug() << "NFC transcieve failure!";
+        }
+        else {
+            qDebug() << "NFC received: " << response[0];
+            if (response[0] == BOLT11_RECEIVED_NO_SOCKET) {
+                qDebug() << "BOLT11 received, no socket pls";
+            }
+        }
     }
 }
 
@@ -48,17 +109,25 @@ void NfcSocket::readyRead()
 {
     QByteArray buffer = m_socket->readAll();
     qDebug() << "(SOCKET)<<<: " << buffer; // probably better to read(max)
+    //    if(res == 0)
+    //    {
+    //        qDebug() << "(HCE)>>>:" << buffer;
+    //    }
+    //    else {
+    //        qDebug() << "HCE FAILURE";
+    //    }
+}
 
-    // forward to NFC
-
-    int res = nfcHce_sendCommand((unsigned char*)buffer.data(), buffer.length());
-
-    if(res == 0)
-    {
-        qDebug() << "(HCE)>>>:" << buffer;
-    }
-    else {
-        qDebug() << "HCE FAILURE";
+void NfcSocket::nfcTagStatusCheck()
+{
+    if(tagPresent != m_nfcTagPresentLastState) {
+        m_nfcTagPresentLastState = tagPresent;
+        if (m_nfcTagPresentLastState == true) {
+            onNfcTagArrival();
+        }
+        else {
+            onNfcTagDeparture();
+        }
     }
 }
 

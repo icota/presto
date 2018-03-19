@@ -1,12 +1,10 @@
-#ifndef NFCSOCKET_H
-#define NFCSOCKET_H
+#ifndef NFCCONTROLLER_H
+#define NFCCONTROLLER_H
 
 #include <QObject>
 #include <QLocalServer>
 #include <QLocalSocket>
-
-#include "3rdparty/linux_libnfc-nci/src/include/linux_nfc_api.h"
-//#include "3rdparty/linux_libnfc-nci/src/service/interface/nativeNfcManager.h"
+#include <QTimer>
 
 class NfcSocket : public QObject
 {
@@ -18,13 +16,28 @@ private:
     QLocalServer* m_socketServer;
     QLocalSocket* m_socket;
 
+    bool m_nfcTagPresentLastState;
+
+    QTimer* m_tagStatusCheckTimer;
+
+    QByteArray bolt11;
+
+    QString m_nfcPeerId;
+
+private:
+    void onNfcTagArrival();
+    void onNfcTagDeparture();
+    void sendBolt11ToHceDevice();
+
+
 private slots:
     void newConnection();
     void readyRead();
+    void nfcTagStatusCheck();
 
 signals:
 
 public slots:
 };
 
-#endif // NFCSOCKET_H
+#endif // NFCCONTROLLER_H
