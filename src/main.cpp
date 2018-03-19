@@ -7,8 +7,9 @@
 #include "LightningModel.h"
 #include "QClipboardProxy.h"
 
-// Do we need to include this?
-//#include "AndroidHelper.h"
+#ifdef Q_OS_ANDROID
+#include "AndroidHelper.h"
+#endif
 
 #include "NfcSocket.h"
 
@@ -24,11 +25,13 @@ int main(int argc, char *argv[])
     app.setOrganizationDomain("codexapertus.com");
     app.setApplicationName("Presto!");
 
+#ifndef Q_OS_ANDROID
+    NfcSocket nfcSocket;
+#endif
+
     LightningModel* lightningModel = new LightningModel;
 
     QQmlApplicationEngine engine;
-
-    NfcSocket nfcSocket;
 
     engine.rootContext()->setContextProperty("lightningModel", lightningModel);
 

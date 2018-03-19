@@ -1,0 +1,4 @@
+#ifndef NFCCONTROLLER_H
+#define NFCCONTROLLER_H
+
+#endif // NFCCONTROLLER_H
