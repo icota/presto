@@ -7,7 +7,16 @@ QT += androidextras
 HEADERS += src/AndroidHelper.h
 }
 
+linux:!android {
 LIBS += -L/usr/local/lib -lnfc_nci_linux
+
+HEADERS += \
+    src/NfcSocket.h \
+    src/NfcController.h
+
+SOURCES += \
+    src/NfcSocket.cpp
+}
 
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which as been marked deprecated (the exact warnings
