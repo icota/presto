@@ -15,16 +15,20 @@ Kirigami.OverlaySheet {
 
     ColumnLayout {
         QRCode {
-            Layout.alignment: Qt.AlignCenter
-            value : "lightning:" + bolt11  
+            Layout.alignment: Qt.AlignHCenter
+            width: parent.width * 0.65
+            value : "lightning:" + bolt11
         }
 
-        QQC2.Label {         
+        QQC2.Label {
             wrapMode: Text.WrapAnywhere
             font: fixedFont
             text: bolt11
+            Layout.alignment: Qt.AlignHCenter
+            horizontalAlignment: Text.AlignHCenter
+            Layout.maximumWidth: parent.width * 0.65
             MouseArea {
-                anchors.fill: parent
+                //anchors.fill: parent
                 onClicked: {
                     clipboard.setText(bolt11)
                     showPassiveNotification(qsTr("Invoice Copied to Clipboard"))
