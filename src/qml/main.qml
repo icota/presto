@@ -98,14 +98,14 @@ Kirigami.ApplicationWindow {
             },
             Kirigami.Action {
                 text: qsTr("Preferences")
-                iconName: Kirigami.Settings.isMobile ? "timeline" : "applications-system"
+                iconName: Kirigami.Settings.isMobile ? "timeline" : "edit-select-all"
                 onTriggered: {
                     preferencesSheet.sheetOpen = true;
                 }
             },
             Kirigami.Action {
                 text: qsTr("My Node")
-                iconName: "network-workgroup"
+                iconName: Kirigami.Settings.isMobile ? "network-workgroup" : "computer"
                 onTriggered: {
                     networkSheet.sheetOpen = true;
                 }
@@ -275,7 +275,7 @@ Kirigami.ApplicationWindow {
 
                     actions: [
                         Kirigami.Action {
-                            iconName: "network-wired"
+                            iconName: "network-wired" // Missing this icon on android
                             text: qsTr("Connect to Peer")
                             visible: false // Not sure if we need this
                             enabled: !connected
