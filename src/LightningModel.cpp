@@ -194,6 +194,7 @@ void LightningModel::lightningProcessFinished(int exitCode)
         emit rpcConnectionError();
     }
     qDebug() << stdError;
+    m_lightningDaemonProcess->deleteLater();
 }
 
 LightningModel::LightningModel(QString serverName, QObject *parent) {
@@ -235,6 +236,8 @@ LightningModel::LightningModel(QString serverName, QObject *parent) {
         m_version = QString();
 
         m_connectionRetryTimer = new QTimer();
+        QObject::connect(m_connectionRetryTimer, &QTimer::timeout, this, &LightningModel::retryRpcConnection);
+
         m_unixSocket = new QLocalSocket();
         m_rpcSocket = new QJsonRpcSocket(m_unixSocket);
 
@@ -298,7 +301,6 @@ void LightningModel::retryRpcConnection()
     m_connectionRetryTimer->setSingleShot(true);
 
     // Reentrant slot right here
-    QObject::connect(m_connectionRetryTimer, &QTimer::timeout, this, &LightningModel::retryRpcConnection);
     m_connectionRetryTimer->start();
 
     if (m_unixSocket->state() == QLocalSocket::UnconnectedState) {
