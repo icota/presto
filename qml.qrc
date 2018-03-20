@@ -23,5 +23,6 @@
         <file>src/qml/NetworkSheet.qml</file>
         <file>src/qml/NodeSettingsSheet.qml</file>
         <file>src/qml/PreferencesSheet.qml</file>
+        <file>src/qml/PointOfSaleLayer.qml</file>
     </qresource>
 </RCC>
