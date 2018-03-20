@@ -7,9 +7,9 @@ import "." // QTBUG-34418
 ColumnLayout {
     property int amount: 0
     QQC2.Label {
-        
+        // Changed it to show SAT
         font.pixelSize: 16
-        text: amount.toLocaleString(locale, 'f' , 0) + " mSAT"
+        text: (amount/1000).toLocaleString(locale, 'f' , 0) + " SAT"
     }
 
     QQC2.Label {
