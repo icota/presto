@@ -5,6 +5,7 @@ android {
 message("Building for Android...")
 QT += androidextras
 HEADERS += src/AndroidHelper.h
+SOURCES += src/AndroidHelper.cpp
 }
 
 linux:!android {
@@ -93,9 +94,6 @@ DISTFILES += \
     android/build.gradle \
     android/gradle/wrapper/gradle-wrapper.properties \
     android/gradlew.bat \
-    android/src/com/codexapertus/presto/PrestoActivity.java \
-    android/src/com/codexapertus/presto/HexEncoder.java \
-    android/src/com/codexapertus/presto/HttpTunnelActivity.java \
     android/src/com/codexapertus/presto/PrestoActivity.java \
     android/res/xml/lightningapduservice.xml \
     android/res/values/strings.xml \

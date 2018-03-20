@@ -16,7 +16,10 @@ private:
     QLocalServer* m_socketServer;
     QLocalSocket* m_socket;
 
+    QString m_socketServerPath;
+
     bool m_nfcTagPresentLastState;
+    bool m_askForSocketData;
 
     QTimer* m_tagStatusCheckTimer;
 

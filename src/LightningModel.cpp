@@ -322,6 +322,7 @@ void LightningModel::setBitcoinDataPath(const QString &bitcoinDataPath)
 
 void LightningModel::startAutopilot(int amountSatoshi)
 {
+    // TODO: https://lists.linuxfoundation.org/pipermail/lightning-dev/2018-March/001108.html
     m_autopilotChannelAmount = amountSatoshi;
 
     Node randomNode = m_nodesModel->getRandomAutoconnectNode();

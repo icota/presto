@@ -13,13 +13,9 @@ import java.io.IOException;
 import java.util.Arrays;
 
 /**
- * @author Alex Suzuki, Classy Code GmbH, 2017
+ * @author Igor Cota, Codex Apertus d.o.o., 2018
  */
 public class LightningApduService extends HostApduService {
-
-//    public static void startMyService(Context ctx) {
-//            ctx.startService(new Intent(ctx, LightningApduService.class));
-//        }
 
     public static final String ACTION_BOLT11_RECEIVED = "lightning.action.BOLT11_RECEIVED";
 
@@ -66,17 +62,18 @@ public class LightningApduService extends HostApduService {
     // Custom protocol responses by phone
     private static final byte[] BOLT11_RECEIVED_NO_SOCKET = {(byte) 0x03};
 
-    private static final byte READ_URL_RESPONSE = (byte) 0x00;
+    private static final byte NFC_SOCKET_STREAM = (byte) 0x04;
+    private static final byte[] NFC_SOCKET_STREAM_NO_DATA = {(byte) 0x05};
     private static final byte[] DATA_RESPONSE_OK = {(byte) 0x00};
     private static final byte DATA_RESPONSE_NOK = (byte) 0x01;
 
+    private String lightningPeerId;
+
+    private boolean lightningOnline;
     private boolean isProcessing;
     private boolean isReceivingBolt11;
 
-    private int nextSeqNo;
-    private ByteArrayOutputStream buffer;
-    private String url;
-
+    private ByteArrayOutputStream socketSendBuffer;
     private ByteArrayOutputStream bolt11receiveBuffer;
     
     @Override
@@ -84,9 +81,12 @@ public class LightningApduService extends HostApduService {
         Log.i(TAG, "Created");
         super.onCreate();
 
+        socketSendBuffer = new ByteArrayOutputStream();
         bolt11receiveBuffer = new ByteArrayOutputStream();
         isProcessing = false;
         isReceivingBolt11 = false;
+        lightningOnline = false;
+        lightningPeerId = "testtest";
     }
 
     @Override
@@ -110,25 +110,37 @@ public class LightningApduService extends HostApduService {
             if (totalPackets > 1) {
                 isReceivingBolt11 = true;
                 if (seqNo == totalPackets - 1) { // Last packet
-                    Intent intent = new Intent(ACTION_BOLT11_RECEIVED);
-                    intent.putExtra("bolt11", bolt11receiveBuffer.toString());
-                    startActivity(intent);
-                    return BOLT11_RECEIVED_NO_SOCKET;
+                    return checkIfWeAreOnlineAndReply();
                 }
                 return DATA_RESPONSE_OK;
             }
             else {
-                Intent intent = new Intent(ACTION_BOLT11_RECEIVED);
-                intent.putExtra("bolt11", bolt11receiveBuffer.toString());
-                startActivity(intent);
-                return BOLT11_RECEIVED_NO_SOCKET;
+                return checkIfWeAreOnlineAndReply();
             }
         }
         else if (commandApdu[0] == NFC_SOCKET_COMMAND) {
             return UNKNOWN_COMMAND_RESPONSE;
         }
+        else if (commandApdu[0] == NFC_SOCKET_STREAM) {
+            // forward incoming data to socket
+            // empty our buffer
+            if (socketSendBuffer.size() <= 0) {
+                // Nothing to send
+                return NFC_SOCKET_STREAM_NO_DATA;
+            }
+            else {
+                ByteArrayOutputStream commandOutputStream = new ByteArrayOutputStream();
+                commandOutputStream.write(NFC_SOCKET_STREAM);
+                try {
+                    commandOutputStream.write(socketSendBuffer.toByteArray());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                return commandOutputStream.toByteArray();
+            }
+        }
         else {
-            Log.e(TAG, "Terminal sent unknown command: " + HexEncoder.convertByteArrayToHexString(commandApdu));
             return UNKNOWN_COMMAND_RESPONSE;
         }
     }
@@ -140,6 +152,28 @@ public class LightningApduService extends HostApduService {
         isProcessing = false;
         isReceivingBolt11 = false;
         notifyLinkDeactivated(reason);
+    }
+
+    private byte[] checkIfWeAreOnlineAndReply() {
+        Intent intent = new Intent(ACTION_BOLT11_RECEIVED);
+        intent.putExtra("bolt11", bolt11receiveBuffer.toString());
+        startActivity(intent);
+
+        if (lightningOnline) {
+            ByteArrayOutputStream commandOutputStream = new ByteArrayOutputStream();
+            commandOutputStream.write(NFC_SOCKET_COMMAND);
+            try {
+                commandOutputStream.write(lightningPeerId.getBytes());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            return commandOutputStream.toByteArray();
+        }
+        else {
+            return BOLT11_RECEIVED_NO_SOCKET;
+        }
+
     }
 
     private void notifyRequestSent() {

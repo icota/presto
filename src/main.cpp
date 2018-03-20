@@ -8,10 +8,10 @@
 #include "QClipboardProxy.h"
 
 #ifdef Q_OS_ANDROID
-#include "AndroidHelper.h"
-#endif
-
+    #include "AndroidHelper.h"
+#else
 #include "NfcSocket.h"
+#endif
 
 #include "./3rdparty/kirigami/src/kirigamiplugin.h"
 #include "./3rdparty/qzxing/src/QZXing.h"
@@ -25,11 +25,13 @@ int main(int argc, char *argv[])
     app.setOrganizationDomain("codexapertus.com");
     app.setApplicationName("Presto!");
 
-#ifndef Q_OS_ANDROID
+    LightningModel* lightningModel = new LightningModel;
+
+#ifdef Q_OS_ANDROID
+    AndroidHelper androidHelper;
+#else
     NfcSocket nfcSocket;
 #endif
-
-    LightningModel* lightningModel = new LightningModel;
 
     QQmlApplicationEngine engine;
 

@@ -1,20 +1,35 @@
 #ifndef ANDROIDHELPER_H
 #define ANDROIDHELPER_H
 
-#include <QAndroidJniObject>
-#include <jni.h>
-#include "LightningModel.h"
 #include <QDebug>
 
-extern "C" {
-    JNIEXPORT void JNICALL Java_com_codexapertus_presto_PrestoActivity_bolt11Received(JNIEnv *env, jobject obj, jstring Param1)
+#include <QLocalServer>
+#include <QDir>
+
+#include "LightningModel.h"
+
+class AndroidHelper : public QObject
+{
+    Q_OBJECT
+public:
+    explicit AndroidHelper(QObject *parent = nullptr);
+
+private slots:
+    void newConnection()
     {
-        Q_UNUSED(env);
-        Q_UNUSED(obj);
-        QAndroidJniObject bolt11String = QAndroidJniObject::fromLocalRef(Param1);
-        qDebug() << "BOLT11 received from JNI: " << bolt11String.toString();
-        LightningModel::instance()->paymentsModel()->decodePayment(bolt11String.toString());
+        qDebug() << "New connection on android socket";
     }
-}
+
+    void readyRead()
+    {
+        qDebug() << "Data read on android socket";
+    }
+
+private:
+    QLocalServer* m_socketServer;
+    QLocalSocket* m_socket;
+    QString m_socketServerPath;
+
+};
 
 #endif // ANDROIDHELPER_H
