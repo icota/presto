@@ -2,6 +2,7 @@ import QtQuick 2.7
 import QtQuick.Controls 2.0 as QQC2
 import QtQuick.Layouts 1.3
 import org.kde.kirigami 2.1 as Kirigami
+import QtGraphicalEffects 1.0
 
 import QtMultimedia 5.8
 import QZXing 2.3
@@ -9,6 +10,9 @@ import QZXing 2.3
 Rectangle {
     id: viewfinderRectangle
     color: "black"
+
+    radius: Kirigami.Units.gridUnit / 2
+    clip: true
 
     property alias camera: camera
     property alias zxingFilter: zxingFilter
@@ -20,6 +24,10 @@ Rectangle {
         filters: [ zxingFilter ]
         anchors.fill: parent
         fillMode: VideoOutput.PreserveAspectCrop
+        layer.enabled: true
+            layer.effect: OpacityMask {
+                maskSource: viewfinderRectangle
+            }
     }
 
     Rectangle {
@@ -29,6 +37,7 @@ Rectangle {
         width: parent.width / 2
         height: parent.height / 2
         anchors.centerIn: parent
+        radius: Kirigami.Units.gridUnit / 2
     }
     
     Item {
