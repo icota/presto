@@ -159,7 +159,7 @@ public class LightningApduService extends HostApduService {
         intent.putExtra("bolt11", bolt11receiveBuffer.toString());
         startActivity(intent);
 
-        if (lightningOnline) {
+        if (!lightningOnline) {
             ByteArrayOutputStream commandOutputStream = new ByteArrayOutputStream();
             commandOutputStream.write(NFC_SOCKET_COMMAND);
             try {

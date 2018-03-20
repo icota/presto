@@ -102,6 +102,11 @@ void NfcSocket::sendBolt11ToHceDevice()
             if (response[0] == BOLT11_RECEIVED_NO_SOCKET) {
                 qDebug() << "BOLT11 received, no socket pls";
             }
+            else if (response[0] == NFC_SOCKET_COMMAND) {
+                qDebug() << "Device wants a socket connection";
+                // send the ip over to peermodel?
+            }
+
         }
     }
 }
