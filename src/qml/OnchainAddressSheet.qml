@@ -15,7 +15,8 @@ Kirigami.OverlaySheet {
 
     ColumnLayout {
         QRCode {
-            Layout.alignment: Qt.AlignCenter
+            Layout.alignment: Qt.AlignHCenter
+            width: parent.width * 0.8
             value : "bitcoin:" + onchainAddress
         }
 

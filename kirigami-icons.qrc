@@ -16,8 +16,10 @@
         <file alias="go-down.svg">3rdparty/material-icons/navigation/svg/production/ic_arrow_downward_24px.svg</file>
         <file>3rdparty/material-icons/navigation/svg/production/ic_arrow_forward_24px.svg</file>
         <file alias="go-up.svg">3rdparty/material-icons/navigation/svg/production/ic_arrow_upward_24px.svg</file>
-        <file alias="dialog-close.svg">3rdparty/material-icons/navigation/svg/production/ic_close_24px.svg</file>
+        <file alias="dialog-cancel.svg">3rdparty/material-icons/navigation/svg/production/ic_close_24px.svg</file>
         <file alias="list-add.svg">3rdparty/material-icons/content/svg/production/ic_add_24px.svg</file>
         <file alias="overflow-menu.svg">3rdparty/material-icons/navigation/svg/production/ic_more_horiz_24px.svg</file>
+        <file alias="contactless.svg">3rdparty/material-icons/communication/svg/production/ic_rss_feed_24px.svg</file>
+        <file>3rdparty/material-icons/notification/svg/production/ic_tap_and_play_24px.svg</file>
     </qresource>
 </RCC>
