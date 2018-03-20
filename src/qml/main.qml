@@ -88,8 +88,14 @@ Kirigami.ApplicationWindow {
                     }
                 }
             },
-
-
+            Kirigami.Action {
+                text: qsTr("Point of Sale")
+                iconName: ":/org/kde/kirigami/icons/3rdparty/material-icons/notification/svg/production/ic_tap_and_play_24px.svg" // how to show?
+                enabled: !Kirigami.Settings.isMobile
+                onTriggered: {
+                    pageStack.layers.push(pointOfSaleLayer);
+                }
+            },
             Kirigami.Action {
                 text: qsTr("Preferences")
                 iconName: Kirigami.Settings.isMobile ? "timeline" : "applications-system"
@@ -306,6 +312,11 @@ Kirigami.ApplicationWindow {
         pageStack.currentIndex = 0;
 
         ExchangeRate.locale = locale
+    }
+
+    // Layers
+    PointOfSaleLayer {
+        id: pointOfSaleLayer
     }
 
     // Sheets
