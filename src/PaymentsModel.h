@@ -79,6 +79,9 @@ public:
 
     void updatePayments();
 
+    int maxFeePercent() const;
+    void setMaxFeePercent(int maxFeePercent);
+
 public slots:
     void decodePayment(QString bolt11String);
     void pay(QString bolt11String);
@@ -102,6 +105,8 @@ private:
 private:
     QList<Payment> m_payments;
     QJsonRpcSocket* m_rpcSocket;
+
+    int m_maxFeePercent;
 };
 
 #endif // PAYMENTSMODEL_H

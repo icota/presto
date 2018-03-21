@@ -18,6 +18,8 @@ PaymentsModel::PaymentsModel(QJsonRpcSocket *rpcSocket)
 {
     m_rpcSocket = rpcSocket;
     m_payments = QList<Payment>();
+
+    setMaxFeePercent(100);
 }
 
 void PaymentsModel::updatePayments()
@@ -25,6 +27,7 @@ void PaymentsModel::updatePayments()
     QJsonRpcMessage message = QJsonRpcMessage::createRequest("listpayments", QJsonValue());
     QJsonRpcServiceReply* reply = m_rpcSocket->sendMessage(message);
     QObject::connect(reply, &QJsonRpcServiceReply::finished, this, &PaymentsModel::listPaymentsRequestFinished);
+    // disconnect these
 }
 
 int PaymentsModel::rowCount(const QModelIndex & parent) const
@@ -105,7 +108,7 @@ void PaymentsModel::decodePaymentRequestFinished()
 
             emit paymentDecoded(createdAt, currency, description,
                                 expiry, minFinalCltvExpiry, msatoshi,
-                                payee, paymentHash, signature, timestamp);
+                                payee, paymentHash, signature, timestamp, m_lastBolt11DecodeAttempt);
         }
     }
 }
@@ -114,6 +117,11 @@ void PaymentsModel::payRequestFinished()
 {
     QJsonRpcServiceReply *reply = static_cast<QJsonRpcServiceReply *>(sender());
     QJsonRpcMessage message = reply->response();
+
+    if (message.type() == QJsonRpcMessage::Error)
+    {
+        emit errorString(message.toObject().value("error").toObject().value("message").toString());
+    }
 
     if (message.type() == QJsonRpcMessage::Response)
     {
@@ -125,6 +133,7 @@ void PaymentsModel::payRequestFinished()
             if (resultObject.contains("preimage"))
             {
                 emit paymentPreimageReceived(resultObject.value("preimage").toString());
+                updatePayments();
             }
         }
     }
@@ -148,10 +157,21 @@ void PaymentsModel::populatePaymentsFromJson(QJsonArray jsonArray)
         payment.setDestination(PaymentJsonObject.value("destination").toString()); // TODO: Figure out why addresses are in an array
         payment.setHash(PaymentJsonObject.value("payment_hash").toString());
         payment.setStatus((Payment::PaymentStatus)PaymentJsonObject.value("status").toInt()); // TODO: Fix this
+        payment.setStatusString(PaymentJsonObject.value("status").toString());
         m_payments.append(payment);
 
         endInsertRows();
     }
+}
+
+int PaymentsModel::maxFeePercent() const
+{
+    return m_maxFeePercent;
+}
+
+void PaymentsModel::setMaxFeePercent(int maxFeePercent)
+{
+    m_maxFeePercent = maxFeePercent;
 }
 
 QString Payment::hash() const
@@ -236,6 +256,7 @@ void Payment::setStatusString(const QString &statusString)
 
 void PaymentsModel::decodePayment(QString bolt11String)
 {
+    m_lastBolt11DecodeAttempt = bolt11String;
     QJsonRpcMessage message = QJsonRpcMessage::createRequest("decodepay", QJsonValue(bolt11String));
     QJsonRpcServiceReply* reply = m_rpcSocket->sendMessage(message);
     QObject::connect(reply, &QJsonRpcServiceReply::finished, this, &PaymentsModel::decodePaymentRequestFinished);
@@ -243,7 +264,11 @@ void PaymentsModel::decodePayment(QString bolt11String)
 
 void PaymentsModel::pay(QString bolt11String)
 {
-    QJsonRpcMessage message = QJsonRpcMessage::createRequest("pay", QJsonValue(bolt11String));
+    QJsonObject paramsObject;
+    paramsObject.insert("bolt11", bolt11String);
+    paramsObject.insert("maxfeepercent", QString::number(m_maxFeePercent / 100));
+
+    QJsonRpcMessage message = QJsonRpcMessage::createRequest("pay", paramsObject);
     QJsonRpcServiceReply* reply = m_rpcSocket->sendMessage(message);
     QObject::connect(reply, &QJsonRpcServiceReply::finished, this, &PaymentsModel::payRequestFinished);
 }
