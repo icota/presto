@@ -94,7 +94,8 @@ private slots:
 signals:
     void paymentDecoded(int createdAt, QString currency, QString description,
                         int expiry, int minFinalCltvExpiry, int msatoshi,
-                        QString payee, QString paymentHash, QString signature, int timestamp);
+                        QString payee, QString paymentHash, QString signature,
+                        int timestamp, QString bolt11);
 
     void paymentPreimageReceived(QString preimage);
     void errorString(QString error);
@@ -107,6 +108,7 @@ private:
     QJsonRpcSocket* m_rpcSocket;
 
     int m_maxFeePercent;
+    QString m_lastBolt11DecodeAttempt;
 };
 
 #endif // PAYMENTSMODEL_H

@@ -378,6 +378,7 @@ Kirigami.ApplicationWindow {
             payInvoiceSheet.expiry = expiry;
             payInvoiceSheet.msatoshiAmount = msatoshi;
             payInvoiceSheet.payee = payee;
+            payInvoiceSheet.bolt11 = bolt11;
 
             payInvoiceSheet.sheetOpen = true;
 
