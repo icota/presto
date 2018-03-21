@@ -90,36 +90,38 @@ Kirigami.ApplicationWindow {
             },
             Kirigami.Action {
                 text: qsTr("Point of Sale")
-                iconName: ":/org/kde/kirigami/icons/3rdparty/material-icons/notification/svg/production/ic_tap_and_play_24px.svg" // how to show?
-                enabled: !Kirigami.Settings.isMobile
+                iconName: ":/org/kde/kirigami/icons/contactless" // how to show?
+                visible: !Kirigami.Settings.isMobile
+                enabled: lightningModel.connectedToDaemon
                 onTriggered: {
                     pageStack.layers.push(pointOfSaleLayer);
                 }
             },
             Kirigami.Action {
                 text: qsTr("Preferences")
-                iconName: Kirigami.Settings.isMobile ? "timeline" : "edit-select-all"
+                iconName: ":/org/kde/kirigami/icons/timeline"
                 onTriggered: {
                     preferencesSheet.sheetOpen = true;
                 }
             },
             Kirigami.Action {
                 text: qsTr("My Node")
-                iconName: Kirigami.Settings.isMobile ? "network-workgroup" : "computer"
+                enabled: lightningModel.connectedToDaemon
+                iconName: ":/org/kde/kirigami/icons/network-workgroup"
                 onTriggered: {
                     networkSheet.sheetOpen = true;
                 }
             },
             Kirigami.Action {
                 text: qsTr("Settings")
-                iconName: Kirigami.Settings.isMobile ? "settings" : "applications-system"
+                iconName: ":/org/kde/kirigami/icons/settings"
                 onTriggered: {
                     nodeSettingsSheet.sheetOpen = true;
                 }
             },
             Kirigami.Action {
                 text: qsTr("About")
-                iconName: "help-about"
+                iconName: ":/org/kde/kirigami/icons/help-about"
                 enabled: false
                 onTriggered: {
                 }
