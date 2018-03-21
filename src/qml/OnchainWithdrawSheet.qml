@@ -71,7 +71,7 @@ Kirigami.OverlaySheet {
             }
 
             QQC2.Label {            
-                text: qsTr("Withdraw All")
+                text: qsTr("Send All")
             }
 
         }
@@ -81,7 +81,7 @@ Kirigami.OverlaySheet {
             enabled: pasteTextArea.text.length > 0
             Layout.alignment: Qt.AlignCenter
             Layout.fillWidth: true
-            text: qsTr("Withdraw")
+            text: qsTr("Send")
             onClicked: {
                 walletModel.withdrawFunds(pasteTextArea.text,
                                           withdrawAllSwitch.checked ? "all" : amountTextField.amount)
