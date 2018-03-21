@@ -154,10 +154,10 @@ Kirigami.ApplicationWindow {
                 delegate: Kirigami.SwipeListItem {
                     supportsMouseEvents: true
                     GenericListDelegate {
-//                        indicator.color: paid ? "green" : "red"
-//                        label.text: label
-//                        status.text: "invoicestatus"
-//                        msatoshiAmount.amount: msatoshi
+                        indicator.color: paymentstatusstring == "paid "? "green" : "grey"
+                        label.text: "how to get label" /// save before we pay
+                        status.text: paymentstatusstring.charAt(0).toUpperCase() + paymentstatusstring.slice(1)
+                        msatoshiAmount.amount: msatoshi
                     }
 
                     actions: [
@@ -199,9 +199,9 @@ Kirigami.ApplicationWindow {
                 delegate: Kirigami.SwipeListItem {
                     supportsMouseEvents: true
                     GenericListDelegate {
-                        indicator.color: status === Invoice.PAID ? "green" : "grey"
+                        indicator.color: statusString === "paid" ? "green" : "grey"
                         label.text: invoicelabel
-                        status.text: qsTr("Expires at " + expiresAt);
+                        status.text: statusString.charAt(0).toUpperCase() + statusString.slice(1)
                         msatoshiAmount.amount: msatoshi
                     }
 
