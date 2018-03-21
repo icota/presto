@@ -6,11 +6,13 @@
 #include <QLocalSocket>
 #include <QTimer>
 
-class NfcSocket : public QObject
+class NfcHelper : public QObject
 {
     Q_OBJECT
 public:
-    explicit NfcSocket(QObject *parent = nullptr);
+    explicit NfcHelper(QObject *parent = nullptr);
+
+
 
 private:
     QLocalServer* m_socketServer;
@@ -23,7 +25,7 @@ private:
 
     QTimer* m_tagStatusCheckTimer;
 
-    QByteArray bolt11;
+    QString m_bolt11;
 
     QString m_nfcPeerId;
 
@@ -32,6 +34,8 @@ private:
     void onNfcTagDeparture();
     void sendBolt11ToHceDevice();
 
+public slots:
+    void setBolt11(const QString &bolt11);
 
 private slots:
     void newConnection();

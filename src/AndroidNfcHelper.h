@@ -8,11 +8,13 @@
 
 #include "LightningModel.h"
 
-class AndroidHelper : public QObject
+class AndroidNfcHelper : public QObject
 {
     Q_OBJECT
 public:
-    explicit AndroidHelper(QObject *parent = nullptr);
+    explicit AndroidNfcHelper(QObject *parent = nullptr);
+    static AndroidNfcHelper* instance();
+    void bolt11FromJni(QString bolt11);
 
 private slots:
     void newConnection()
@@ -25,10 +27,16 @@ private slots:
         qDebug() << "Data read on android socket";
     }
 
+signals:
+    void bolt11ReceivedThroughNfc(QString bolt11);
+
 private:
     QLocalServer* m_socketServer;
     QLocalSocket* m_socket;
     QString m_socketServerPath;
+
+private:
+    static AndroidNfcHelper *sInstance;
 
 };
 

@@ -4,19 +4,21 @@ CONFIG += c++11
 android {
 message("Building for Android...")
 QT += androidextras
-HEADERS += src/AndroidHelper.h
-SOURCES += src/AndroidHelper.cpp
+HEADERS +=  \
+    src/AndroidNfcHelper.h
+SOURCES +=  \
+    src/AndroidNfcHelper.cpp
 }
 
 linux:!android {
 LIBS += -L/usr/local/lib -lnfc_nci_linux
 
 HEADERS += \
-    src/NfcSocket.h \
-    src/NfcController.h
+    src/NfcController.h \
+    src/NfcHelper.h
 
 SOURCES += \
-    src/NfcSocket.cpp
+    src/NfcHelper.cpp
 }
 
 # The following define makes your compiler emit warnings if you use

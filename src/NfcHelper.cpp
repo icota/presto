@@ -1,4 +1,4 @@
-﻿#include "NfcSocket.h"
+﻿#include "NfcHelper.h"
 #include "NfcController.h"
 #include <QDir>
 
@@ -23,27 +23,25 @@ unsigned char NFC_SOCKET_STREAM_NO_DATA = 0x05;
 static const int packetSize = 128; // Need to keep this below 189 for some reason
 
 
-NfcSocket::NfcSocket(QObject *parent) : QObject(parent)
+NfcHelper::NfcHelper(QObject *parent) : QObject(parent)
 {
     m_askForSocketData = false;
     m_nfcTagPresentLastState = false;
 
-    bolt11 = "lntb15u1pd276zcpp5mnkhsg09uraqjyvw636emw8aga6yg7smmr6d6u26yg4t9dxkdyvqdq4"
-             "xysyymr0vd4kzcmrd9hx7cqp2p6nuyvw0yg96dx6l9zg4mffdtl53tval406lqwe8hu85rrle"
-             "dmspwnmgw73emnccg4skel56me6wy40mhf0024qzrwpxhmsv4sfvtqspe3mgsy";
+    m_bolt11 = "BROKEN";
 
     initializeNfc();
 
     m_tagStatusCheckTimer = new QTimer();
     m_tagStatusCheckTimer->setSingleShot(false);
     m_tagStatusCheckTimer->setInterval(100);
-    connect(m_tagStatusCheckTimer, &QTimer::timeout, this, &NfcSocket::nfcTagStatusCheck);
+    connect(m_tagStatusCheckTimer, &QTimer::timeout, this, &NfcHelper::nfcTagStatusCheck);
     m_tagStatusCheckTimer->start();
 
     m_socketServer = new QLocalServer(this);
     m_socketServer->setSocketOptions(QLocalServer::WorldAccessOption);
     if (m_socketServer->listen(QDir::tempPath() + "/nfc-socket")) {
-        connect(m_socketServer, &QLocalServer::newConnection, this, &NfcSocket::newConnection);
+        connect(m_socketServer, &QLocalServer::newConnection, this, &NfcHelper::newConnection);
         m_socketServerPath = m_socketServer->fullServerName();
         qDebug() << "Socket opened: " << m_socketServerPath;
     }
@@ -52,7 +50,12 @@ NfcSocket::NfcSocket(QObject *parent) : QObject(parent)
     }
 }
 
-void NfcSocket::onNfcTagArrival()
+void NfcHelper::setBolt11(const QString &bolt11)
+{
+    m_bolt11 = bolt11;
+}
+
+void NfcHelper::onNfcTagArrival()
 {
     unsigned char response[2];
     int res = nfcTag_transceive(currentTagInfo.handle, SELECT_LIGHTNING, sizeof(SELECT_LIGHTNING), response, sizeof(response), 2000);
@@ -68,14 +71,14 @@ void NfcSocket::onNfcTagArrival()
     }
 }
 
-void NfcSocket::onNfcTagDeparture()
+void NfcHelper::onNfcTagDeparture()
 {
 
 }
 
-void NfcSocket::sendBolt11ToHceDevice()
+void NfcHelper::sendBolt11ToHceDevice()
 {
-    QByteArray bolt11Bytes = QByteArray(bolt11);
+    QByteArray bolt11Bytes = m_bolt11.toUtf8();
 
     int payloadSize = packetSize - 3;
     int numberOfPackets = (bolt11Bytes.size() / payloadSize) + 1;
@@ -111,14 +114,14 @@ void NfcSocket::sendBolt11ToHceDevice()
     }
 }
 
-void NfcSocket::newConnection()
+void NfcHelper::newConnection()
 {
     m_socket = m_socketServer->nextPendingConnection();
     connect(m_socket, &QLocalSocket::disconnected, m_socket, &QLocalSocket::deleteLater);
-    connect(m_socket, &QLocalSocket::readyRead, this, &NfcSocket::readyRead);
+    connect(m_socket, &QLocalSocket::readyRead, this, &NfcHelper::readyRead);
 }
 
-void NfcSocket::readyRead()
+void NfcHelper::readyRead()
 {
     QByteArray buffer = m_socket->read(packetSize - 1);
 
@@ -145,7 +148,7 @@ void NfcSocket::readyRead()
     }
 }
 
-void NfcSocket::nfcTagStatusCheck()
+void NfcHelper::nfcTagStatusCheck()
 {
     if(tagPresent != m_nfcTagPresentLastState) {
         m_nfcTagPresentLastState = tagPresent;
