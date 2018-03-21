@@ -26,7 +26,7 @@ class LightningModel : public QObject
     Q_PROPERTY(int blockheight READ blockheight NOTIFY infoChanged)
     Q_PROPERTY(QString network READ network NOTIFY infoChanged)
 
-    Q_PROPERTY(bool connectedToDaemon READ connectedToDaemon NOTIFY infoChanged)
+    Q_PROPERTY(bool connectedToDaemon READ connectedToDaemon WRITE setConnectedToDaemon NOTIFY infoChanged)
 
     Q_PROPERTY(QString serverName READ serverName WRITE setServerName NOTIFY serverNameChanged)
 
@@ -127,6 +127,7 @@ private slots:
     void rpcConnected();
     void rpcMessageReceived(QJsonRpcMessage message);
     void unixSocketError(QLocalSocket::LocalSocketError unixSocketError);
+    void unixSocketDisconnected();
     void updateModels();
     void updateInfoRequestFinished();
     void lightningProcessFinished(int exitCode);

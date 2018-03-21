@@ -153,6 +153,7 @@ void LightningModel::launchDaemon()
     else
     {
         qDebug() << "Couldn't start daemon: " << m_lightningDaemonProcess->error();
+        setConnectedToDaemon(false);
     }
 }
 
@@ -205,6 +206,7 @@ void LightningModel::lightningProcessFinished(int exitCode)
     }
     qDebug() << stdError;
     m_lightningDaemonProcess->deleteLater();
+    setConnectedToDaemon(false);
 }
 
 LightningModel::LightningModel(QString serverName, QObject *parent) {
@@ -236,7 +238,7 @@ LightningModel::LightningModel(QString serverName, QObject *parent) {
         QObject::connect(m_lightningDaemonProcess, SIGNAL(finished(int)),
                          this, SLOT(lightningProcessFinished(int)));
 
-        m_connectedToDaemon = false;
+        setConnectedToDaemon(false);
 
         m_address = QString();
         m_blockheight = 0;
@@ -260,6 +262,9 @@ LightningModel::LightningModel(QString serverName, QObject *parent) {
 
         QObject::connect(m_unixSocket, SIGNAL(error(QLocalSocket::LocalSocketError)),
                          this, SLOT(unixSocketError(QLocalSocket::LocalSocketError)));
+
+        QObject::connect(m_unixSocket, SIGNAL(disconnected()),
+                         this, SLOT(unixSocketDisconnected()));
 
         QObject::connect(m_rpcSocket, &QJsonRpcAbstractSocket::messageReceived, this, &LightningModel::rpcMessageReceived);
 
@@ -286,7 +291,7 @@ LightningModel *LightningModel::instance()
 void LightningModel::rpcConnected()
 {
     m_connectionRetryTimer->stop();
-    m_connectedToDaemon = true;
+    setConnectedToDaemon(true);
 
     updateModels();
 
@@ -306,8 +311,8 @@ void LightningModel::retryRpcConnection()
 {
     m_connectionRetryTimer->stop();
 
-    // Let's retry every 10 secs
-    m_connectionRetryTimer->setInterval(10000);
+    // Let's retry every sec
+    m_connectionRetryTimer->setInterval(1000);
     m_connectionRetryTimer->setSingleShot(true);
 
     // Reentrant slot right here
@@ -320,6 +325,21 @@ void LightningModel::retryRpcConnection()
             rpcConnected();
         }
     }
+}
+
+void LightningModel::setConnectedToDaemon(bool connectedToDaemon)
+{
+    m_connectedToDaemon = connectedToDaemon;
+}
+
+QString LightningModel::manualAddress() const
+{
+    return m_manualAddress;
+}
+
+void LightningModel::setManualAddress(const QString &manualAddress)
+{
+    m_manualAddress = manualAddress;
 }
 
 QString LightningModel::bitcoinDataPath() const
@@ -408,6 +428,11 @@ void LightningModel::unixSocketError(QLocalSocket::LocalSocketError socketError)
     if (socketError != QLocalSocket::OperationError) {
         //launchDaemon();
     }
+}
+
+void LightningModel::unixSocketDisconnected()
+{
+    setConnectedToDaemon(false);
 }
 
 void LightningModel::updateModels()
