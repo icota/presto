@@ -42,8 +42,9 @@ Kirigami.OverlaySheet {
             id: pasteTextArea
             font: fixedFont
             selectByMouse: true
+            wrapMode: Text.WrapAnywhere
             Layout.alignment: Qt.AlignHCenter
-            Layout.fillWidth: true
+            Layout.maximumWidth: qrScannerViewfinder.width
             placeholderText: qsTr("Or Paste Invoice Here")
             onTextChanged: {
                 checkIfValidBolt11(text);
