@@ -99,7 +99,7 @@ void LightningModel::launchDaemon()
     QString program = cLightningDir.absolutePath() + "/lightningd";
 #else
     QDir programDir = QDir::home();
-    QString program = programDir.absolutePath() + "/Code/lightning/lightningd/lightningd"; // Hardcode some location within a snap?
+    QString program = programDir.absolutePath() + "/Code/mine/lightning/lightningd/lightningd"; // Hardcode some location within a snap?
 #endif
 
     qDebug() << "Starting: " << program;
@@ -132,6 +132,14 @@ void LightningModel::launchDaemon()
         arguments << "--bitcoin-rpcconnect=" + m_bitcoinRpcServerName
                   << "--bitcoin-rpcuser=" + m_bitcoinRpcUser
                   << "--bitcoin-rpcpassword=" + m_bitcoinRpcPassword;
+    }
+
+#ifndef Q_OS_ANDROID
+    setManualAddress("presto.bounceme.net");
+#endif
+    if (!m_manualAddress.isEmpty())
+    {
+        arguments << "--ipaddr=" + m_manualAddress;
     }
 
     qDebug() << "Arguments: " << arguments;

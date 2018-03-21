@@ -67,6 +67,9 @@ public:
     QString bitcoinDataPath() const;
     void setBitcoinDataPath(const QString &bitcoinDataPath);
 
+    QString manualAddress() const;
+    void setManualAddress(const QString &manualAddress);
+
 private:
     static LightningModel *sInstance;
 
@@ -77,6 +80,7 @@ private:
     void updateInfo();
     void launchDaemon();
     void retryRpcConnection();
+    void setConnectedToDaemon(bool connectedToDaemon);
 
 private:
     QLocalSocket* m_unixSocket;
@@ -103,6 +107,8 @@ private:
     QString m_version;
     int m_blockheight;
     QString m_network;
+
+    QString m_manualAddress;
 
     QString m_bitcoinRpcServerName;
     QString m_bitcoinRpcUser;
