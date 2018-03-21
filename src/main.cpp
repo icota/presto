@@ -8,9 +8,9 @@
 #include "QClipboardProxy.h"
 
 #ifdef Q_OS_ANDROID
-    #include "AndroidHelper.h"
+#include "AndroidNfcHelper.h"
 #else
-#include "NfcSocket.h"
+#include "NfcHelper.h"
 #endif
 
 #include "./3rdparty/kirigami/src/kirigamiplugin.h"
@@ -28,9 +28,9 @@ int main(int argc, char *argv[])
     LightningModel* lightningModel = new LightningModel;
 
 #ifdef Q_OS_ANDROID
-    AndroidHelper androidHelper;
+    AndroidNfcHelper* nfcHelper = new AndroidNfcHelper;
 #else
-    NfcSocket nfcSocket;
+    NfcHelper* nfcHelper = new NfcHelper;
 #endif
 
     QQmlApplicationEngine engine;
@@ -41,6 +41,7 @@ int main(int argc, char *argv[])
     engine.rootContext()->setContextProperty("paymentsModel", lightningModel->paymentsModel());
     engine.rootContext()->setContextProperty("walletModel", lightningModel->walletModel());
     engine.rootContext()->setContextProperty("invoicesModel", lightningModel->invoicesModel());
+    engine.rootContext()->setContextProperty("nfcHelper", nfcHelper);
     qmlRegisterUncreatableMetaObject(
       InvoiceTypes::staticMetaObject,
       "Lightning.Invoice",
