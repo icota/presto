@@ -172,6 +172,50 @@ void InvoicesModel::addInvoiceRequestFinished()
     }
 }
 
+void InvoicesModel::waitInvoice(QString label)
+{
+    QJsonObject paramsObject;
+    paramsObject.insert("label", label);
+
+    QJsonRpcMessage message = QJsonRpcMessage::createRequest("waitinvoice", paramsObject);
+    QJsonRpcServiceReply* reply = m_rpcSocket->sendMessage(message);
+    QObject::connect(reply, &QJsonRpcServiceReply::finished, this, &InvoicesModel::waitInvoiceRequestFinished);
+}
+
+void InvoicesModel::waitInvoiceRequestFinished()
+{
+    QJsonRpcServiceReply *reply = static_cast<QJsonRpcServiceReply *>(sender());
+    QJsonRpcMessage message = reply->response();
+
+    if (message.type() == QJsonRpcMessage::Error)
+    {
+        emit errorString(message.toObject().value("error").toObject().value("message").toString());
+    }
+
+    if (message.type() == QJsonRpcMessage::Response)
+    {
+        QJsonObject jsonObject = message.toObject();
+
+        QString bolt11 = jsonObject.value("result").toObject().value("bolt11").toString();
+
+        if (bolt11.length() > 0)
+        {
+            updateInvoices();
+            emit invoiceAdded(bolt11);
+        }
+
+        if (jsonObject.contains("result"))
+        {
+            QJsonObject resultObject = jsonObject.value("result").toObject();
+            if (resultObject.contains("id"))
+            {
+                // TODO: notify GUI that we've connected
+                updateInvoices();
+            }
+        }
+    }
+}
+
 void InvoicesModel::deleteInvoice(QString label, QString status)
 {
     QJsonObject paramsObject;

@@ -109,6 +109,7 @@ signals:
 private slots:
     void listInvoicesRequestFinished();
     void addInvoiceRequestFinished();
+    void waitInvoiceRequestFinished();
     void deleteInvoiceRequestFinished();
 
 private:
@@ -121,6 +122,7 @@ private:
 public slots:
     void addInvoice(QString label, QString description, QString amountInMsatoshi, int expiryInSeconds);
     void deleteInvoice(QString label, QString status);
+    void waitInvoice(QString label);
 };
 
 #endif // INVOICESMODEL_H
