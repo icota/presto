@@ -119,7 +119,7 @@ private:
     QJsonRpcSocket* m_rpcSocket;
 
 public slots:
-    void addInvoice(QString label, QString description, QString amountInMsatoshi);
+    void addInvoice(QString label, QString description, QString amountInMsatoshi, int expiryInSeconds);
     void deleteInvoice(QString label, QString status);
 };
 

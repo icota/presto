@@ -44,7 +44,8 @@ Kirigami.OverlaySheet {
             onClicked: {
                 invoicesModel.addInvoice(labelTextField.text,
                                          descriptionTextField.text,
-                                         amountTextField.amount)
+                                         amountTextField.amount,
+                                         86400) // Number of seconds in a day
             }
         }
     }

@@ -125,12 +125,13 @@ void InvoicesModel::populateInvoicesFromJson(QJsonArray jsonArray)
     }
 }
 
-void InvoicesModel::addInvoice(QString label, QString description, QString amountInMsatoshi)
+void InvoicesModel::addInvoice(QString label, QString description, QString amountInMsatoshi, int expiryInSeconds)
 {
     QJsonObject paramsObject;
     paramsObject.insert("label", label);
     paramsObject.insert("description", description);
     paramsObject.insert("msatoshi", amountInMsatoshi);
+    paramsObject.insert("expiry", QString::number(expiryInSeconds));
 
     QJsonRpcMessage message = QJsonRpcMessage::createRequest("invoice", paramsObject);
     QJsonRpcServiceReply* reply = m_rpcSocket->sendMessage(message);
