@@ -107,6 +107,8 @@ void LightningModel::launchDaemon()
     arguments << "--network=testnet"
               << "--log-level=debug";
 
+    arguments << "--cltv-final=10"; // This is to play nicely with Eclair on Android
+
 #ifdef Q_OS_ANDROID
     arguments << "--lightning-dir=" + QDir::homePath() + "/lightning-data"
               << "--pid-file=" + QDir::homePath() + "/lightning.pid"
