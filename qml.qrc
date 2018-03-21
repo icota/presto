@@ -24,5 +24,6 @@
         <file>src/qml/NodeSettingsSheet.qml</file>
         <file>src/qml/PreferencesSheet.qml</file>
         <file>src/qml/PointOfSaleLayer.qml</file>
+        <file>src/qml/PointOfSaleTotalAmount.qml</file>
     </qresource>
 </RCC>
