@@ -21,5 +21,7 @@
         <file alias="overflow-menu.svg">3rdparty/material-icons/navigation/svg/production/ic_more_horiz_24px.svg</file>
         <file alias="contactless.svg">3rdparty/material-icons/communication/svg/production/ic_rss_feed_24px.svg</file>
         <file>3rdparty/material-icons/notification/svg/production/ic_tap_and_play_24px.svg</file>
+        <file alias="handle-left.svg">3rdparty/breeze-icons/icons/actions/22/handle-left.svg</file>
+        <file alias="handle-right.svg">3rdparty/breeze-icons/icons/actions/22/handle-right.svg</file>
     </qresource>
 </RCC>
