@@ -28,7 +28,7 @@ Kirigami.OverlaySheet {
             horizontalAlignment: Text.AlignHCenter
             Layout.maximumWidth: parent.width * 0.65
             MouseArea {
-                //anchors.fill: parent
+                anchors.fill: parent
                 onClicked: {
                     clipboard.setText(bolt11)
                     showPassiveNotification(qsTr("Invoice Copied to Clipboard"))
