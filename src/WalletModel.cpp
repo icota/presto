@@ -111,6 +111,7 @@ void WalletModel::withdrawFundsRequestFinished()
 
 void WalletModel::updateFunds()
 {
+    QJsonRpcMessage message = QJsonRpcMessage::createRequest("listfunds", QJsonValue());
     SEND_MESSAGE_CONNECT_SLOT(message, &WalletModel::listFundsRequestFinished)
 }
 
