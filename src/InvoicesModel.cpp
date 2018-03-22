@@ -1,5 +1,6 @@
 #include "InvoicesModel.h"
 #include "./3rdparty/qjsonrpc/src/qjsonrpcservicereply.h"
+#include "macros.h"
 
 InvoicesModel::InvoicesModel(QJsonRpcSocket *rpcSocket)
 {
@@ -67,15 +68,12 @@ QVariant InvoicesModel::data(const QModelIndex &index, int role) const
 void InvoicesModel::updateInvoices()
 {
     QJsonRpcMessage message = QJsonRpcMessage::createRequest("listinvoices", QJsonValue());
-    QJsonRpcServiceReply* reply = m_rpcSocket->sendMessage(message);
-    QObject::connect(reply, &QJsonRpcServiceReply::finished, this, &InvoicesModel::listInvoicesRequestFinished);
+    SEND_MESSAGE_CONNECT_SLOT(message, &InvoicesModel::listInvoicesRequestFinished);
 }
 
 void InvoicesModel::listInvoicesRequestFinished()
 {
-    QJsonRpcServiceReply *reply = static_cast<QJsonRpcServiceReply *>(sender());
-    QJsonRpcMessage message = reply->response();
-
+    GET_MESSAGE_DISCONNECT_SLOT(message, &InvoicesModel::listInvoicesRequestFinished);
     if (message.type() == QJsonRpcMessage::Response)
     {
         QJsonObject jsonObject = message.toObject();
@@ -134,15 +132,12 @@ void InvoicesModel::addInvoice(QString label, QString description, QString amoun
     paramsObject.insert("expiry", QString::number(expiryInSeconds));
 
     QJsonRpcMessage message = QJsonRpcMessage::createRequest("invoice", paramsObject);
-    QJsonRpcServiceReply* reply = m_rpcSocket->sendMessage(message);
-    QObject::connect(reply, &QJsonRpcServiceReply::finished, this, &InvoicesModel::addInvoiceRequestFinished);
+    SEND_MESSAGE_CONNECT_SLOT(message, &InvoicesModel::addInvoiceRequestFinished)
 }
 
 void InvoicesModel::addInvoiceRequestFinished()
 {
-    QJsonRpcServiceReply *reply = static_cast<QJsonRpcServiceReply *>(sender());
-    QJsonRpcMessage message = reply->response();
-
+    GET_MESSAGE_DISCONNECT_SLOT(message, &InvoicesModel::addInvoiceRequestFinished)
     if (message.type() == QJsonRpcMessage::Error)
     {
         emit errorString(message.toObject().value("error").toObject().value("message").toString());
@@ -178,15 +173,12 @@ void InvoicesModel::waitInvoice(QString label)
     paramsObject.insert("label", label);
 
     QJsonRpcMessage message = QJsonRpcMessage::createRequest("waitinvoice", paramsObject);
-    QJsonRpcServiceReply* reply = m_rpcSocket->sendMessage(message);
-    QObject::connect(reply, &QJsonRpcServiceReply::finished, this, &InvoicesModel::waitInvoiceRequestFinished);
+    SEND_MESSAGE_CONNECT_SLOT(message, &InvoicesModel::waitInvoiceRequestFinished)
 }
 
 void InvoicesModel::waitInvoiceRequestFinished()
 {
-    QJsonRpcServiceReply *reply = static_cast<QJsonRpcServiceReply *>(sender());
-    QJsonRpcMessage message = reply->response();
-
+    GET_MESSAGE_DISCONNECT_SLOT(message, &InvoicesModel::waitInvoiceRequestFinished)
     if (message.type() == QJsonRpcMessage::Error)
     {
         emit errorString(message.toObject().value("error").toObject().value("message").toString());
@@ -223,15 +215,12 @@ void InvoicesModel::deleteInvoice(QString label, QString status)
     paramsObject.insert("status", status);
 
     QJsonRpcMessage message = QJsonRpcMessage::createRequest("delinvoice", paramsObject);
-    QJsonRpcServiceReply* reply = m_rpcSocket->sendMessage(message);
-    QObject::connect(reply, &QJsonRpcServiceReply::finished, this, &InvoicesModel::deleteInvoiceRequestFinished);
+    SEND_MESSAGE_CONNECT_SLOT(message, &InvoicesModel::deleteInvoiceRequestFinished)
 }
 
 void InvoicesModel::deleteInvoiceRequestFinished()
 {
-    QJsonRpcServiceReply *reply = static_cast<QJsonRpcServiceReply *>(sender());
-    QJsonRpcMessage message = reply->response();
-
+    GET_MESSAGE_DISCONNECT_SLOT(message, &InvoicesModel::deleteInvoiceRequestFinished)
     if (message.type() == QJsonRpcMessage::Error)
     {
         emit errorString(message.toObject().value("error").toObject().value("message").toString());

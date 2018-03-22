@@ -74,7 +74,8 @@ HEADERS += \
     src/WalletModel.h \
     src/InvoicesModel.h \
     src/QClipboardProxy.h \
-    src/NodesModel.h
+    src/NodesModel.h \
+    src/macros.h
 
 SOURCES += \
     $${QJSONRPC_SOURCES} \

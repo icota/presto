@@ -1,5 +1,6 @@
 #include "PeersModel.h"
 #include "./3rdparty/qjsonrpc/src/qjsonrpcservicereply.h"
+#include "macros.h"
 
 QHash<int, QByteArray> PeersModel::roleNames() const {
     QHash<int, QByteArray> roles;
@@ -23,15 +24,12 @@ PeersModel::PeersModel(QJsonRpcSocket *rpcSocket)
 void PeersModel::updatePeers()
 {
     QJsonRpcMessage message = QJsonRpcMessage::createRequest("listpeers", QJsonValue());
-    QJsonRpcServiceReply* reply = m_rpcSocket->sendMessage(message);
-    QObject::connect(reply, &QJsonRpcServiceReply::finished, this, &PeersModel::listPeersRequestFinished);
+    SEND_MESSAGE_CONNECT_SLOT(message, &PeersModel::listPeersRequestFinished)
 }
 
 void PeersModel::listPeersRequestFinished()
 {
-    QJsonRpcServiceReply *reply = static_cast<QJsonRpcServiceReply *>(sender());
-    QJsonRpcMessage message = reply->response();
-
+    GET_MESSAGE_DISCONNECT_SLOT(message, &PeersModel::listPeersRequestFinished)
     if (message.type() == QJsonRpcMessage::Response)
     {
         QJsonObject jsonObject = message.toObject();
@@ -48,15 +46,12 @@ void PeersModel::connectToPeer(QString peerId, QString peerAddress)
     paramsObject.insert("host", peerAddress);
 
     QJsonRpcMessage message = QJsonRpcMessage::createRequest("connect", paramsObject);
-    QJsonRpcServiceReply* reply = m_rpcSocket->sendMessage(message);
-    QObject::connect(reply, &QJsonRpcServiceReply::finished, this, &PeersModel::connectToPeerRequestFinished);
+    SEND_MESSAGE_CONNECT_SLOT(message, &PeersModel::connectToPeerRequestFinished)
 }
 
 void PeersModel::connectToPeerRequestFinished()
 {
-    QJsonRpcServiceReply *reply = static_cast<QJsonRpcServiceReply *>(sender());
-    QJsonRpcMessage message = reply->response();
-
+    GET_MESSAGE_DISCONNECT_SLOT(message, &PeersModel::connectToPeerRequestFinished)
     if (message.type() == QJsonRpcMessage::Error)
     {
         emit errorString(message.toObject().value("error").toObject().value("message").toString());
@@ -85,15 +80,12 @@ void PeersModel::fundChannel(QString peerId, QString amountInSatoshi)
     paramsObject.insert("satoshi", amountInSatoshi);
 
     QJsonRpcMessage message = QJsonRpcMessage::createRequest("fundchannel", paramsObject);
-    QJsonRpcServiceReply* reply = m_rpcSocket->sendMessage(message);
-    QObject::connect(reply, &QJsonRpcServiceReply::finished, this, &PeersModel::fundChannelRequestFinished);
+    SEND_MESSAGE_CONNECT_SLOT(message, &PeersModel::fundChannelRequestFinished)
 }
 
 void PeersModel::fundChannelRequestFinished()
 {
-    QJsonRpcServiceReply *reply = static_cast<QJsonRpcServiceReply *>(sender());
-    QJsonRpcMessage message = reply->response();
-
+    GET_MESSAGE_DISCONNECT_SLOT(message, &PeersModel::fundChannelRequestFinished)
     if (message.type() == QJsonRpcMessage::Error)
     {
         emit errorString(message.toObject().value("error").toObject().value("message").toString());
@@ -124,23 +116,19 @@ void PeersModel::closeChannel(QString peerId)
         if (peer.id() == peerId) {
             if (peer.stateString().isEmpty()) {
                 QJsonRpcMessage message = QJsonRpcMessage::createRequest("disconnect", paramsObject);
-                QJsonRpcServiceReply* reply = m_rpcSocket->sendMessage(message);
-                QObject::connect(reply, &QJsonRpcServiceReply::finished, this, &PeersModel::disconnectRequestFinished);
+                SEND_MESSAGE_CONNECT_SLOT(message, &PeersModel::disconnectRequestFinished)
                 return;
             }
         }
     }
 
     QJsonRpcMessage message = QJsonRpcMessage::createRequest("close", paramsObject);
-    QJsonRpcServiceReply* reply = m_rpcSocket->sendMessage(message);
-    QObject::connect(reply, &QJsonRpcServiceReply::finished, this, &PeersModel::closeChannelRequestFinished);
+    SEND_MESSAGE_CONNECT_SLOT(message, &PeersModel::closeChannelRequestFinished)
 }
 
 void PeersModel::closeChannelRequestFinished()
 {
-    QJsonRpcServiceReply *reply = static_cast<QJsonRpcServiceReply *>(sender());
-    QJsonRpcMessage message = reply->response();
-
+    GET_MESSAGE_DISCONNECT_SLOT(message, &PeersModel::closeChannelRequestFinished)
     if (message.type() == QJsonRpcMessage::Error)
     {
         emit errorString(message.toObject().value("error").toObject().value("message").toString());
@@ -159,9 +147,7 @@ void PeersModel::closeChannelRequestFinished()
 
 void PeersModel::disconnectRequestFinished()
 {
-    QJsonRpcServiceReply *reply = static_cast<QJsonRpcServiceReply *>(sender());
-    QJsonRpcMessage message = reply->response();
-
+    GET_MESSAGE_DISCONNECT_SLOT(message, &PeersModel::disconnectRequestFinished)
     if (message.type() == QJsonRpcMessage::Error)
     {
         emit errorString(message.toObject().value("error").toObject().value("message").toString());

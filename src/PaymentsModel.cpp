@@ -1,5 +1,6 @@
 #include "PaymentsModel.h"
 #include "./3rdparty/qjsonrpc/src/qjsonrpcservicereply.h"
+#include "macros.h"
 
 QHash<int, QByteArray> PaymentsModel::roleNames() const {
     QHash<int, QByteArray> roles;
@@ -22,13 +23,7 @@ PaymentsModel::PaymentsModel(QJsonRpcSocket *rpcSocket)
     setMaxFeePercent(100);
 }
 
-void PaymentsModel::updatePayments()
-{
-    QJsonRpcMessage message = QJsonRpcMessage::createRequest("listpayments", QJsonValue());
-    QJsonRpcServiceReply* reply = m_rpcSocket->sendMessage(message);
-    QObject::connect(reply, &QJsonRpcServiceReply::finished, this, &PaymentsModel::listPaymentsRequestFinished);
-    // disconnect these
-}
+
 
 int PaymentsModel::rowCount(const QModelIndex & parent) const
 {
@@ -61,11 +56,15 @@ QVariant PaymentsModel::data(const QModelIndex &index, int role) const
     return QVariant();
 }
 
+void PaymentsModel::updatePayments()
+{
+    QJsonRpcMessage message = QJsonRpcMessage::createRequest("listpayments", QJsonValue());
+    SEND_MESSAGE_CONNECT_SLOT(message, &PaymentsModel::listPaymentsRequestFinished)
+}
+
 void PaymentsModel::listPaymentsRequestFinished()
 {
-    QJsonRpcServiceReply *reply = static_cast<QJsonRpcServiceReply *>(sender());
-    QJsonRpcMessage message = reply->response();
-
+    GET_MESSAGE_DISCONNECT_SLOT(message, &PaymentsModel::listPaymentsRequestFinished)
     if (message.type() == QJsonRpcMessage::Response)
     {
         QJsonObject jsonObject = message.toObject();
@@ -78,11 +77,16 @@ void PaymentsModel::listPaymentsRequestFinished()
     }
 }
 
+void PaymentsModel::decodePayment(QString bolt11String)
+{
+    m_lastBolt11DecodeAttempt = bolt11String;
+    QJsonRpcMessage message = QJsonRpcMessage::createRequest("decodepay", QJsonValue(bolt11String));
+    SEND_MESSAGE_CONNECT_SLOT(message, &PaymentsModel::decodePaymentRequestFinished)
+}
+
 void PaymentsModel::decodePaymentRequestFinished()
 {
-    QJsonRpcServiceReply *reply = static_cast<QJsonRpcServiceReply *>(sender());
-    QJsonRpcMessage message = reply->response();
-
+    GET_MESSAGE_DISCONNECT_SLOT(message, &PaymentsModel::decodePaymentRequestFinished)
     if (message.type() == QJsonRpcMessage::Error)
     {
         emit errorString(message.toObject().value("error").toObject().value("message").toString());
@@ -113,11 +117,19 @@ void PaymentsModel::decodePaymentRequestFinished()
     }
 }
 
+void PaymentsModel::pay(QString bolt11String)
+{
+    QJsonObject paramsObject;
+    paramsObject.insert("bolt11", bolt11String);
+    paramsObject.insert("maxfeepercent", QString::number(m_maxFeePercent / 100));
+
+    QJsonRpcMessage message = QJsonRpcMessage::createRequest("pay", paramsObject);
+    SEND_MESSAGE_CONNECT_SLOT(message, &PaymentsModel::payRequestFinished)
+}
+
 void PaymentsModel::payRequestFinished()
 {
-    QJsonRpcServiceReply *reply = static_cast<QJsonRpcServiceReply *>(sender());
-    QJsonRpcMessage message = reply->response();
-
+    GET_MESSAGE_DISCONNECT_SLOT(message, &PaymentsModel::payRequestFinished)
     if (message.type() == QJsonRpcMessage::Error)
     {
         emit errorString(message.toObject().value("error").toObject().value("message").toString());
@@ -254,21 +266,4 @@ void Payment::setStatusString(const QString &statusString)
     m_statusString = statusString;
 }
 
-void PaymentsModel::decodePayment(QString bolt11String)
-{
-    m_lastBolt11DecodeAttempt = bolt11String;
-    QJsonRpcMessage message = QJsonRpcMessage::createRequest("decodepay", QJsonValue(bolt11String));
-    QJsonRpcServiceReply* reply = m_rpcSocket->sendMessage(message);
-    QObject::connect(reply, &QJsonRpcServiceReply::finished, this, &PaymentsModel::decodePaymentRequestFinished);
-}
 
-void PaymentsModel::pay(QString bolt11String)
-{
-    QJsonObject paramsObject;
-    paramsObject.insert("bolt11", bolt11String);
-    paramsObject.insert("maxfeepercent", QString::number(m_maxFeePercent / 100));
-
-    QJsonRpcMessage message = QJsonRpcMessage::createRequest("pay", paramsObject);
-    QJsonRpcServiceReply* reply = m_rpcSocket->sendMessage(message);
-    QObject::connect(reply, &QJsonRpcServiceReply::finished, this, &PaymentsModel::payRequestFinished);
-}

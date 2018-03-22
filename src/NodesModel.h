@@ -71,7 +71,7 @@ public:
     Node getRandomAutoconnectNode();
 
 private slots:
-    void listNodesRequestFinished();
+    void updateNodesRequestFinished();
 
 private:
     void populateNodesFromJson(QJsonArray jsonArray);

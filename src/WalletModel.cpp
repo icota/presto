@@ -1,5 +1,6 @@
 #include "WalletModel.h"
 #include "./3rdparty/qjsonrpc/src/qjsonrpcservicereply.h"
+#include "macros.h"
 
 WalletModel::WalletModel(QJsonRpcSocket *rpcSocket)
 {
@@ -48,8 +49,22 @@ int WalletModel::totalAvailableFunds()
 void WalletModel::requestNewAddress()
 {
     QJsonRpcMessage message = QJsonRpcMessage::createRequest("newaddr", QJsonValue());
-    QJsonRpcServiceReply* reply = m_rpcSocket->sendMessage(message);
-    QObject::connect(reply, &QJsonRpcServiceReply::finished, this, &WalletModel::newAddressRequestFinished);
+    SEND_MESSAGE_CONNECT_SLOT(message, &WalletModel::newAddressRequestFinished)
+}
+
+void WalletModel::newAddressRequestFinished()
+{
+    GET_MESSAGE_DISCONNECT_SLOT(message, &WalletModel::newAddressRequestFinished)
+    if (message.type() == QJsonRpcMessage::Response)
+    {
+        QJsonObject jsonObject = message.toObject();
+
+        if (jsonObject.contains("result"))
+        {
+            QJsonObject resultObject = jsonObject.value("result").toObject();
+            emit newAddress(resultObject.value("address").toString());
+        }
+    }
 }
 
 void WalletModel::withdrawFunds(QString destinationAddress, QString amountInSatoshi)
@@ -59,15 +74,12 @@ void WalletModel::withdrawFunds(QString destinationAddress, QString amountInSato
     paramsObject.insert("satoshi", amountInSatoshi);
 
     QJsonRpcMessage message = QJsonRpcMessage::createRequest("withdraw", paramsObject);
-    QJsonRpcServiceReply* reply = m_rpcSocket->sendMessage(message);
-    QObject::connect(reply, &QJsonRpcServiceReply::finished, this, &WalletModel::withdrawFundsRequestFinished);
+    SEND_MESSAGE_CONNECT_SLOT(message, &WalletModel::withdrawFundsRequestFinished)
 }
 
 void WalletModel::withdrawFundsRequestFinished()
 {
-    QJsonRpcServiceReply *reply = static_cast<QJsonRpcServiceReply *>(sender());
-    QJsonRpcMessage message = reply->response();
-
+    GET_MESSAGE_DISCONNECT_SLOT(message, &WalletModel::withdrawFundsRequestFinished)
     if (message.type() == QJsonRpcMessage::Error)
     {
         emit errorString(message.toObject().value("error").toObject().value("message").toString());
@@ -99,16 +111,12 @@ void WalletModel::withdrawFundsRequestFinished()
 
 void WalletModel::updateFunds()
 {
-    QJsonRpcMessage message = QJsonRpcMessage::createRequest("listfunds", QJsonValue());
-    QJsonRpcServiceReply* reply = m_rpcSocket->sendMessage(message);
-    QObject::connect(reply, &QJsonRpcServiceReply::finished, this, &WalletModel::listFundsRequestFinished);
+    SEND_MESSAGE_CONNECT_SLOT(message, &WalletModel::listFundsRequestFinished)
 }
 
 void WalletModel::listFundsRequestFinished()
 {
-    QJsonRpcServiceReply *reply = static_cast<QJsonRpcServiceReply *>(sender());
-    QJsonRpcMessage message = reply->response();
-
+    GET_MESSAGE_DISCONNECT_SLOT(message, &WalletModel::listFundsRequestFinished)
     if (message.type() == QJsonRpcMessage::Response)
     {
         QJsonObject jsonObject = message.toObject();
@@ -121,22 +129,6 @@ void WalletModel::listFundsRequestFinished()
     }
 }
 
-void WalletModel::newAddressRequestFinished()
-{
-    QJsonRpcServiceReply *reply = static_cast<QJsonRpcServiceReply *>(sender());
-    QJsonRpcMessage message = reply->response();
-
-    if (message.type() == QJsonRpcMessage::Response)
-    {
-        QJsonObject jsonObject = message.toObject();
-
-        if (jsonObject.contains("result"))
-        {
-            QJsonObject resultObject = jsonObject.value("result").toObject();
-            emit newAddress(resultObject.value("address").toString());
-        }
-    }
-}
 
 void WalletModel::populateFundsFromJson(QJsonArray jsonArray)
 {

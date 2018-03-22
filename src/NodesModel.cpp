@@ -1,5 +1,6 @@
 #include "NodesModel.h"
 #include "./3rdparty/qjsonrpc/src/qjsonrpcservicereply.h"
+#include "macros.h"
 
 NodesModel::NodesModel(QJsonRpcSocket *rpcSocket)
 {
@@ -10,8 +11,22 @@ NodesModel::NodesModel(QJsonRpcSocket *rpcSocket)
 void NodesModel::updateNodes()
 {
     QJsonRpcMessage message = QJsonRpcMessage::createRequest("listnodes", QJsonValue());
-    QJsonRpcServiceReply* reply = m_rpcSocket->sendMessage(message);
-    QObject::connect(reply, &QJsonRpcServiceReply::finished, this, &NodesModel::listNodesRequestFinished);
+    SEND_MESSAGE_CONNECT_SLOT(message, &NodesModel::updateNodesRequestFinished)
+}
+
+void NodesModel::updateNodesRequestFinished()
+{
+    GET_MESSAGE_DISCONNECT_SLOT(message, &NodesModel::updateNodesRequestFinished)
+    if (message.type() == QJsonRpcMessage::Response)
+    {
+        QJsonObject jsonObject = message.toObject();
+
+        if (jsonObject.contains("result"))
+        {
+            QJsonObject resultObject = jsonObject.value("result").toObject();
+            populateNodesFromJson(resultObject.value("nodes").toArray());
+        }
+    }
 }
 
 Node NodesModel::getRandomAutoconnectNode()
@@ -30,23 +45,6 @@ Node NodesModel::getRandomAutoconnectNode()
     }
 
     return Node();
-}
-
-void NodesModel::listNodesRequestFinished()
-{
-    QJsonRpcServiceReply *reply = static_cast<QJsonRpcServiceReply *>(sender());
-    QJsonRpcMessage message = reply->response();
-
-    if (message.type() == QJsonRpcMessage::Response)
-    {
-        QJsonObject jsonObject = message.toObject();
-
-        if (jsonObject.contains("result"))
-        {
-            QJsonObject resultObject = jsonObject.value("result").toObject();
-            populateNodesFromJson(resultObject.value("nodes").toArray());
-        }
-    }
 }
 
 void NodesModel::populateNodesFromJson(QJsonArray jsonArray)

@@ -2,6 +2,7 @@
 #include <QSettings>
 
 #include "LightningModel.h"
+#include "macros.h"
 #include "./3rdparty/qjsonrpc/src/qjsonrpcservicereply.h"
 
 LightningModel *LightningModel::sInstance = 0;
@@ -54,13 +55,6 @@ int LightningModel::blockheight() const
 QString LightningModel::network() const
 {
     return m_network;
-}
-
-void LightningModel::updateInfo()
-{
-    QJsonRpcMessage message = QJsonRpcMessage::createRequest("getinfo", QJsonValue());
-    QJsonRpcServiceReply* reply = m_rpcSocket->sendMessage(message);
-    QObject::connect(reply, &QJsonRpcServiceReply::finished, this, &LightningModel::updateInfoRequestFinished);
 }
 
 void LightningModel::launchDaemon()
@@ -167,11 +161,15 @@ void LightningModel::setServerName(const QString &serverName)
     m_lightningRpcSocket = serverName;
 }
 
+void LightningModel::updateInfo()
+{
+    QJsonRpcMessage message = QJsonRpcMessage::createRequest("getinfo", QJsonValue());
+    SEND_MESSAGE_CONNECT_SLOT(message, &LightningModel::updateInfoRequestFinished)
+}
+
 void LightningModel::updateInfoRequestFinished()
 {
-    QJsonRpcServiceReply *reply = static_cast<QJsonRpcServiceReply *>(sender());
-    QJsonRpcMessage message = reply->response();
-
+    GET_MESSAGE_DISCONNECT_SLOT(message, &LightningModel::updateInfoRequestFinished)
     if (message.type() == QJsonRpcMessage::Error)
     {
         //emit errorString(message.toObject().value("error").toObject().value("message").toString());
@@ -419,6 +417,7 @@ bool LightningModel::connectedToDaemon() const
 
 void LightningModel::rpcMessageReceived(QJsonRpcMessage message)
 {
+    Q_UNUSED(message)
     //qDebug() << message.toJson();
 }
 
