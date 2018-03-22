@@ -330,6 +330,11 @@ void LightningModel::setConnectedToDaemon(bool connectedToDaemon)
     m_connectedToDaemon = connectedToDaemon;
 }
 
+NodesModel *LightningModel::nodesModel() const
+{
+    return m_nodesModel;
+}
+
 QString LightningModel::manualAddress() const
 {
     return m_manualAddress;
@@ -348,26 +353,6 @@ QString LightningModel::bitcoinDataPath() const
 void LightningModel::setBitcoinDataPath(const QString &bitcoinDataPath)
 {
     m_bitcoinDataPath = bitcoinDataPath;
-}
-
-void LightningModel::startAutopilot(int amountSatoshi)
-{
-    // TODO: https://lists.linuxfoundation.org/pipermail/lightning-dev/2018-March/001108.html
-    m_autopilotChannelAmount = amountSatoshi;
-
-    Node randomNode = m_nodesModel->getRandomAutoconnectNode();
-
-    if (!randomNode.id().isEmpty()) {
-        m_autopilotPeerId = randomNode.id();
-
-        QObject::connect(m_peersModel, &PeersModel::connectedToPeer,
-                         [=] (QString peerId) { if (peerId == m_autopilotPeerId)
-                m_peersModel->fundChannel(peerId, QString::number(m_autopilotChannelAmount)); });
-
-        m_peersModel->connectToPeer(m_autopilotPeerId, randomNode.nodeAddressList().at(0).address());
-    }
-
-    m_nodesModel->updateNodes();
 }
 
 QString LightningModel::bitcoinCliPath() const

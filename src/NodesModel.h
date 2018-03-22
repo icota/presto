@@ -69,6 +69,7 @@ public:
 
 
     Node getRandomAutoconnectNode();
+    QList<Node> getNodes() const;
 
 private slots:
     void updateNodesRequestFinished();

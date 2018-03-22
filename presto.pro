@@ -75,7 +75,8 @@ HEADERS += \
     src/InvoicesModel.h \
     src/QClipboardProxy.h \
     src/NodesModel.h \
-    src/macros.h
+    src/macros.h \
+    src/AutoPilot.h
 
 SOURCES += \
     $${QJSONRPC_SOURCES} \
@@ -86,7 +87,8 @@ SOURCES += \
     src/WalletModel.cpp \
     src/InvoicesModel.cpp \
     src/QClipboardProxy.cpp \
-    src/NodesModel.cpp
+    src/NodesModel.cpp \
+    src/AutoPilot.cpp
 
 DISTFILES += \
     src/qml/qmldir \

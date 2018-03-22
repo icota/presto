@@ -109,10 +109,12 @@ signals:
     void errorString(QString error);
     void connectedToPeer(QString peerId);
     void channelFunded(QString peerId);
+    void connectingFailed(QString peerId);
+    void channelFundingFailed(QString peerId);
 
 public slots:
     void connectToPeer(QString peerId, QString peerAddress);
-    void fundChannel(QString peerId, QString amountInSatoshi);
+    void fundChannel(QString peerId, int amountInSatoshi);
     void closeChannel(QString peerId);
 
 private slots:

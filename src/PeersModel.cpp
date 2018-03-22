@@ -55,6 +55,8 @@ void PeersModel::connectToPeerRequestFinished()
     if (message.type() == QJsonRpcMessage::Error)
     {
         emit errorString(message.toObject().value("error").toObject().value("message").toString());
+        QString failedId = reply->request().toObject().value("params").toObject().value("id").toString();
+        emit connectingFailed(failedId);
     }
 
     if (message.type() == QJsonRpcMessage::Response)
@@ -73,11 +75,11 @@ void PeersModel::connectToPeerRequestFinished()
     }
 }
 
-void PeersModel::fundChannel(QString peerId, QString amountInSatoshi)
+void PeersModel::fundChannel(QString peerId, int amountInSatoshi)
 {
     QJsonObject paramsObject;
     paramsObject.insert("id", peerId);
-    paramsObject.insert("satoshi", amountInSatoshi);
+    paramsObject.insert("satoshi", QString::number(amountInSatoshi));
 
     QJsonRpcMessage message = QJsonRpcMessage::createRequest("fundchannel", paramsObject);
     SEND_MESSAGE_CONNECT_SLOT(message, &PeersModel::fundChannelRequestFinished)
@@ -89,6 +91,8 @@ void PeersModel::fundChannelRequestFinished()
     if (message.type() == QJsonRpcMessage::Error)
     {
         emit errorString(message.toObject().value("error").toObject().value("message").toString());
+        QString failedId = reply->request().toObject().value("params").toObject().value("id").toString();
+        emit channelFundingFailed(failedId);
     }
 
     if (message.type() == QJsonRpcMessage::Response)

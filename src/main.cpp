@@ -6,6 +6,7 @@
 
 #include "LightningModel.h"
 #include "QClipboardProxy.h"
+#include "AutoPilot.h"
 
 #ifdef Q_OS_ANDROID
 #include "AndroidNfcHelper.h"
@@ -26,6 +27,7 @@ int main(int argc, char *argv[])
     app.setApplicationName("Presto!");
 
     LightningModel* lightningModel = new LightningModel;
+    AutoPilot* autoPilot = new AutoPilot;
 
 #ifdef Q_OS_ANDROID
     AndroidNfcHelper* nfcHelper = new AndroidNfcHelper;
@@ -42,6 +44,7 @@ int main(int argc, char *argv[])
     engine.rootContext()->setContextProperty("walletModel", lightningModel->walletModel());
     engine.rootContext()->setContextProperty("invoicesModel", lightningModel->invoicesModel());
     engine.rootContext()->setContextProperty("nfcHelper", nfcHelper);
+    engine.rootContext()->setContextProperty("autoPilot", autoPilot);
     qmlRegisterUncreatableMetaObject(
       InvoiceTypes::staticMetaObject,
       "Lightning.Invoice",

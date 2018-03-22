@@ -70,11 +70,10 @@ public:
     QString manualAddress() const;
     void setManualAddress(const QString &manualAddress);
 
+    NodesModel *nodesModel() const;
+
 private:
     static LightningModel *sInstance;
-
-public slots:
-    void startAutopilot(int amountSatoshi);
 
 private:
     void updateInfo();

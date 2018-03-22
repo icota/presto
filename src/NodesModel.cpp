@@ -89,6 +89,11 @@ void NodesModel::populateNodesFromJson(QJsonArray jsonArray)
     }
 }
 
+QList<Node> NodesModel::getNodes() const
+{
+    return m_nodes;
+}
+
 Node::Node()
 {}
 

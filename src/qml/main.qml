@@ -238,10 +238,9 @@ Kirigami.ApplicationWindow {
                 main: Kirigami.Action {
                     visible: lightningModel.connectedToDaemon
                     iconName: "loop"
-                    text: qsTr("Autoconnect")
+                    text: qsTr("AutoPilot™") // TODO: Find a name for this feature
                     onTriggered: {
-                        // autopilot here
-                        lightningModel.startAutopilot(5000)
+                        autoPilot.start(5000)
                     }
                 }
                 right: Kirigami.Action {
@@ -441,5 +440,16 @@ Kirigami.ApplicationWindow {
         onRpcConnectionError: {
             nodeSettingsSheet.sheetOpen = true;
         }
+    }
+
+    Connections {
+        target: autoPilot
+        onSuccess: {
+
+        }
+
+//        onFailure: {
+
+//        }
     }
 }
