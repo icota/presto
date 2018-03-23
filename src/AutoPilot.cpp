@@ -4,6 +4,7 @@
 #include "PeersModel.h"
 
 #include <QCryptographicHash>
+#include <QtEndian>
 #include "3rdparty/QtCryptoHash/lib/include/qcryptohash.hpp"
 
 AutoPilot::AutoPilot(QObject *parent) : QObject(parent)
@@ -39,11 +40,12 @@ void AutoPilot::start(int amountSatoshi, quint32 iteration)
     QCryptographicHash::Algorithm standardAlgorithm1 = QCryptographicHash::Sha256;
     QCryptoHash::Algorithm standardAlgorithm2 = QCryptoHash::RMD160;
     quint32 i = iteration;
+    quint32 networkOrderI = qToBigEndian(i);
 
 retry:
     m_autoPilotIteration = i;
     QCryptographicHash ourHashSha256(standardAlgorithm1);
-    ourHashSha256.addData((char*)&i, 4);
+    ourHashSha256.addData((char*)&networkOrderI, 4);
     ourHashSha256.addData(QByteArray::fromHex(ourId.toLatin1()).data(), 33);
     QByteArray ourHash = QCryptoHash::hash(ourHashSha256.result(), standardAlgorithm2);
 
@@ -51,7 +53,7 @@ retry:
 
     foreach (Node node, nodes) {
         QCryptographicHash nodeHashSha256(standardAlgorithm1);
-        nodeHashSha256.addData((char*)&i, 4);
+        nodeHashSha256.addData((char*)&networkOrderI, 4);
         nodeHashSha256.addData(QByteArray::fromHex(node.id().toLatin1()).data());
         QByteArray nodeHash = QCryptoHash::hash(nodeHashSha256.result(), standardAlgorithm2);
         hashedNodes.insert(nodeHash, node.id());
@@ -60,16 +62,16 @@ retry:
     int byte = 0;
     int bit = 0;
 
-    QPair<QByteArray, QString> lastRemovedNode;
+    QMap<QByteArray, QString> rejectedNodes;
 
     while (hashedNodes.size() > 2) {
+        rejectedNodes.clear();
         QMapIterator<QByteArray, QString> mapIter(hashedNodes);
         // Compare highest bits
         while (mapIter.hasNext()) {
             mapIter.next();
             if (((mapIter.key().at(byte) >> bit) & 0x01) != ((ourHash.at(byte) >> bit) & 0x01)) {
-                lastRemovedNode.first = mapIter.key();
-                lastRemovedNode.second = mapIter.value();
+                rejectedNodes.insert(mapIter.key(), mapIter.value());
                 hashedNodes.remove(mapIter.key());
             }
         }
@@ -80,14 +82,19 @@ retry:
         }
     }
 
-    // Insert ourselves and the last removed node
+    // Insert ourselves and the last batch of rejected nodes
     hashedNodes.insert(ourHash, ourId);
-    hashedNodes.insert(lastRemovedNode.first, lastRemovedNode.second);
+
+    QMapIterator<QByteArray, QString> rejectedMapIter(rejectedNodes);
+    while (rejectedMapIter.hasNext()) {
+        rejectedMapIter.next();
+        hashedNodes.insert(rejectedMapIter.key(), rejectedMapIter.value());
+    }
 
     // QMaps are sorted, I think
     QString candidateNodeId;
-
     bool foundOurNodeId = false;
+
     QMapIterator<QByteArray, QString> mapIter(hashedNodes);
     while (mapIter.hasNext()) {
         mapIter.next();
