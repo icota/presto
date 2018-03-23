@@ -44,6 +44,16 @@ QML_DESIGNER_IMPORT_PATH =
 include(3rdparty/kirigami/kirigami.pri)
 include(3rdparty/qzxing/src/QZXing.pri)
 
+INCLUDEPATH += \
+    3rdparty/QtCryptoHash/lib/include
+
+QCRYPTOHASH_SOURCES += \
+    3rdparty/QtCryptoHash/lib/src/qcryptohash.cpp \
+    3rdparty/QtCryptoHash/lib/src/rmd160.cpp \
+    3rdparty/QtCryptoHash/lib/src/tiger.cpp \
+    3rdparty/QtCryptoHash/lib/src/whirlpool.cpp \
+    3rdparty/QtCryptoHash/lib/src/hashalgorithm.cpp
+
 QJSONRPC_HEADERS += \
     3rdparty/qjsonrpc/src/qjsonrpcabstractserver.h \
     3rdparty/qjsonrpc/src/qjsonrpcabstractserver_p.h \
@@ -80,6 +90,7 @@ HEADERS += \
 
 SOURCES += \
     $${QJSONRPC_SOURCES} \
+    $${QCRYPTOHASH_SOURCES} \
     src/main.cpp \
     src/LightningModel.cpp \
     src/PaymentsModel.cpp \

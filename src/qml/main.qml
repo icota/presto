@@ -237,7 +237,7 @@ Kirigami.ApplicationWindow {
             actions {
                 main: Kirigami.Action {
                     visible: lightningModel.connectedToDaemon
-                    iconName: "loop"
+                    iconName: ":/org/kde/kirigami/icons/loop"
                     text: qsTr("AutoPilot™") // TODO: Find a name for this feature
                     onTriggered: {
                         autoPilot.start(5000)
@@ -448,8 +448,8 @@ Kirigami.ApplicationWindow {
 
         }
 
-//        onFailure: {
+        onFailure: {
 
-//        }
+        }
     }
 }

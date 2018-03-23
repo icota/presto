@@ -25,3 +25,6 @@
 [submodule "3rdparty/linux_libnfc-nci"]
 	path = 3rdparty/linux_libnfc-nci
 	url = git@github.com:NXPNFCLinux/linux_libnfc-nci.git
+[submodule "3rdparty/QtCryptoHash"]
+	path = 3rdparty/QtCryptoHash
+	url = git@github.com:rikyoz/QtCryptoHash.git

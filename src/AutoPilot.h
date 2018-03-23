@@ -11,9 +11,11 @@ public:
 
 signals:
     void success(QString peerId);
+    void failure();
 
 public slots:
     void start(int amountSatoshi, quint32 iteration = 0);
+    void stop();
 
     void connectedToPeer(QString peerId);
     void channelFunded(QString peerId);
