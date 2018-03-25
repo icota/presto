@@ -14,7 +14,7 @@ signals:
     void failure();
 
 public slots:
-    void start(int amountSatoshi, quint32 iteration = 0);
+    void go(int amountSatoshi, quint32 iteration = 0);
     void stop();
 
     void connectedToPeer(QString peerId);

@@ -22,28 +22,30 @@ AutoPilot::AutoPilot(QObject *parent) : QObject(parent)
             this, &AutoPilot::channelFundingFailed);
 }
 
-void AutoPilot::start(int amountSatoshi, quint32 iteration)
+void AutoPilot::go(int amountSatoshi, quint32 iteration)
 {
     // https://lists.linuxfoundation.org/pipermail/lightning-dev/2018-March/001108.html
     m_autopilotChannelAmount = amountSatoshi;
+
     QList<Node> nodes = LightningModel::instance()->nodesModel()->getNodes();
     if (nodes.isEmpty()) {
         emit failure();
         return;
     }
 
-    if (m_autoPilotIteration == -1) {
+    if (m_autoPilotIteration == (quint32)-1) {
         return;
     }
 
     QString ourId = LightningModel::instance()->id();
     QCryptographicHash::Algorithm standardAlgorithm1 = QCryptographicHash::Sha256;
     QCryptoHash::Algorithm standardAlgorithm2 = QCryptoHash::RMD160;
+
     quint32 i = iteration;
+    m_autoPilotIteration = i;
+
     quint32 networkOrderI = qToBigEndian(i);
 
-retry:
-    m_autoPilotIteration = i;
     QCryptographicHash ourHashSha256(standardAlgorithm1);
     ourHashSha256.addData((char*)&networkOrderI, 4);
     ourHashSha256.addData(QByteArray::fromHex(ourId.toLatin1()).data(), 33);
@@ -58,6 +60,9 @@ retry:
         QByteArray nodeHash = QCryptoHash::hash(nodeHashSha256.result(), standardAlgorithm2);
         hashedNodes.insert(nodeHash, node.id());
     }
+
+    // Add our id to the working set
+    hashedNodes.insert(ourHash, ourId);
 
     int byte = 0;
     int bit = 0;
@@ -123,7 +128,7 @@ retry:
 
     if (candidateNodeAddress.isEmpty()) {
         i++;
-        goto retry;
+        go(amountSatoshi, i);
     }
     else {
         m_currentCandidateNodeId = candidateNodeId;
@@ -158,7 +163,7 @@ void AutoPilot::connectingFailed(QString peerId)
     if (peerId == m_currentCandidateNodeId) {
         m_currentCandidateNodeId = "";
         m_autoPilotIteration++;
-        start(m_autopilotChannelAmount, m_autoPilotIteration);
+        go(m_autopilotChannelAmount, m_autoPilotIteration);
     }
 }
 
@@ -167,6 +172,6 @@ void AutoPilot::channelFundingFailed(QString peerId)
     if (peerId == m_currentCandidateNodeId) {
         m_currentCandidateNodeId = "";
         m_autoPilotIteration++;
-        start(m_autopilotChannelAmount, m_autoPilotIteration);
+        go(m_autopilotChannelAmount, m_autoPilotIteration);
     }
 }
