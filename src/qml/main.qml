@@ -418,8 +418,10 @@ Kirigami.ApplicationWindow {
 
         onConnectedToPeer: {
             connectToPeerSheet.sheetOpen = false
-            fundChannelSheet.peerToFund = peerId
-            fundChannelSheet.sheetOpen = true
+            // Not sure if we should insist user to fund
+            // Perhaps funding should be optional before connecting
+//            fundChannelSheet.peerToFund = peerId
+//            fundChannelSheet.sheetOpen = true
         }
 
         onChannelFunded: {
