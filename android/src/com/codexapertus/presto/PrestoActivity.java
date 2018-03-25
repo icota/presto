@@ -3,6 +3,8 @@ package com.codexapertus.presto;
 import java.lang.String;
 import java.io.UnsupportedEncodingException;
 
+import android.support.v4.content.LocalBroadcastManager;
+
 import android.util.Log;
 import android.content.Intent;
 import android.os.Bundle;
@@ -18,6 +20,20 @@ public class PrestoActivity extends org.qtproject.qt5.android.bindings.QtActivit
 {
     public static native void bolt11Received(String bolt11);
     public static PrestoActivity s_activity = null;
+    public byte[] m_ourId = null;
+
+    void setId(byte[] id) {
+        m_ourId = id;
+        Intent intent = new Intent(LightningApduService.ACTION_ID_CHANGED);
+        intent.putExtra("id", m_ourId);
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+    }
+
+    void forwardSocket(byte[] data) {
+        Intent intent = new Intent(LightningApduService.ACTION_FORWARD_SOCKET);
+        intent.putExtra("data", data);
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+    }
 
     @Override
     protected void onNewIntent(Intent intent) {
@@ -55,6 +71,9 @@ public class PrestoActivity extends org.qtproject.qt5.android.bindings.QtActivit
     {
         Log.d("presto", "onCreate");
         s_activity = this;
+        Intent intent = new Intent(this, LightningApduService.class);
+        startService(intent);
+
         super.onCreate(savedInstanceState);
     }
 

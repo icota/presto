@@ -1,14 +1,16 @@
 package com.codexapertus.presto;
 
+import android.content.BroadcastReceiver;
+import android.support.v4.content.LocalBroadcastManager;
+import android.content.IntentFilter;
+
 import android.content.Context;
 import android.content.Intent;
 import android.nfc.cardemulation.HostApduService;
 import android.os.Bundle;
 import android.util.Log;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
 import java.io.IOException;
 import java.util.Arrays;
 
@@ -18,12 +20,24 @@ import java.util.Arrays;
 public class LightningApduService extends HostApduService {
 
     public static final String ACTION_BOLT11_RECEIVED = "lightning.action.BOLT11_RECEIVED";
-
+    public static final String ACTION_ID_CHANGED = "lightning.action.ID_CHANGED";
+    public static final String ACTION_FORWARD_SOCKET = "lightning.action.FORWARD_SOCKET";
 
     public static final String BROADCAST_INTENT_PROGRESS_UPDATED = "PROGRESS_UPDATED";
     public static final String BROADCAST_INTENT_DATA_RECEIVED = "DATA_RECEIVED";
     public static final String BROADCAST_INTENT_REQUEST_SENT = "REQUEST_SENT";
     public static final String BROADCAST_INTENT_LINK_DEACTIVATED = "LINK_DEACTIVATED";
+
+    private final BroadcastReceiver lightningIdChangedReceiver = new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent != null && ACTION_ID_CHANGED.equals(intent.getAction())) {
+                Bundle bundle = intent.getExtras();
+                lightningPeerId = bundle.getByteArray("id");
+            }
+        }
+    };
 
     private static final String TAG = "presto-apdu";
 
@@ -67,7 +81,7 @@ public class LightningApduService extends HostApduService {
     private static final byte[] DATA_RESPONSE_OK = {(byte) 0x00};
     private static final byte DATA_RESPONSE_NOK = (byte) 0x01;
 
-    private String lightningPeerId;
+    private byte[] lightningPeerId;
 
     private boolean lightningOnline;
     private boolean isProcessing;
@@ -81,12 +95,15 @@ public class LightningApduService extends HostApduService {
         Log.i(TAG, "Created");
         super.onCreate();
 
+        LocalBroadcastManager.getInstance(this).registerReceiver(lightningIdChangedReceiver,
+                new IntentFilter(ACTION_ID_CHANGED));
+
         socketSendBuffer = new ByteArrayOutputStream();
         bolt11receiveBuffer = new ByteArrayOutputStream();
         isProcessing = false;
         isReceivingBolt11 = false;
         lightningOnline = false;
-        lightningPeerId = "testtest";
+        //lightningPeerId = "testtest";
     }
 
     @Override
@@ -163,7 +180,7 @@ public class LightningApduService extends HostApduService {
             ByteArrayOutputStream commandOutputStream = new ByteArrayOutputStream();
             commandOutputStream.write(NFC_SOCKET_COMMAND);
             try {
-                commandOutputStream.write(lightningPeerId.getBytes());
+                commandOutputStream.write(lightningPeerId);
             } catch (IOException e) {
                 e.printStackTrace();
             }

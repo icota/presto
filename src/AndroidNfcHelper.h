@@ -17,15 +17,15 @@ public:
     void bolt11FromJni(QString bolt11);
 
 private slots:
-    void newConnection()
-    {
-        qDebug() << "New connection on android socket";
-    }
+    void newConnection();
 
-    void readyRead()
-    {
-        qDebug() << "Data read on android socket";
-    }
+    void readyRead();
+
+public slots:
+    void paymentDecoded(int createdAt, QString currency, QString description,
+                        int expiry, int minFinalCltvExpiry, int msatoshi,
+                        QString payee, QString paymentHash, QString signature,
+                        int timestamp, QString bolt11);
 
 signals:
     void bolt11ReceivedThroughNfc(QString bolt11);
@@ -34,6 +34,8 @@ private:
     QLocalServer* m_socketServer;
     QLocalSocket* m_socket;
     QString m_socketServerPath;
+
+    QString m_socketPeerId;
 
 private:
     static AndroidNfcHelper *sInstance;

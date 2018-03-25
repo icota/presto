@@ -5,6 +5,12 @@
 #include "macros.h"
 #include "./3rdparty/qjsonrpc/src/qjsonrpcservicereply.h"
 
+#ifdef Q_OS_ANDROID
+#include <QtAndroid>
+#include <QAndroidJniObject>
+#include <QAndroidJniEnvironment>
+#endif
+
 LightningModel *LightningModel::sInstance = 0;
 
 PeersModel *LightningModel::peersModel() const
@@ -184,7 +190,7 @@ void LightningModel::updateInfoRequestFinished()
 
         m_address = addressesArray[0].toObject().value("address").toString();
         m_blockheight = resultsObject.value("blockheight").toInt();
-        m_id = resultsObject.value("id").toString();
+        setId(resultsObject.value("id").toString());
         m_network = resultsObject.value("network").toString();
         m_port = resultsObject.value("port").toInt();
         m_version = resultsObject.value("version").toString();
@@ -328,6 +334,23 @@ void LightningModel::retryRpcConnection()
 void LightningModel::setConnectedToDaemon(bool connectedToDaemon)
 {
     m_connectedToDaemon = connectedToDaemon;
+}
+
+void LightningModel::setId(const QString &id)
+{
+    m_id = id;
+#ifdef Q_OS_ANDROID
+    // Let JNI glue know as well; we might need it to set up an ad-hoc NFC connection
+
+    //send it as a byte array
+    QByteArray idByteArray = QByteArray::fromHex(id.toLatin1()).data();
+    QAndroidJniEnvironment env;
+    jbyteArray javaDataArray = env->NewByteArray(33);
+    env->SetByteArrayRegion(javaDataArray, 0, 33, (jbyte*)idByteArray.data());
+    QtAndroid::androidContext().callMethod<void>("setId",
+                                                 "([B)V",
+                                                 javaDataArray);
+#endif
 }
 
 NodesModel *LightningModel::nodesModel() const

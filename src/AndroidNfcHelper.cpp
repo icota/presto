@@ -1,6 +1,8 @@
 #include "AndroidNfcHelper.h"
 
 #include <QAndroidJniObject>
+#include <QtAndroid>
+#include <QAndroidJniEnvironment>
 #include <jni.h>
 
 extern "C" {
@@ -39,7 +41,52 @@ void AndroidNfcHelper::bolt11FromJni(QString bolt11)
 {
     // We have to emit a signal because JNI and QSocket can't be on the same thread
     qDebug() << "BOLT11 received from JNI: " << bolt11;
+    connect(LightningModel::instance()->paymentsModel(), &PaymentsModel::paymentDecoded,
+            this, &AndroidNfcHelper::paymentDecoded);
+
     emit bolt11ReceivedThroughNfc(bolt11);
+}
+
+void AndroidNfcHelper::newConnection()
+{
+    qDebug() << "New connection on android socket";
+    m_socket = m_socketServer->nextPendingConnection();
+    connect(m_socket, &QLocalSocket::disconnected, m_socket, &QLocalSocket::deleteLater);
+    connect(m_socket, &QLocalSocket::readyRead, this, &AndroidNfcHelper::readyRead);
+}
+
+void AndroidNfcHelper::readyRead()
+{
+    qDebug() << "Data read on android socket";
+    QByteArray dataArray = m_socket->readAll();
+    QAndroidJniEnvironment env;
+    jbyteArray javaDataArray = env->NewByteArray(dataArray.length());
+    env->SetByteArrayRegion(javaDataArray, 0, dataArray.length(), (jbyte*)dataArray.data());
+    QtAndroid::androidContext().callMethod<void>("forwardSocket",
+                                                 "([B)V",
+                                                 javaDataArray);
+}
+
+void AndroidNfcHelper::paymentDecoded(int createdAt, QString currency, QString description, int expiry, int minFinalCltvExpiry, int msatoshi, QString payee, QString paymentHash, QString signature, int timestamp, QString bolt11)
+{
+    Q_UNUSED(createdAt)
+    Q_UNUSED(currency)
+    Q_UNUSED(description)
+    Q_UNUSED(expiry)
+    Q_UNUSED(minFinalCltvExpiry)
+    Q_UNUSED(msatoshi)
+    Q_UNUSED(paymentHash)
+    Q_UNUSED(signature)
+    Q_UNUSED(timestamp)
+    Q_UNUSED(bolt11)
+
+    disconnect(LightningModel::instance()->paymentsModel(), &PaymentsModel::paymentDecoded,
+            this, &AndroidNfcHelper::paymentDecoded);
+
+    m_socketPeerId = payee;
+    qDebug() << "m_socketPeerId:" << m_socketPeerId;
+
+    LightningModel::instance()->peersModel()->connectToPeer(m_socketPeerId, m_socketServerPath);
 }
 
 AndroidNfcHelper *AndroidNfcHelper::instance()

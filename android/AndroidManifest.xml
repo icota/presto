@@ -72,7 +72,7 @@
             <!-- extract android style -->
     </activity>
 
-        <service android:name="com.codexapertus.presto.LightningApduService" android:label="@string/lightning_apdu_service" android:exported="true" android:process=":apdu" android:permission="android.permission.BIND_NFC_SERVICE">
+        <service android:name="com.codexapertus.presto.LightningApduService" android:label="@string/lightning_apdu_service" android:exported="true" android:permission="android.permission.BIND_NFC_SERVICE">
             <intent-filter>
                 <action android:name="android.nfc.cardemulation.action.HOST_APDU_SERVICE"/>
                 <category android:name="android.intent.category.DEFAULT"/>

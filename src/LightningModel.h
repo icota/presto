@@ -41,6 +41,8 @@ public:
     InvoicesModel *invoicesModel() const;
 
     QString id() const;
+    void setId(const QString &id);
+
     int port() const;
     QString address() const;
     QString version() const;
