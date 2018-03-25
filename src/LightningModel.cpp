@@ -274,7 +274,9 @@ LightningModel::LightningModel(QString serverName, QObject *parent) {
 
         m_unixSocket->connectToServer(m_lightningRpcSocket);
 
-        if (m_unixSocket->waitForConnected())
+        // Usually, if we wait longer than 5 secs there is something wrong
+        // with an already running daemon
+        if (m_unixSocket->waitForConnected(5000))
         {
             rpcConnected();
         }
