@@ -29,24 +29,6 @@ void NodesModel::updateNodesRequestFinished()
     }
 }
 
-Node NodesModel::getRandomAutoconnectNode()
-{
-    if (!m_nodes.count()) {
-        return Node();
-    }
-
-    // Only return those that have
-    for (int i = 0; ++i; i < m_nodes.count())
-    {
-        Node randomNode = m_nodes.at(qrand() % m_nodes.size());
-        if (!randomNode.nodeAddressList().isEmpty()) {
-            return randomNode;
-        }
-    }
-
-    return Node();
-}
-
 void NodesModel::populateNodesFromJson(QJsonArray jsonArray)
 {
     m_nodes.clear();

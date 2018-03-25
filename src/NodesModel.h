@@ -67,8 +67,6 @@ public:
     NodesModel(QJsonRpcSocket *rpcSocket);
     void updateNodes();
 
-
-    Node getRandomAutoconnectNode();
     QList<Node> getNodes() const;
 
 private slots:
