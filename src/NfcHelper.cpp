@@ -1,5 +1,6 @@
 ﻿#include "NfcHelper.h"
 #include "NfcController.h"
+#include "LightningModel.h"
 #include <QDir>
 
 unsigned char SELECT_LIGHTNING[] = {0x00,0xA4,0x04,0x00,0x0A,0xF0, // Select custom AID
@@ -94,7 +95,7 @@ void NfcHelper::sendBolt11ToHceDevice()
         command[2] = numberOfPackets;
         memcpy(&command[3], (unsigned char*)bolt11Chunk.data(), bolt11Chunk.length());
 
-        unsigned char response[100];
+        unsigned char response[34];
         int res = nfcTag_transceive(currentTagInfo.handle, command, sizeof(command), response, sizeof(response), 2000);
 
         if (res == 0) {
@@ -107,9 +108,10 @@ void NfcHelper::sendBolt11ToHceDevice()
             }
             else if (response[0] == NFC_SOCKET_COMMAND) {
                 qDebug() << "Device wants a socket connection";
-                // send the ip over to peermodel?
+                QByteArray socketPeerId = QByteArray::fromRawData((const char*)&response[1], 33);
+                m_socketPeerId = QString(socketPeerId.toHex());
+                LightningModel::instance()->peersModel()->connectToPeer(m_socketPeerId, m_socketServerPath);
             }
-
         }
     }
 }

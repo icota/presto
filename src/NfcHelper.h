@@ -27,7 +27,7 @@ private:
 
     QString m_bolt11;
 
-    QString m_nfcPeerId;
+    QString m_socketPeerId;
 
 private:
     void onNfcTagArrival();
