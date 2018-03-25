@@ -13,12 +13,23 @@ Kirigami.OverlaySheet {
     }
     header:
         OverlaySheetHeader {
-        text: qsTr("Add Peer")
+        text: qsTr("Scan Peer URI")
         width: parent.width
         horizontalAlignment: Text.AlignHCenter
     }
 
     ColumnLayout {
+
+        QRScannerViewfinder {
+            id: qrScannerViewfinder
+            width: parent.width * 0.9
+            height: width
+            Layout.alignment: Qt.AlignCenter
+            zxingFilter.decoder.onTagFound: {
+                checkIfValidPeerUri(tag)
+            }
+        }
+
         QQC2.TextField {
             id: idTextField
             Layout.alignment: Qt.AlignCenter
@@ -82,6 +93,12 @@ Kirigami.OverlaySheet {
                 busyIndicator.visible = false
                 connectButton.enabled = true
                 text = qsTr("Connect")
+            }
+
+            function checkIfValidPeerUri(text) {
+                if (text.includes("@")) {
+                    idTextField.text = text
+                }
             }
         }
     }
