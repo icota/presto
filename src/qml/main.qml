@@ -154,8 +154,8 @@ Kirigami.ApplicationWindow {
                 delegate: Kirigami.SwipeListItem {
                     supportsMouseEvents: true
                     GenericListDelegate {
-                        indicator.color: paymentstatusstring == "paid "? "green" : "grey"
-                        label.text: "how to get label" /// save before we pay
+                        indicator.color: paymentstatusstring == "complete"? "green" : "grey"
+                        label.text: "DESCRIPTION" /// save before we pay
                         status.text: paymentstatusstring.charAt(0).toUpperCase() + paymentstatusstring.slice(1)
                         msatoshiAmount.amount: msatoshi
                     }
