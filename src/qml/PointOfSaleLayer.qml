@@ -44,7 +44,7 @@ Kirigami.ScrollablePage {
         grandTotal.amount = amount
         invoiceWeAreWaitingFor = "INVOICE #" + Math.floor(Math.random()*10000)
         invoicesModel.addInvoice(invoiceWeAreWaitingFor,
-                                 "6 Bananas, 2 Apples",
+                                 invoiceWeAreWaitingFor + "\n" + "6 Bananas, 2 Apples",
                                  amount,
                                  86400)
     }
