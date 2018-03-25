@@ -234,13 +234,23 @@ Kirigami.ApplicationWindow {
             id: peersScrollablePage
             title: Kirigami.Settings.isMobile ? qsTr("PEERS") : qsTr("Peers") + " (" + peersListView.count + ")"
 
+            RotationAnimator {
+                target: actionButtons.mainIcon
+                from: 0;
+                to: -360;
+                duration: 1000
+                running: true
+            }
+
+
             actions {
                 main: Kirigami.Action {
                     visible: lightningModel.connectedToDaemon
                     iconName: ":/org/kde/kirigami/icons/loop"
                     text: qsTr("AutoPilot™") // TODO: Find a name for this feature
+
                     onTriggered: {
-                        autoPilot.start(5000)
+                        autoPilot.go(5000)
                     }
                 }
                 right: Kirigami.Action {
