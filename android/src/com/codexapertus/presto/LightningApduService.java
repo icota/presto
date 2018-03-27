@@ -176,6 +176,7 @@ public class LightningApduService extends HostApduService {
         Intent intent = new Intent(ACTION_BOLT11_RECEIVED);
         intent.putExtra("bolt11", bolt11receiveBuffer.toString());
         startActivity(intent);
+        bolt11receiveBuffer.reset();
 
         if (!lightningOnline) {
             ByteArrayOutputStream commandOutputStream = new ByteArrayOutputStream();
