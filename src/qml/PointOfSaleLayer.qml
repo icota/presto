@@ -9,6 +9,11 @@ Kirigami.ScrollablePage {
     Layout.fillHeight: true
 
     property string invoiceWeAreWaitingFor
+    property string demoInvoiceDescription: "<img src=https://sites.google.com/a/codexapertus.com/www/_/rsrc/1522146880610/home/LogoMakr_6tvqhe.png>" +
+                                            "<table><tr><th>Item</th><th>Qty</th></tr>" +
+                                            "<tr><td>Bananas</td><td>6</td><td>$2.49</td></tr>" +
+                                            "<tr><td>Apples</td><td>10</td><td>$3.49</td></tr>" +
+                                            "<tr><th></th><th>TOTAL</th><th>$5.98</th></tr></table>"
 
     Rectangle {
         anchors.fill: parent
@@ -29,6 +34,15 @@ Kirigami.ScrollablePage {
         Layout.alignment: Qt.AlignHCenter
         Layout.fillWidth: true
         amount: 0
+        visible: false
+    }
+
+    QQC2.Label {
+        Layout.alignment: Qt.AlignHCenter
+        font.pixelSize: Kirigami.Units.gridUnit * 2
+        textFormat: Text.RichText
+        visible: true
+        text: demoInvoiceDescription
     }
 
     QQC2.Label {
@@ -44,28 +58,8 @@ Kirigami.ScrollablePage {
         grandTotal.amount = amount
         invoiceWeAreWaitingFor = "INVOICE #" + Math.floor(Math.random()*10000)
         invoicesModel.addInvoice(invoiceWeAreWaitingFor,
-                                 invoiceWeAreWaitingFor + "<img src=\"https://lh3.googleusercontent.com/al3KgEiHROJ0S2D-j8Yh4l3R4PEspa7fGWaCZHfN4UKcDxPmC0aXMwUObTSIkT-BZDgCoS0k7gelKlpwcVm7Y_PzrRve1XgTHBzaLpRv5Dt4U8h3Vg=w1075\" alt=\"Logo\">
-                                 <table>
-                                   <tr>
-                                     <th>Item</th>
-                                     <th>Qty</th>
-                                   </tr>
-                                   <tr>
-                                     <td>Bananas</td>
-                                     <td>6</td>
-                                     <td>$2.49</td>
-                                   </tr>
-                                   <tr>
-                                     <td>Apples</td>
-                                     <td>10</td>
-                                     <td>$3.49</td>
-                                   </tr>
-                                     <tr>
-                                     <th></th>
-                                     <th>TOTAL</th>
-                                     <th>$5.98</th>
-                                   </tr>
-                                 </table>",
+                                 invoiceWeAreWaitingFor +
+                                 demoInvoiceDescription,
                                  amount,
                                  86400)
     }
@@ -81,5 +75,9 @@ Kirigami.ScrollablePage {
         onErrorString: {
             //showPassiveNotification(error)
         }
+    }
+
+    Component.onCompleted: {
+        getRandomInvoice()
     }
 }

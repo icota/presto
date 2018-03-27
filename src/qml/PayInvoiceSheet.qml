@@ -29,6 +29,7 @@ Kirigami.OverlaySheet {
 
             wrapMode: Text.Wrap
             text: description
+            textFormat: Text.RichText
             Layout.alignment: Qt.AlignHCenter
             Layout.fillWidth: parent
             font.pixelSize: 16

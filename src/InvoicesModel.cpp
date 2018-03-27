@@ -127,7 +127,7 @@ void InvoicesModel::addInvoice(QString label, QString description, QString amoun
 {
     QJsonObject paramsObject;
     paramsObject.insert("label", label);
-    paramsObject.insert("description", description);
+    paramsObject.insert("description", description.simplified());
     paramsObject.insert("msatoshi", amountInMsatoshi);
     paramsObject.insert("expiry", QString::number(expiryInSeconds));
 
