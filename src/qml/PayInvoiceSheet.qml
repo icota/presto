@@ -26,7 +26,6 @@ Kirigami.OverlaySheet {
 
     ColumnLayout {
         QQC2.Label {
-
             wrapMode: Text.Wrap
             text: description
             textFormat: Text.RichText
@@ -35,32 +34,29 @@ Kirigami.OverlaySheet {
             font.pixelSize: 16
         }
 
-        RowLayout {
-            QQC2.Label {
-                wrapMode: Text.Wrap
-                text: (msatoshiAmount / 1000).toLocaleString(locale, 'f' , 0)+ " SAT"
-                Layout.alignment: Qt.AlignCenter
-                Layout.fillWidth: parent
-                font.pixelSize: 16
-            }
-            QQC2.Label {
-                wrapMode: Text.Wrap
-                text: ExchangeRate.getAmountInCurrency(msatoshiAmount / 1000)
-                Layout.alignment: Qt.AlignCenter
-                Layout.fillWidth: parent
-                font.pixelSize: 12
-            }
+        AmountTextField {
+            milisatoshi: false
+            id: amountTextField
+            Layout.topMargin: 25
+            visible: msatoshiAmount === -1
         }
 
         RowLayout {
             QQC2.Button {
-                text: qsTr("Pay")
+                text: anyAmount ? qsTr("Pay") : qsTr("Pay") + " " +
+                      (msatoshiAmount / 1000).toLocaleString(locale, 'f' , 0) +
+                      " SAT (" + ExchangeRate.getAmountInCurrency(msatoshiAmount / 1000) + ")"
                 Layout.topMargin: 25
                 Layout.alignment: Qt.AlignCenter
                 Layout.fillWidth: true
                 font.pixelSize: 16
                 onClicked: {
-                    paymentsModel.pay(bolt11)
+                    if (msatoshiAmount === -1) {
+                        paymentsModel.pay(bolt11, amountTextField.amount * 1000)
+                    }
+                    else {
+                        paymentsModel.pay(bolt11)
+                    }
                 }
             }
         }

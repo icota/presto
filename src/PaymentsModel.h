@@ -84,7 +84,7 @@ public:
 
 public slots:
     void decodePayment(QString bolt11String);
-    void pay(QString bolt11String);
+    void pay(QString bolt11String, int msatoshiAmount = 0);
 
 private slots:
     void listPaymentsRequestFinished();

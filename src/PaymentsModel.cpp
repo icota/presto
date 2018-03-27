@@ -104,7 +104,12 @@ void PaymentsModel::decodePaymentRequestFinished()
             QString description = resultObject.value("description").toString();
             int expiry = resultObject.value("expiry").toInt();
             int minFinalCltvExpiry = resultObject.value("min_final_cltv_expiry").toInt();
-            int msatoshi = resultObject.value("msatoshi").toInt();
+
+            int msatoshi = -1;
+            if (resultObject.contains("msatoshi")) {
+                msatoshi = resultObject.value("msatoshi").toInt();
+            }
+
             QString payee = resultObject.value("payee").toString();
             QString paymentHash = resultObject.value("payment_hash").toString();
             QString signature = resultObject.value("signature").toString();
@@ -117,10 +122,13 @@ void PaymentsModel::decodePaymentRequestFinished()
     }
 }
 
-void PaymentsModel::pay(QString bolt11String)
+void PaymentsModel::pay(QString bolt11String, int msatoshiAmount)
 {
     QJsonObject paramsObject;
     paramsObject.insert("bolt11", bolt11String);
+    if (msatoshiAmount > 0) {
+        paramsObject.insert("msatoshi", QString::number(msatoshiAmount));
+    }
     paramsObject.insert("maxfeepercent", QString::number(m_maxFeePercent / 100));
 
     QJsonRpcMessage message = QJsonRpcMessage::createRequest("pay", paramsObject);
@@ -130,6 +138,9 @@ void PaymentsModel::pay(QString bolt11String)
 void PaymentsModel::payRequestFinished()
 {
     GET_MESSAGE_DISCONNECT_SLOT(message, &PaymentsModel::payRequestFinished)
+    // save it somewhere
+    QString bolt11 = reply->request().toObject().value("params").toObject().value("bolt11").toString();
+
     if (message.type() == QJsonRpcMessage::Error)
     {
         emit errorString(message.toObject().value("error").toObject().value("message").toString());
