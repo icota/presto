@@ -269,7 +269,7 @@ Kirigami.ApplicationWindow {
                 delegate: Kirigami.SwipeListItem {
                     supportsMouseEvents: true
                     GenericListDelegate {
-                        indicator.color: connected && peerstatestring == "CHANNELD_NORMAL" ? "green" : connected ? "orange" : "red"
+                        indicator.color: connected && peerstatestring == "CHANNELD_NORMAL" ? "green" : connected ? "orange" : "grey"
                         indicatorTooltip: connected ?
                                               qsTr("Connected Status") + ": " + peerstatestring : qsTr("disconnected")
                         label.text: peerid.substring(0, 10) + (connected ? " (" + netaddress + ")" : qsTr(" (disconnected)"))
