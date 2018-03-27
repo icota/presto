@@ -98,13 +98,6 @@ Kirigami.ApplicationWindow {
                 }
             },
             Kirigami.Action {
-                text: qsTr("Preferences")
-                iconName: ":/org/kde/kirigami/icons/timeline"
-                onTriggered: {
-                    preferencesSheet.sheetOpen = true;
-                }
-            },
-            Kirigami.Action {
                 text: qsTr("My Node")
                 enabled: lightningModel.connectedToDaemon
                 iconName: ":/org/kde/kirigami/icons/network-workgroup"
@@ -114,14 +107,14 @@ Kirigami.ApplicationWindow {
             },
             Kirigami.Action {
                 text: qsTr("Settings")
-                iconName: ":/org/kde/kirigami/icons/settings"
+                iconName: "qrc:/settings"
                 onTriggered: {
-                    nodeSettingsSheet.sheetOpen = true;
+                    settingsSheet.sheetOpen = true;
                 }
             },
             Kirigami.Action {
                 text: qsTr("About")
-                iconName: ":/org/kde/kirigami/icons/help-about"
+                iconName: ":/help-about"
                 enabled: false
                 onTriggered: {
                 }
@@ -363,16 +356,12 @@ Kirigami.ApplicationWindow {
         id: onchainWithdrawSheet
     }
 
-    PreferencesSheet {
-        id: preferencesSheet
-    }
-
     NetworkSheet {
         id: networkSheet
     }
 
-    NodeSettingsSheet {
-        id: nodeSettingsSheet
+    SettingsSheet {
+        id: settingsSheet
     }
 
     // Connections
@@ -450,7 +439,7 @@ Kirigami.ApplicationWindow {
         }
 
         onRpcConnectionError: {
-            nodeSettingsSheet.sheetOpen = true;
+            settingsSheet.sheetOpen = true;
         }
     }
 

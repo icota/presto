@@ -8,7 +8,7 @@ import "." // QTBUG-34418
 Kirigami.OverlaySheet {
     header:
         OverlaySheetHeader {
-        text: qsTr("Node Settings")
+        text: qsTr("Settings")
         width: parent.width
         horizontalAlignment: Text.AlignHCenter
     }
@@ -20,7 +20,30 @@ Kirigami.OverlaySheet {
             property string nodeAddress: nodeAddressTextField.text
             property string nodeRpcUsername: rpcUsernameTextField.text
             property string nodeRpcPassword: rpcPasswordTextField.text
+            property string currencyCode: currencyCodeTextField.text
+        }
 
+        QQC2.Label {
+            wrapMode: Text.Wrap
+            text: qsTr("Currency Code:")
+        }
+
+        QQC2.TextField {
+            id: currencyCodeTextField
+            font.capitalization: Font.AllUppercase
+            wrapMode: Text.Wrap
+            text: settings.currencyCode
+            inputMask: "AAA" // ISO 4217
+            placeholderText: "USD"
+
+            onTextChanged: {
+                ExchangeRate.currencyCode = text.toUpperCase()
+            }
+        }
+
+        QQC2.Label {
+            wrapMode: Text.Wrap
+            text: qsTr("Node Address:")
         }
 
         QQC2.TextField {
@@ -33,6 +56,11 @@ Kirigami.OverlaySheet {
             text: settings.nodeAddress
         }
 
+        QQC2.Label {
+            wrapMode: Text.Wrap
+            text: qsTr("Username:")
+        }
+
         QQC2.TextField {
             id: rpcUsernameTextField
             selectByMouse: true
@@ -41,6 +69,11 @@ Kirigami.OverlaySheet {
             font: fixedFont
             placeholderText: qsTr("RPC Username")
             text: settings.nodeRpcUsername
+        }
+
+        QQC2.Label {
+            wrapMode: Text.Wrap
+            text: qsTr("Password:")
         }
 
         QQC2.TextField {
@@ -78,15 +111,15 @@ Kirigami.OverlaySheet {
             }
 
             Connections {
-                target: peersModel
+                target: lightningModel
 
-                onErrorString: {
-                    connectButton.reEnableButton()
-                }
+                //                    onErrorString: {
+                //                        connectButton.reEnableButton()
+                //                    }
 
-                onConnectedToPeer: {
-                    connectButton.reEnableButton()
-                }
+                //                    onConnectedToPeer: {
+                //                        connectButton.reEnableButton()
+                //                    }
             }
 
             function reEnableButton () {
@@ -97,3 +130,4 @@ Kirigami.OverlaySheet {
         }
     }
 }
+
