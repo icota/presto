@@ -8,5 +8,6 @@ Presto - a Lightning Network wallet for desktop and mobile based on [c-lightning
 * QR Code scanning and display
 * Browser and clipboard integration for `lightning:` links and on-chain addresses
 * Exchange rates to fiat
+* HTML payment descriptions (rich text receipts)
 * Point-of-Sale mode
 
