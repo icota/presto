@@ -25,19 +25,24 @@ Kirigami.OverlaySheet {
     }
 
     ColumnLayout {
+        QQC2.Label {
+
+            wrapMode: Text.Wrap
+            text: description
+            Layout.alignment: Qt.AlignHCenter
+            Layout.fillWidth: parent
+            font.pixelSize: 16
+        }
 
         RowLayout {
             QQC2.Label {
-                
                 wrapMode: Text.Wrap
-                text: msatoshiAmount + " mSAT"
+                text: (msatoshiAmount / 1000).toLocaleString(locale, 'f' , 0)+ " SAT"
                 Layout.alignment: Qt.AlignCenter
                 Layout.fillWidth: parent
                 font.pixelSize: 16
             }
-
             QQC2.Label {
-                
                 wrapMode: Text.Wrap
                 text: ExchangeRate.getAmountInCurrency(msatoshiAmount / 1000)
                 Layout.alignment: Qt.AlignCenter
@@ -46,18 +51,7 @@ Kirigami.OverlaySheet {
             }
         }
 
-
-        QQC2.Label {
-            
-            wrapMode: Text.Wrap
-            text: description
-            Layout.alignment: Qt.AlignCenter
-            Layout.fillWidth: parent
-            font.pixelSize: 16
-        }
-
         RowLayout {
-
             QQC2.Button {
                 text: qsTr("Pay")
                 Layout.topMargin: 25
