@@ -21,8 +21,8 @@ public class LightningApduService extends HostApduService {
 
     public static final String ACTION_BOLT11_RECEIVED = "lightning.action.BOLT11_RECEIVED";
     public static final String ACTION_ID_CHANGED = "lightning.action.ID_CHANGED";
-    public static final String ACTION_FORWARD_SOCKET = "lightning.action.FORWARD_SOCKET";
-    public static final String ACTION_SOCKET_DATA = "lightning.action.SOCKET_DATA";
+    public static final String ACTION_FORWARD_SOCKET_OUT = "lightning.action.FORWARD_SOCKET_OUT";
+    public static final String ACTION_FORWARD_SOCKET_IN = "lightning.action.FORWARD_SOCKET_IN";
 
     public static final String BROADCAST_INTENT_PROGRESS_UPDATED = "PROGRESS_UPDATED";
     public static final String BROADCAST_INTENT_DATA_RECEIVED = "DATA_RECEIVED";
@@ -36,6 +36,21 @@ public class LightningApduService extends HostApduService {
             if (intent != null && ACTION_ID_CHANGED.equals(intent.getAction())) {
                 Bundle bundle = intent.getExtras();
                 lightningPeerId = bundle.getByteArray("id");
+            }
+        }
+    };
+
+    private final BroadcastReceiver socketDataReceiver = new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent != null && ACTION_FORWARD_SOCKET_OUT.equals(intent.getAction())) {
+                Bundle bundle = intent.getExtras();
+                try {
+                    socketSendBuffer.write(bundle.getByteArray("data"));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
     };
@@ -99,6 +114,9 @@ public class LightningApduService extends HostApduService {
         LocalBroadcastManager.getInstance(this).registerReceiver(lightningIdChangedReceiver,
                 new IntentFilter(ACTION_ID_CHANGED));
 
+        LocalBroadcastManager.getInstance(this).registerReceiver(socketDataReceiver,
+                new IntentFilter(ACTION_FORWARD_SOCKET_OUT));
+
         socketSendBuffer = new ByteArrayOutputStream();
         bolt11receiveBuffer = new ByteArrayOutputStream();
         isProcessing = false;
@@ -151,6 +169,7 @@ public class LightningApduService extends HostApduService {
                 commandOutputStream.write(NFC_SOCKET_STREAM);
                 try {
                     commandOutputStream.write(socketSendBuffer.toByteArray());
+                    socketSendBuffer.reset();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

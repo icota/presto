@@ -5,6 +5,7 @@ import java.io.UnsupportedEncodingException;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.IntentFilter;
 import android.support.v4.content.LocalBroadcastManager;
 
 import android.util.Log;
@@ -14,9 +15,6 @@ import android.os.Parcelable;
 
 import android.nfc.NfcAdapter;
 import android.nfc.NdefMessage;
-import android.nfc.NdefRecord;
-
-import com.codexapertus.presto.LightningApduService;
 
 public class PrestoActivity extends org.qtproject.qt5.android.bindings.QtActivity
 {
@@ -33,7 +31,7 @@ public class PrestoActivity extends org.qtproject.qt5.android.bindings.QtActivit
     }
 
     void forwardSocket(byte[] data) {
-        Intent intent = new Intent(LightningApduService.ACTION_FORWARD_SOCKET);
+        Intent intent = new Intent(LightningApduService.ACTION_FORWARD_SOCKET_OUT);
         intent.putExtra("data", data);
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
     }
@@ -42,7 +40,7 @@ public class PrestoActivity extends org.qtproject.qt5.android.bindings.QtActivit
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (intent != null && LightningApduService.ACTION_SOCKET_DATA.equals(intent.getAction())) {
+            if (intent != null && LightningApduService.ACTION_FORWARD_SOCKET_IN.equals(intent.getAction())) {
                 Bundle bundle = intent.getExtras();
                 forwardIncomingSocketData(bundle.getByteArray("data"));
             }
@@ -87,6 +85,9 @@ public class PrestoActivity extends org.qtproject.qt5.android.bindings.QtActivit
         s_activity = this;
         Intent intent = new Intent(this, LightningApduService.class);
         startService(intent);
+
+        LocalBroadcastManager.getInstance(this).registerReceiver(socketDataReceiver,
+                new IntentFilter(LightningApduService.ACTION_FORWARD_SOCKET_IN));
 
         super.onCreate(savedInstanceState);
     }
