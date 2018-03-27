@@ -43,7 +43,7 @@ Kirigami.OverlaySheet {
 
         RowLayout {
             QQC2.Button {
-                text: anyAmount ? qsTr("Pay") : qsTr("Pay") + " " +
+                text: msatoshiAmount === -1 ? qsTr("Pay") : qsTr("Pay") + " " +
                       (msatoshiAmount / 1000).toLocaleString(locale, 'f' , 0) +
                       " SAT (" + ExchangeRate.getAmountInCurrency(msatoshiAmount / 1000) + ")"
                 Layout.topMargin: 25
