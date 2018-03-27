@@ -6,11 +6,14 @@ import org.kde.kirigami 2.1 as Kirigami
 Kirigami.OverlaySheet {
     onSheetOpenChanged: {
         if (sheetOpen) {
+            qrScannerViewfinder.camera.start()
         }
         else {
             resetSheet()
+            qrScannerViewfinder.camera.stop()
         }
     }
+
     header:
         OverlaySheetHeader {
         text: qsTr("Scan Peer URI")
