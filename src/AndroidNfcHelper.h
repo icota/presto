@@ -15,6 +15,7 @@ public:
     explicit AndroidNfcHelper(QObject *parent = nullptr);
     static AndroidNfcHelper* instance();
     void bolt11FromJni(QString bolt11);
+    void forwardDataToSocket(QByteArray socketData);
 
 private slots:
     void newConnection();

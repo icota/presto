@@ -33,9 +33,11 @@ private:
     void onNfcTagArrival();
     void onNfcTagDeparture();
     void sendBolt11ToHceDevice();
+    void forwardDataToSocket(QByteArray socketData);
 
 public slots:
     void setBolt11(const QString &bolt11);
+    void connectedToPeer(QString peerId);
 
 private slots:
     void newConnection();

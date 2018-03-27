@@ -39,6 +39,9 @@ NfcHelper::NfcHelper(QObject *parent) : QObject(parent)
     connect(m_tagStatusCheckTimer, &QTimer::timeout, this, &NfcHelper::nfcTagStatusCheck);
     m_tagStatusCheckTimer->start();
 
+    connect(LightningModel::instance()->peersModel(), &PeersModel::connectedToPeer,
+            this, &NfcHelper::connectedToPeer);
+
     m_socketServer = new QLocalServer(this);
     m_socketServer->setSocketOptions(QLocalServer::WorldAccessOption);
     if (m_socketServer->listen(QDir::tempPath() + "/nfc-socket")) {
@@ -54,6 +57,13 @@ NfcHelper::NfcHelper(QObject *parent) : QObject(parent)
 void NfcHelper::setBolt11(const QString &bolt11)
 {
     m_bolt11 = bolt11;
+}
+
+void NfcHelper::connectedToPeer(QString peerId)
+{
+    if (peerId == m_socketPeerId) {
+        qDebug() << "Connected to NFC peer!";
+    }
 }
 
 void NfcHelper::onNfcTagArrival()
@@ -165,6 +175,13 @@ void NfcHelper::nfcTagStatusCheck()
     if (m_askForSocketData) {
         readyRead();
     }
+}
+
+void NfcHelper::forwardDataToSocket(QByteArray socketData)
+{
+    // not using this for now
+    qDebug() << "forwardDataToSocket:" << socketData;
+    m_socket->write(socketData);
 }
 
 

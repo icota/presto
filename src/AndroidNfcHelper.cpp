@@ -13,6 +13,16 @@ JNIEXPORT void JNICALL Java_com_codexapertus_presto_PrestoActivity_bolt11Receive
     QAndroidJniObject bolt11String = QAndroidJniObject::fromLocalRef(Param1);
     AndroidNfcHelper::instance()->bolt11FromJni(bolt11String.toString());
 }
+// public static native void forwardIncomingSocketData(byte[] data);
+JNIEXPORT void JNICALL Java_com_codexapertus_presto_PrestoActivity_forwardIncomingSocketData(JNIEnv *env, jobject obj, jbyteArray array)
+{
+    Q_UNUSED(obj);
+    int len = env->GetArrayLength(array);
+    char* buf = new char[len];
+    env->GetByteArrayRegion(array, 0, len, reinterpret_cast<jbyte*>(buf));
+
+    AndroidNfcHelper::instance()->forwardDataToSocket(QByteArray::fromRawData(buf, len));
+}
 }
 
 AndroidNfcHelper *AndroidNfcHelper::sInstance = 0;
@@ -45,6 +55,12 @@ void AndroidNfcHelper::bolt11FromJni(QString bolt11)
             this, &AndroidNfcHelper::paymentDecoded);
 
     emit bolt11ReceivedThroughNfc(bolt11);
+}
+
+void AndroidNfcHelper::forwardDataToSocket(QByteArray socketData)
+{
+    qDebug() << "forwardDataToSocket: " << socketData;
+    m_socket->write(socketData);
 }
 
 void AndroidNfcHelper::newConnection()

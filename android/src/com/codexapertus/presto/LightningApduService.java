@@ -22,6 +22,7 @@ public class LightningApduService extends HostApduService {
     public static final String ACTION_BOLT11_RECEIVED = "lightning.action.BOLT11_RECEIVED";
     public static final String ACTION_ID_CHANGED = "lightning.action.ID_CHANGED";
     public static final String ACTION_FORWARD_SOCKET = "lightning.action.FORWARD_SOCKET";
+    public static final String ACTION_SOCKET_DATA = "lightning.action.SOCKET_DATA";
 
     public static final String BROADCAST_INTENT_PROGRESS_UPDATED = "PROGRESS_UPDATED";
     public static final String BROADCAST_INTENT_DATA_RECEIVED = "DATA_RECEIVED";
