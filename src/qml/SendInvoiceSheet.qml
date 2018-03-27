@@ -31,7 +31,7 @@ Kirigami.OverlaySheet {
         }
 
         AmountTextField {
-            milisatoshi: true
+            milisatoshi: false
             id: amountTextField
             Layout.topMargin: 25
         }
@@ -44,7 +44,7 @@ Kirigami.OverlaySheet {
             onClicked: {
                 invoicesModel.addInvoice(labelTextField.text,
                                          descriptionTextField.text,
-                                         amountTextField.amount,
+                                         amountTextField.amount * 1000,
                                          86400) // Number of seconds in a day
             }
         }
