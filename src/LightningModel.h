@@ -74,6 +74,9 @@ public:
 
     NodesModel *nodesModel() const;
 
+public slots:
+    void updateModels();
+
 private:
     static LightningModel *sInstance;
 
@@ -129,7 +132,6 @@ private slots:
     void rpcMessageReceived(QJsonRpcMessage message);
     void unixSocketError(QLocalSocket::LocalSocketError unixSocketError);
     void unixSocketDisconnected();
-    void updateModels();
     void updateInfoRequestFinished();
     void lightningProcessFinished(int exitCode);
 

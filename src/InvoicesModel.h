@@ -105,6 +105,7 @@ public:
 signals:
     void errorString(QString error);
     void invoiceAdded(QString bolt11);
+    void invoiceStatusChanged(QString label, QString status);
 
 private slots:
     void listInvoicesRequestFinished();

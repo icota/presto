@@ -1,6 +1,7 @@
 #include "InvoicesModel.h"
 #include "./3rdparty/qjsonrpc/src/qjsonrpcservicereply.h"
 #include "macros.h"
+#include "LightningModel.h"
 
 InvoicesModel::InvoicesModel(QJsonRpcSocket *rpcSocket)
 {
@@ -188,21 +189,16 @@ void InvoicesModel::waitInvoiceRequestFinished()
     {
         QJsonObject jsonObject = message.toObject();
 
-        QString bolt11 = jsonObject.value("result").toObject().value("bolt11").toString();
-
-        if (bolt11.length() > 0)
-        {
-            updateInvoices();
-            emit invoiceAdded(bolt11);
-        }
-
         if (jsonObject.contains("result"))
         {
             QJsonObject resultObject = jsonObject.value("result").toObject();
-            if (resultObject.contains("id"))
+            if (resultObject.contains("status"))
             {
-                // TODO: notify GUI that we've connected
-                updateInvoices();
+                // Update the balance and everything else
+                LightningModel::instance()->updateModels();
+                //updateInvoices();
+                emit (invoiceStatusChanged(resultObject.value("label").toString(),
+                                           resultObject.value("status").toString()));
             }
         }
     }
