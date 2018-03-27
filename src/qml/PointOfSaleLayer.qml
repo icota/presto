@@ -21,6 +21,8 @@ Kirigami.ScrollablePage {
         MouseArea {
             anchors.fill: parent
             onClicked: {
+                demoReceipt.visible = true
+                demoReceiptPaidText.visible = false
                 getRandomInvoice()
             }
         }
@@ -38,6 +40,7 @@ Kirigami.ScrollablePage {
     }
 
     QQC2.Label {
+        id: demoReceipt
         Layout.alignment: Qt.AlignHCenter
         font.pixelSize: Kirigami.Units.gridUnit * 2
         textFormat: Text.RichText
@@ -46,11 +49,13 @@ Kirigami.ScrollablePage {
     }
 
     QQC2.Label {
+        id: demoReceiptPaidText
         Layout.alignment: Qt.AlignHCenter
         font.pixelSize: Kirigami.Units.gridUnit * 6
         visible: false
         text: "
-    THANK YOU!"
+    THANK
+    YOU!"
     }
 
     function getRandomInvoice() {
@@ -69,12 +74,13 @@ Kirigami.ScrollablePage {
         onInvoiceAdded: {
             nfcHelper.setBolt11(bolt11)
             invoicesModel.waitInvoice(invoiceWeAreWaitingFor)
-            //bolt11 beamed to device
         }
 
-        onErrorString: {
-            //showPassiveNotification(error)
+        onInvoiceStatusChanged: {
+            demoReceipt.visible = false
+            demoReceiptPaidText.visible = true
         }
+
     }
 
     Component.onCompleted: {
