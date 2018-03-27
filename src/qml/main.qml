@@ -241,7 +241,7 @@ Kirigami.ApplicationWindow {
                     visible: lightningModel.connectedToDaemon
                     iconName: ":/org/kde/kirigami/icons/loop"
                     text: qsTr("AutoPilot™") // TODO: Find a name for this feature
-
+                    enabled: false
                     onTriggered: {
                         autoPilot.go(5000)
                     }
