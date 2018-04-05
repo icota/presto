@@ -9,7 +9,7 @@ Kirigami.ScrollablePage {
     Layout.fillHeight: true
 
     property string invoiceWeAreWaitingFor
-    property string demoInvoiceDescription: "<img src=https://sites.google.com/a/codexapertus.com/www/_/rsrc/1522146880610/home/LogoMakr_6tvqhe.png>" +
+    property string demoInvoiceDescription: "<img src=https://sites.google.com/a/codexapertus.com/www/home/LogoMakr_6tvqhe.png>" +
                                             "<table><tr><th>Item</th><th>Qty</th></tr>" +
                                             "<tr><td>Bananas</td><td>6</td><td>$2.49</td></tr>" +
                                             "<tr><td>Apples</td><td>10</td><td>$3.49</td></tr>" +
