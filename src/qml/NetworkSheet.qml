@@ -27,7 +27,7 @@ Kirigami.OverlaySheet {
 
         QRCode {
             Layout.alignment: Qt.AlignHCenter
-            width: parent.width * 0.8
+            width: parent.width * 0.65
             // This is the URI format Eclair wallet supports
             value : nodeURI
             MouseArea {
@@ -46,8 +46,7 @@ Kirigami.OverlaySheet {
             horizontalAlignment: Text.AlignHCenter
             font: fixedFont
             text: lightningModel.id
-            Layout.preferredWidth: parent.width * 0.8
-
+            Layout.maximumWidth: parent.width * 0.65
 //            Rectangle {
 //                anchors.fill: parent
 //                color: "white"
@@ -69,6 +68,7 @@ Kirigami.OverlaySheet {
             horizontalAlignment: Text.AlignHCenter
             text: "(" + lightningModel.network + ")"
             Layout.alignment: Qt.AlignHCenter
+            Layout.maximumWidth: parent.width * 0.65
         }
 
     }
