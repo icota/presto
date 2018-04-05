@@ -14,6 +14,13 @@
             </intent-filter>
 
             <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <data android:mimeType="application/lightning"/>
+                <data android:scheme="lightning" />
+            </intent-filter>
+
+            <intent-filter>
                 <action android:name="lightning.action.BOLT11_RECEIVED"/>
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
