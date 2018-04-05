@@ -30,6 +30,19 @@ NfcHelper::NfcHelper(QObject *parent) : QObject(parent)
     m_nfcTagPresentLastState = false;
 
     m_bolt11 = "BROKEN";
+    m_lightningLocalSocket = QDir::homePath() + "/.lightning/lightning-listener";
+
+    m_unixSocket = new QLocalSocket();
+
+    QObject::connect(m_unixSocket, SIGNAL(error(QLocalSocket::LocalSocketError)),
+                     this, SLOT(unixSocketError(QLocalSocket::LocalSocketError)));
+
+    QObject::connect(m_unixSocket, SIGNAL(disconnected()),
+                     this, SLOT(unixSocketDisconnected()));
+
+    QObject::connect(m_unixSocket, &QLocalSocket::readyRead,
+                     this, &NfcHelper::readyRead);
+
 
     initializeNfc();
 
@@ -44,14 +57,15 @@ NfcHelper::NfcHelper(QObject *parent) : QObject(parent)
 
     m_socketServer = new QLocalServer(this);
     m_socketServer->setSocketOptions(QLocalServer::WorldAccessOption);
-    if (m_socketServer->listen(QDir::tempPath() + "/nfc-socket")) {
-        connect(m_socketServer, &QLocalServer::newConnection, this, &NfcHelper::newConnection);
-        m_socketServerPath = m_socketServer->fullServerName();
-        qDebug() << "Socket opened: " << m_socketServerPath;
-    }
-    else {
-        qDebug() << "Failed to open local socket.";
-    }
+    // disable this for now
+//    if (m_socketServer->listen(QDir::tempPath() + "/nfc-socket")) {
+//        connect(m_socketServer, &QLocalServer::newConnection, this, &NfcHelper::newConnection);
+//        m_socketServerPath = m_socketServer->fullServerName();
+//        qDebug() << "Socket opened: " << m_socketServerPath;
+//    }
+//    else {
+//        qDebug() << "Failed to open local socket.";
+//    }
 }
 
 void NfcHelper::setBolt11(const QString &bolt11)
@@ -64,6 +78,16 @@ void NfcHelper::connectedToPeer(QString peerId)
     if (peerId == m_socketPeerId) {
         qDebug() << "Connected to NFC peer!";
     }
+}
+
+void NfcHelper::unixSocketError(QLocalSocket::LocalSocketError unixSocketError)
+{
+    qDebug() << "Local socket error: " << unixSocketError;
+}
+
+void NfcHelper::unixSocketDisconnected()
+{
+    qDebug() << "Local socket disconnected!";
 }
 
 void NfcHelper::onNfcTagArrival()
@@ -84,7 +108,8 @@ void NfcHelper::onNfcTagArrival()
 
 void NfcHelper::onNfcTagDeparture()
 {
-
+    m_askForSocketData = false;
+    resetSocketConnection();
 }
 
 void NfcHelper::sendBolt11ToHceDevice()
@@ -118,24 +143,62 @@ void NfcHelper::sendBolt11ToHceDevice()
             }
             else if (response[0] == NFC_SOCKET_COMMAND) {
                 qDebug() << "Device wants a socket connection";
+                //resetSocketConnection();
                 QByteArray socketPeerId = QByteArray::fromRawData((const char*)&response[1], 33);
                 m_socketPeerId = QString(socketPeerId.toHex());
-                LightningModel::instance()->peersModel()->connectToPeer(m_socketPeerId, m_socketServerPath);
+                connectToLocalSocket();
+                //LightningModel::instance()->peersModel()->connectToPeer(m_socketPeerId, m_socketServerPath);
             }
         }
+    }
+}
+
+void NfcHelper::connectToLocalSocket()
+{
+    m_unixSocket->connectToServer(m_lightningLocalSocket);
+
+    if (m_unixSocket->waitForConnected(5000))
+    {
+        qDebug() << "Connected to " << m_unixSocket->fullServerName();
+        m_askForSocketData = true;
+    }
+    else
+    {
+        qDebug() << "Couldn't connect to local socket";
     }
 }
 
 void NfcHelper::newConnection()
 {
     m_socket = m_socketServer->nextPendingConnection();
-    connect(m_socket, &QLocalSocket::disconnected, m_socket, &QLocalSocket::deleteLater);
+    connect(m_socket, &QLocalSocket::disconnected, this, &NfcHelper::socketDisconnected);
     connect(m_socket, &QLocalSocket::readyRead, this, &NfcHelper::readyRead);
+}
+
+void NfcHelper::socketDisconnected()
+{
+    qDebug() << "Socket disconnected";
+    m_socket = NULL;
+}
+
+void NfcHelper::resetSocketConnection()
+{
+    if (m_unixSocket) {
+        m_unixSocket->disconnectFromServer();
+    }
 }
 
 void NfcHelper::readyRead()
 {
-    QByteArray buffer = m_socket->read(packetSize - 1);
+    // Changed from m_socket
+    QByteArray buffer = m_unixSocket->read(packetSize - 1);
+
+    if (buffer.isEmpty()) {
+        //qDebug() << "No socket data to forward!";
+    }
+    else {
+        qDebug() << "Socket data to forward: " << buffer.size();
+    }
 
     unsigned char command [1 + buffer.length()];
     command[0] = NFC_SOCKET_STREAM;
@@ -148,10 +211,28 @@ void NfcHelper::readyRead()
         qDebug() << "NFC socket transcieve failure!";
     }
     else {
-        qDebug() << "NFC socket received response: " << response[0];
+        //qDebug() << "NFC socket received response: " << response[0];
         if (response[0] == NFC_SOCKET_STREAM) {
             qDebug() << "Socket data received, forwarding";
-            m_socket->write((const char*)response[1], res - 1);
+            //qDebug() << response;
+            QByteArray dataToWrite;
+
+            int i = 1;
+            int size = res;
+
+            while (size >= 0) {
+                dataToWrite.append((char*)&response[i], 55);
+                size -= 55;
+                i += 60; // skip those 5 bytes
+            }
+
+            // Best to fix this on the sender's side
+            // These NFC libs are a real piece of work
+            // TODO: Get libnfc compatible hw
+
+            dataToWrite.resize(res - 1);
+
+            forwardDataToSocket(dataToWrite);
         }
         else if (response[0] == NFC_SOCKET_STREAM_NO_DATA) {
             // ask for data in another 100 ms
@@ -179,9 +260,15 @@ void NfcHelper::nfcTagStatusCheck()
 
 void NfcHelper::forwardDataToSocket(QByteArray socketData)
 {
-    // not using this for now
-    qDebug() << "forwardDataToSocket:" << socketData;
-    m_socket->write(socketData);
+    // Changed from m_socket
+    qDebug() << "forwardDataToSocket: " << socketData.length();
+    if (m_unixSocket && m_unixSocket->isOpen()) {
+        qDebug() << socketData.toHex();
+        m_unixSocket->write(socketData);
+    }
+    else {
+        qDebug() << "c-lightning not connected to socket";
+    }
 }
 
 
