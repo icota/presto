@@ -5,7 +5,6 @@ import org.kde.kirigami 2.1 as Kirigami
 import "." // QTBUG-34418
 
 Kirigami.OverlaySheet {
-
     property int createdAtTimestamp: 0
     property string currency: "bc"
     property string description
@@ -30,37 +29,33 @@ Kirigami.OverlaySheet {
             text: description
             textFormat: Text.RichText
             Layout.alignment: Qt.AlignHCenter
-            Layout.fillWidth: parent
             font.pixelSize: 16
+            Layout.maximumWidth: Kirigami.Units.gridUnit * 15
         }
 
         AmountTextField {
             milisatoshi: false
             id: amountTextField
-            Layout.topMargin: 25
+            Layout.topMargin: Kirigami.Units.smallSpacing
             visible: msatoshiAmount === -1
         }
 
-        RowLayout {
-            QQC2.Button {
-                text: msatoshiAmount === -1 ? qsTr("Pay") : qsTr("Pay") + " " +
-                      (msatoshiAmount / 1000).toLocaleString(locale, 'f' , 0) +
-                      " SAT (" + ExchangeRate.getAmountInCurrency(msatoshiAmount / 1000) + ")"
-                Layout.topMargin: 25
-                Layout.alignment: Qt.AlignCenter
-                Layout.fillWidth: true
-                font.pixelSize: 16
-                onClicked: {
-                    if (msatoshiAmount === -1) {
-                        paymentsModel.pay(bolt11, amountTextField.amount * 1000)
-                    }
-                    else {
-                        paymentsModel.pay(bolt11)
-                    }
+        QQC2.Button {
+            text: msatoshiAmount === -1 ? qsTr("Pay") : qsTr("Pay") + " " +
+                                          (msatoshiAmount / 1000).toLocaleString(locale, 'f' , 0) +
+                                          " SAT (" + ExchangeRate.getAmountInCurrency(msatoshiAmount / 1000) + ")"
+            Layout.topMargin: Kirigami.Units.smallSpacing
+            Layout.alignment: Qt.AlignHCenter
+            //Layout.fillWidth: true
+            font.pixelSize: 16
+            onClicked: {
+                if (msatoshiAmount === -1) {
+                    paymentsModel.pay(bolt11, amountTextField.amount * 1000)
+                }
+                else {
+                    paymentsModel.pay(bolt11)
                 }
             }
         }
     }
-
-
 }
