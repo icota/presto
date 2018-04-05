@@ -13,6 +13,7 @@ import android.util.Log;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Formatter;
 
 /**
  * @author Igor Cota, Codex Apertus d.o.o., 2018
@@ -23,11 +24,12 @@ public class LightningApduService extends HostApduService {
     public static final String ACTION_ID_CHANGED = "lightning.action.ID_CHANGED";
     public static final String ACTION_FORWARD_SOCKET_OUT = "lightning.action.FORWARD_SOCKET_OUT";
     public static final String ACTION_FORWARD_SOCKET_IN = "lightning.action.FORWARD_SOCKET_IN";
+    public static final String ACTION_LINK_DEACTIVATED = "lightning.action.LINK_DEACTIVATED";
 
     public static final String BROADCAST_INTENT_PROGRESS_UPDATED = "PROGRESS_UPDATED";
     public static final String BROADCAST_INTENT_DATA_RECEIVED = "DATA_RECEIVED";
     public static final String BROADCAST_INTENT_REQUEST_SENT = "REQUEST_SENT";
-    public static final String BROADCAST_INTENT_LINK_DEACTIVATED = "LINK_DEACTIVATED";
+
 
     private final BroadcastReceiver lightningIdChangedReceiver = new BroadcastReceiver() {
 
@@ -237,9 +239,9 @@ public class LightningApduService extends HostApduService {
 
     private void notifyLinkDeactivated(int reason) {
         Log.d(TAG, "notifyLinkDeactivated: " + reason);
-        Intent intent = new Intent(BROADCAST_INTENT_LINK_DEACTIVATED);
+        Intent intent = new Intent(ACTION_LINK_DEACTIVATED);
         intent.putExtra("reason", reason);
-        //LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
     }
 
 }

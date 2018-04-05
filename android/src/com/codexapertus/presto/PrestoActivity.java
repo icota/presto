@@ -20,6 +20,7 @@ public class PrestoActivity extends org.qtproject.qt5.android.bindings.QtActivit
 {
     public static native void bolt11Received(String bolt11);
     public static native void forwardIncomingSocketData(byte[] data);
+    public static native void linkDeactived(int reason);
     public static PrestoActivity s_activity = null;
     public byte[] m_ourId = null;
 
@@ -43,6 +44,17 @@ public class PrestoActivity extends org.qtproject.qt5.android.bindings.QtActivit
             if (intent != null && LightningApduService.ACTION_FORWARD_SOCKET_IN.equals(intent.getAction())) {
                 Bundle bundle = intent.getExtras();
                 forwardIncomingSocketData(bundle.getByteArray("data"));
+            }
+        }
+    };
+
+    private final BroadcastReceiver linkDeactivatedReceiver = new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent != null && LightningApduService.ACTION_LINK_DEACTIVATED.equals(intent.getAction())) {
+                Bundle bundle = intent.getExtras();
+                linkDeactived(bundle.getInt("reason"));
             }
         }
     };
@@ -88,6 +100,9 @@ public class PrestoActivity extends org.qtproject.qt5.android.bindings.QtActivit
 
         LocalBroadcastManager.getInstance(this).registerReceiver(socketDataReceiver,
                 new IntentFilter(LightningApduService.ACTION_FORWARD_SOCKET_IN));
+
+        LocalBroadcastManager.getInstance(this).registerReceiver(linkDeactivatedReceiver,
+                new IntentFilter(LightningApduService.ACTION_LINK_DEACTIVATED));
 
         super.onCreate(savedInstanceState);
     }
