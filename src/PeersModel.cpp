@@ -70,6 +70,7 @@ void PeersModel::connectToPeerRequestFinished()
             {
                 updatePeers();
                 emit connectedToPeer(resultObject.value("id").toString());
+                emit errorString("Connected to peer: " + resultObject.value("id").toString());
             }
         }
     }
