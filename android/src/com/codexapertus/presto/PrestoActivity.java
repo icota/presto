@@ -88,6 +88,13 @@ public class PrestoActivity extends org.qtproject.qt5.android.bindings.QtActivit
                 bolt11Received(bolt11);
             }
         }
+
+        if (intent != null && Intent.ACTION_VIEW.equals(intent.getAction())) {
+            String bolt11 = intent.getDataString();
+            if (bolt11 != null) {
+                bolt11Received(bolt11);
+            }
+        }
     }
 
     @Override
