@@ -107,14 +107,14 @@ Kirigami.ApplicationWindow {
             },
             Kirigami.Action {
                 text: qsTr("Settings")
-                iconName: "qrc:/settings"
+                iconName: ":/org/kde/kirigami/icons/settings"
                 onTriggered: {
                     settingsSheet.sheetOpen = true;
                 }
             },
             Kirigami.Action {
                 text: qsTr("About")
-                iconName: ":/help-about"
+                iconName: ":/org/kde/kirigami/icons/help-about"
                 enabled: false
                 onTriggered: {
                 }
