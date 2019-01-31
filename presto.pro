@@ -1,5 +1,6 @@
 QT += quick multimedia # added multimedia for the camera functionality
 CONFIG += c++11
+CONFIG += qzxing_multimedia
 
 android {
 message("Building for Android...")
@@ -11,7 +12,7 @@ SOURCES +=  \
 }
 
 linux:!android {
-LIBS += -L/usr/local/lib -lnfc_nci_linux
+LIBS += -L/usr/local/lib0 #-lnfc_nci_linux
 
 HEADERS += \
     src/NfcController.h \
@@ -54,30 +55,7 @@ QCRYPTOHASH_SOURCES += \
     3rdparty/QtCryptoHash/lib/src/whirlpool.cpp \
     3rdparty/QtCryptoHash/lib/src/hashalgorithm.cpp
 
-QJSONRPC_HEADERS += \
-    3rdparty/qjsonrpc/src/qjsonrpcabstractserver.h \
-    3rdparty/qjsonrpc/src/qjsonrpcabstractserver_p.h \
-    3rdparty/qjsonrpc/src/qjsonrpcglobal.h \
-    3rdparty/qjsonrpc/src/qjsonrpcmessage.h \
-    3rdparty/qjsonrpc/src/qjsonrpcmetatype.h \
-    3rdparty/qjsonrpc/src/qjsonrpcservice.h \
-    3rdparty/qjsonrpc/src/qjsonrpcservice_p.h \
-    3rdparty/qjsonrpc/src/qjsonrpcserviceprovider.h \
-    3rdparty/qjsonrpc/src/qjsonrpcservicereply.h \
-    3rdparty/qjsonrpc/src/qjsonrpcservicereply_p.h \
-    3rdparty/qjsonrpc/src/qjsonrpcsocket.h \
-    3rdparty/qjsonrpc/src/qjsonrpcsocket_p.h
-
-QJSONRPC_SOURCES += \
-    3rdparty/qjsonrpc/src/qjsonrpcabstractserver.cpp \
-    3rdparty/qjsonrpc/src/qjsonrpcmessage.cpp \
-    3rdparty/qjsonrpc/src/qjsonrpcservice.cpp \
-    3rdparty/qjsonrpc/src/qjsonrpcserviceprovider.cpp \
-    3rdparty/qjsonrpc/src/qjsonrpcservicereply.cpp \
-    3rdparty/qjsonrpc/src/qjsonrpcsocket.cpp \
-
 HEADERS += \
-    $${QJSONRPC_HEADERS} \
     src/LightningModel.h \
     src/PaymentsModel.h \
     src/PeersModel.h \
@@ -85,11 +63,9 @@ HEADERS += \
     src/InvoicesModel.h \
     src/QClipboardProxy.h \
     src/NodesModel.h \
-    src/macros.h \
     src/AutoPilot.h
 
 SOURCES += \
-    $${QJSONRPC_SOURCES} \
     $${QCRYPTOHASH_SOURCES} \
     src/main.cpp \
     src/LightningModel.cpp \

@@ -1,6 +1,4 @@
 #include "PaymentsModel.h"
-#include "./3rdparty/qjsonrpc/src/qjsonrpcservicereply.h"
-#include "macros.h"
 
 QHash<int, QByteArray> PaymentsModel::roleNames() const {
     QHash<int, QByteArray> roles;
@@ -15,9 +13,8 @@ QHash<int, QByteArray> PaymentsModel::roleNames() const {
     return roles;
 }
 
-PaymentsModel::PaymentsModel(QJsonRpcSocket *rpcSocket)
+PaymentsModel::PaymentsModel()
 {
-    m_rpcSocket = rpcSocket;
     m_payments = QList<Payment>();
 
     setMaxFeePercent(100);
@@ -58,133 +55,133 @@ QVariant PaymentsModel::data(const QModelIndex &index, int role) const
 
 void PaymentsModel::updatePayments()
 {
-    QJsonRpcMessage message = QJsonRpcMessage::createRequest("listpayments", QJsonValue());
-    SEND_MESSAGE_CONNECT_SLOT(message, &PaymentsModel::listPaymentsRequestFinished)
+//    QJsonRpcMessage message = QJsonRpcMessage::createRequest("listpayments", QJsonValue());
+//    SEND_MESSAGE_CONNECT_SLOT(message, &PaymentsModel::listPaymentsRequestFinished)
 }
 
 void PaymentsModel::listPaymentsRequestFinished()
 {
-    GET_MESSAGE_DISCONNECT_SLOT(message, &PaymentsModel::listPaymentsRequestFinished)
-    if (message.type() == QJsonRpcMessage::Response)
-    {
-        QJsonObject jsonObject = message.toObject();
+//    GET_MESSAGE_DISCONNECT_SLOT(message, &PaymentsModel::listPaymentsRequestFinished)
+//    if (message.type() == QJsonRpcMessage::Response)
+//    {
+//        QJsonObject jsonObject = message.toObject();
 
-        if (jsonObject.contains("result"))
-        {
-            QJsonObject resultObject = jsonObject.value("result").toObject();
-            populatePaymentsFromJson(resultObject.value("payments").toArray());
-        }
-    }
+//        if (jsonObject.contains("result"))
+//        {
+//            QJsonObject resultObject = jsonObject.value("result").toObject();
+//            populatePaymentsFromJson(resultObject.value("payments").toArray());
+//        }
+//    }
 }
 
 void PaymentsModel::decodePayment(QString bolt11String)
 {
-    m_lastBolt11DecodeAttempt = bolt11String;
-    QJsonRpcMessage message = QJsonRpcMessage::createRequest("decodepay", QJsonValue(bolt11String));
-    SEND_MESSAGE_CONNECT_SLOT(message, &PaymentsModel::decodePaymentRequestFinished)
+//    m_lastBolt11DecodeAttempt = bolt11String;
+//    QJsonRpcMessage message = QJsonRpcMessage::createRequest("decodepay", QJsonValue(bolt11String));
+//    SEND_MESSAGE_CONNECT_SLOT(message, &PaymentsModel::decodePaymentRequestFinished)
 }
 
 void PaymentsModel::decodePaymentRequestFinished()
 {
-    GET_MESSAGE_DISCONNECT_SLOT(message, &PaymentsModel::decodePaymentRequestFinished)
-    if (message.type() == QJsonRpcMessage::Error)
-    {
-        emit errorString(message.toObject().value("error").toObject().value("message").toString());
-    }
+//    GET_MESSAGE_DISCONNECT_SLOT(message, &PaymentsModel::decodePaymentRequestFinished)
+//    if (message.type() == QJsonRpcMessage::Error)
+//    {
+//        emit errorString(message.toObject().value("error").toObject().value("message").toString());
+//    }
 
-    if (message.type() == QJsonRpcMessage::Response)
-    {
-        QJsonObject jsonObject = message.toObject();
+//    if (message.type() == QJsonRpcMessage::Response)
+//    {
+//        QJsonObject jsonObject = message.toObject();
 
-        if (jsonObject.contains("result"))
-        {
-            QJsonObject resultObject = jsonObject.value("result").toObject();
-            int createdAt = resultObject.value("created_at").toInt();
-            QString currency = resultObject.value("currency").toString();
-            QString description = resultObject.value("description").toString();
-            int expiry = resultObject.value("expiry").toInt();
-            int minFinalCltvExpiry = resultObject.value("min_final_cltv_expiry").toInt();
+//        if (jsonObject.contains("result"))
+//        {
+//            QJsonObject resultObject = jsonObject.value("result").toObject();
+//            int createdAt = resultObject.value("created_at").toInt();
+//            QString currency = resultObject.value("currency").toString();
+//            QString description = resultObject.value("description").toString();
+//            int expiry = resultObject.value("expiry").toInt();
+//            int minFinalCltvExpiry = resultObject.value("min_final_cltv_expiry").toInt();
 
-            int msatoshi = -1;
-            if (resultObject.contains("msatoshi")) {
-                msatoshi = resultObject.value("msatoshi").toInt();
-            }
+//            int msatoshi = -1;
+//            if (resultObject.contains("msatoshi")) {
+//                msatoshi = resultObject.value("msatoshi").toInt();
+//            }
 
-            QString payee = resultObject.value("payee").toString();
-            QString paymentHash = resultObject.value("payment_hash").toString();
-            QString signature = resultObject.value("signature").toString();
-            int timestamp = resultObject.value("timestamp").toInt();
+//            QString payee = resultObject.value("payee").toString();
+//            QString paymentHash = resultObject.value("payment_hash").toString();
+//            QString signature = resultObject.value("signature").toString();
+//            int timestamp = resultObject.value("timestamp").toInt();
 
-            emit paymentDecoded(createdAt, currency, description,
-                                expiry, minFinalCltvExpiry, msatoshi,
-                                payee, paymentHash, signature, timestamp, m_lastBolt11DecodeAttempt);
-        }
-    }
+//            emit paymentDecoded(createdAt, currency, description,
+//                                expiry, minFinalCltvExpiry, msatoshi,
+//                                payee, paymentHash, signature, timestamp, m_lastBolt11DecodeAttempt);
+//        }
+//    }
 }
 
 void PaymentsModel::pay(QString bolt11String, int msatoshiAmount)
 {
-    QJsonObject paramsObject;
-    paramsObject.insert("bolt11", bolt11String);
-    if (msatoshiAmount > 0) {
-        paramsObject.insert("msatoshi", QString::number(msatoshiAmount));
-    }
-    paramsObject.insert("maxfeepercent", QString::number(m_maxFeePercent / 100));
+//    QJsonObject paramsObject;
+//    paramsObject.insert("bolt11", bolt11String);
+//    if (msatoshiAmount > 0) {
+//        paramsObject.insert("msatoshi", QString::number(msatoshiAmount));
+//    }
+//    paramsObject.insert("maxfeepercent", QString::number(m_maxFeePercent / 100));
 
-    QJsonRpcMessage message = QJsonRpcMessage::createRequest("pay", paramsObject);
-    SEND_MESSAGE_CONNECT_SLOT(message, &PaymentsModel::payRequestFinished)
+//    QJsonRpcMessage message = QJsonRpcMessage::createRequest("pay", paramsObject);
+//    SEND_MESSAGE_CONNECT_SLOT(message, &PaymentsModel::payRequestFinished)
 }
 
 void PaymentsModel::payRequestFinished()
 {
-    GET_MESSAGE_DISCONNECT_SLOT(message, &PaymentsModel::payRequestFinished)
-    // save it somewhere
-    QString bolt11 = reply->request().toObject().value("params").toObject().value("bolt11").toString();
+//    GET_MESSAGE_DISCONNECT_SLOT(message, &PaymentsModel::payRequestFinished)
+//    // save it somewhere
+//    QString bolt11 = reply->request().toObject().value("params").toObject().value("bolt11").toString();
 
-    if (message.type() == QJsonRpcMessage::Error)
-    {
-        emit errorString(message.toObject().value("error").toObject().value("message").toString());
-    }
+//    if (message.type() == QJsonRpcMessage::Error)
+//    {
+//        emit errorString(message.toObject().value("error").toObject().value("message").toString());
+//    }
 
-    if (message.type() == QJsonRpcMessage::Response)
-    {
-        QJsonObject jsonObject = message.toObject();
+//    if (message.type() == QJsonRpcMessage::Response)
+//    {
+//        QJsonObject jsonObject = message.toObject();
 
-        if (jsonObject.contains("result"))
-        {
-            QJsonObject resultObject = jsonObject.value("result").toObject();
-            if (resultObject.contains("preimage"))
-            {
-                emit paymentPreimageReceived(resultObject.value("preimage").toString());
-                updatePayments();
-            }
-        }
-    }
+//        if (jsonObject.contains("result"))
+//        {
+//            QJsonObject resultObject = jsonObject.value("result").toObject();
+//            if (resultObject.contains("preimage"))
+//            {
+//                emit paymentPreimageReceived(resultObject.value("preimage").toString());
+//                updatePayments();
+//            }
+//        }
+//    }
 }
 
-void PaymentsModel::populatePaymentsFromJson(QJsonArray jsonArray)
+void PaymentsModel::populatePaymentsFromJson()
 {
-    m_payments.clear();
-    endResetModel();
+//    m_payments.clear();
+//    endResetModel();
 
-    foreach (const QJsonValue &v, jsonArray)
-    {
-        beginInsertRows(QModelIndex(), rowCount(), rowCount());
+//    foreach (const QJsonValue &v, jsonArray)
+//    {
+//        beginInsertRows(QModelIndex(), rowCount(), rowCount());
 
-        QJsonObject PaymentJsonObject = v.toObject();
-        Payment payment;
-        payment.setId(PaymentJsonObject.value("id").toString());
-        payment.setIncoming(PaymentJsonObject.value("incoming").toBool());
-        payment.setMsatoshi(PaymentJsonObject.value("msatoshi").toInt());
-        payment.setTimestamp(PaymentJsonObject.value("timestamp").toInt());
-        payment.setDestination(PaymentJsonObject.value("destination").toString()); // TODO: Figure out why addresses are in an array
-        payment.setHash(PaymentJsonObject.value("payment_hash").toString());
-        payment.setStatus((Payment::PaymentStatus)PaymentJsonObject.value("status").toInt()); // TODO: Fix this
-        payment.setStatusString(PaymentJsonObject.value("status").toString());
-        m_payments.append(payment);
+//        QJsonObject PaymentJsonObject = v.toObject();
+//        Payment payment;
+//        payment.setId(PaymentJsonObject.value("id").toString());
+//        payment.setIncoming(PaymentJsonObject.value("incoming").toBool());
+//        payment.setMsatoshi(PaymentJsonObject.value("msatoshi").toInt());
+//        payment.setTimestamp(PaymentJsonObject.value("timestamp").toInt());
+//        payment.setDestination(PaymentJsonObject.value("destination").toString()); // TODO: Figure out why addresses are in an array
+//        payment.setHash(PaymentJsonObject.value("payment_hash").toString());
+//        payment.setStatus((Payment::PaymentStatus)PaymentJsonObject.value("status").toInt()); // TODO: Fix this
+//        payment.setStatusString(PaymentJsonObject.value("status").toString());
+//        m_payments.append(payment);
 
-        endInsertRows();
-    }
+//        endInsertRows();
+//    }
 }
 
 int PaymentsModel::maxFeePercent() const

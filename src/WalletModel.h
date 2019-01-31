@@ -4,9 +4,6 @@
 #include <QObject>
 #include <QAbstractItemModel>
 
-#include "./3rdparty/qjsonrpc/src/qjsonrpcsocket.h"
-#include "./3rdparty/qjsonrpc/src/qjsonrpcmessage.h"
-
 class FundsTransaction
 {
 public:
@@ -41,7 +38,7 @@ public:
         SatoshiRole
     };
 
-    WalletModel(QJsonRpcSocket* rpcSocket = 0);
+    WalletModel();
 
     QHash<int, QByteArray> roleNames() const;
 
@@ -68,7 +65,6 @@ private slots:
 
 private:
     QList<FundsTransaction> m_funds;
-    QJsonRpcSocket* m_rpcSocket;
 
 private:
     void populateFundsFromJson(QJsonArray jsonArray);

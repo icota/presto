@@ -1,74 +1,71 @@
 #include "NodesModel.h"
-#include "./3rdparty/qjsonrpc/src/qjsonrpcservicereply.h"
-#include "macros.h"
 
-NodesModel::NodesModel(QJsonRpcSocket *rpcSocket)
+NodesModel::NodesModel()
 {
-    m_rpcSocket = rpcSocket;
     m_nodes = QList<Node>();
 }
 
 void NodesModel::updateNodes()
 {
-    QJsonRpcMessage message = QJsonRpcMessage::createRequest("listnodes", QJsonValue());
-    SEND_MESSAGE_CONNECT_SLOT(message, &NodesModel::updateNodesRequestFinished)
+//    QJsonRpcMessage message = QJsonRpcMessage::createRequest("listnodes", QJsonValue());
+//    SEND_MESSAGE_CONNECT_SLOT(message, &NodesModel::updateNodesRequestFinished)
 }
 
 void NodesModel::updateNodesRequestFinished()
 {
-    GET_MESSAGE_DISCONNECT_SLOT(message, &NodesModel::updateNodesRequestFinished)
-    if (message.type() == QJsonRpcMessage::Response)
-    {
-        QJsonObject jsonObject = message.toObject();
+//    GET_MESSAGE_DISCONNECT_SLOT(message, &NodesModel::updateNodesRequestFinished)
+//    if (message.type() == QJsonRpcMessage::Response)
+//    {
+//        QJsonObject jsonObject = message.toObject();
 
-        if (jsonObject.contains("result"))
-        {
-            QJsonObject resultObject = jsonObject.value("result").toObject();
-            populateNodesFromJson(resultObject.value("nodes").toArray());
-        }
-    }
+//        if (jsonObject.contains("result"))
+//        {
+//            QJsonObject resultObject = jsonObject.value("result").toObject();
+//            populateNodesFromJson(resultObject.value("nodes").toArray());
+//        }
+//    }
 }
 
-void NodesModel::populateNodesFromJson(QJsonArray jsonArray)
+void NodesModel::populateNodesFromJson()
 {
-    m_nodes.clear();
+//    m_nodes.clear();
 
-    foreach (const QJsonValue &v, jsonArray)
-    {
+//    foreach (const QJsonValue &v, jsonArray)
+//    {
 
-        QJsonObject nodeJsonObject = v.toObject();
-        Node node;
+//        QJsonObject nodeJsonObject = v.toObject();
+//        Node node;
 
-        node.setAlias(nodeJsonObject.value("alias").toString());
-        node.setColor(nodeJsonObject.value("color").toString());
-        node.setLastTimestamp(nodeJsonObject.value("last_timestamp").toInt());
-        node.setId(nodeJsonObject.value("nodeid").toString());
+//        node.setAlias(nodeJsonObject.value("alias").toString());
+//        node.setColor(nodeJsonObject.value("color").toString());
+//        node.setLastTimestamp(nodeJsonObject.value("last_timestamp").toInt());
+//        node.setId(nodeJsonObject.value("nodeid").toString());
 
-        QJsonArray nodeAddressesArray = nodeJsonObject.value("addresses").toArray();
+//        QJsonArray nodeAddressesArray = nodeJsonObject.value("addresses").toArray();
 
-        QList<NodeAddress> addressList;
+//        QList<NodeAddress> addressList;
 
-        foreach (QJsonValue addressValue, nodeAddressesArray) {
-            QJsonObject addressObject = addressValue.toObject();
+//        foreach (QJsonValue addressValue, nodeAddressesArray) {
+//            QJsonObject addressObject = addressValue.toObject();
 
-            NodeAddress address;
-            address.setPort(addressObject.value("port").toInt());
-            address.setAddress(addressObject.value("address").toString());
+//            NodeAddress address;
+//            address.setPort(addressObject.value("port").toInt());
+//            address.setAddress(addressObject.value("address").toString());
 
-            if (addressObject.value("type").toString() == "ipv4") {
-                address.setAddressType(NodeAddress::IPv4);
-            }
-            else {
-                address.setAddressType(NodeAddress::IPv6);
-            }
+//            if (addressObject.value("type").toString() == "ipv4") {
+//                address.setAddressType(NodeAddress::IPv4);
+//            }
+//            else {
+//                address.setAddressType(NodeAddress::IPv6);
+//            }
 
-            addressList.append(address);
-        }
+//            addressList.append(address);
+//        }
 
-        node.setNodeAddressList(addressList);
+//        node.setNodeAddressList(addressList);
 
-        m_nodes.append(node);
-    }
+//        m_nodes.append(node);
+//    }
 }
 
 QList<Node> NodesModel::getNodes() const

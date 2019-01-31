@@ -12,10 +12,6 @@
 
 #include "NodesModel.h"
 
-#include "./3rdparty/qjsonrpc/src/qjsonrpcsocket.h"
-#include "./3rdparty/qjsonrpc/src/qjsonrpcmessage.h"
-
-
 class LightningModel : public QObject
 {
     Q_OBJECT
@@ -26,12 +22,8 @@ class LightningModel : public QObject
     Q_PROPERTY(int blockheight READ blockheight NOTIFY infoChanged)
     Q_PROPERTY(QString network READ network NOTIFY infoChanged)
 
-    Q_PROPERTY(bool connectedToDaemon READ connectedToDaemon WRITE setConnectedToDaemon NOTIFY infoChanged)
-
-    Q_PROPERTY(QString serverName READ serverName WRITE setServerName NOTIFY serverNameChanged)
-
 public:
-    LightningModel(QString serverName = QString(""), QObject *parent = 0);
+    LightningModel(QString serverName = QString(""), QObject *parent = nullptr);
 
     static LightningModel* instance();
 
@@ -51,8 +43,6 @@ public:
 
     QString serverName() const;
     void setServerName(const QString &serverName);
-
-    bool connectedToDaemon() const;
 
     QString bitcoinRpcServerName() const;
     void setBitcoinRpcServerName(const QString &bitcoinRpcServerName);
@@ -75,7 +65,7 @@ public:
     NodesModel *nodesModel() const;
 
 public slots:
-    void updateModels();
+    //void updateModels();
 
 private:
     static LightningModel *sInstance;
@@ -84,12 +74,9 @@ private:
     void updateInfo();
     void launchDaemon();
     void retryRpcConnection();
-    void setConnectedToDaemon(bool connectedToDaemon);
 
 private:
     QLocalSocket* m_unixSocket;
-    QJsonRpcSocket* m_rpcSocket;
-    QList<QJsonRpcServiceReply*> m_repliesList;
     PeersModel* m_peersModel;
     PaymentsModel* m_paymentsModel;
     WalletModel* m_walletModel;
@@ -98,12 +85,6 @@ private:
     NodesModel* m_nodesModel;
 
     QTimer* m_updatesTimer;
-
-    QString m_lightningRpcSocket;
-    QTimer* m_connectionRetryTimer;
-    bool m_connectedToDaemon;
-
-    QProcess* m_lightningDaemonProcess;
 
     QString m_id;
     int m_port;
@@ -128,12 +109,7 @@ private:
 
 
 private slots:
-    void rpcConnected();
-    void rpcMessageReceived(QJsonRpcMessage message);
-    void unixSocketError(QLocalSocket::LocalSocketError unixSocketError);
-    void unixSocketDisconnected();
     void updateInfoRequestFinished();
-    void lightningProcessFinished(int exitCode);
 
 signals:
     void infoChanged();

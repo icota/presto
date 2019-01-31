@@ -1,11 +1,8 @@
 #include "InvoicesModel.h"
-#include "./3rdparty/qjsonrpc/src/qjsonrpcservicereply.h"
-#include "macros.h"
 #include "LightningModel.h"
 
-InvoicesModel::InvoicesModel(QJsonRpcSocket *rpcSocket)
+InvoicesModel::InvoicesModel()
 {
-    m_rpcSocket = rpcSocket;
     m_invoices = QList<Invoice>();
 }
 
@@ -68,170 +65,170 @@ QVariant InvoicesModel::data(const QModelIndex &index, int role) const
 
 void InvoicesModel::updateInvoices()
 {
-    QJsonRpcMessage message = QJsonRpcMessage::createRequest("listinvoices", QJsonValue());
-    SEND_MESSAGE_CONNECT_SLOT(message, &InvoicesModel::listInvoicesRequestFinished);
+//    QJsonRpcMessage message = QJsonRpcMessage::createRequest("listinvoices", QJsonValue());
+//    SEND_MESSAGE_CONNECT_SLOT(message, &InvoicesModel::listInvoicesRequestFinished);
 }
 
 void InvoicesModel::listInvoicesRequestFinished()
 {
-    GET_MESSAGE_DISCONNECT_SLOT(message, &InvoicesModel::listInvoicesRequestFinished);
-    if (message.type() == QJsonRpcMessage::Response)
-    {
-        QJsonObject jsonObject = message.toObject();
+//    GET_MESSAGE_DISCONNECT_SLOT(message, &InvoicesModel::listInvoicesRequestFinished);
+//    if (message.type() == QJsonRpcMessage::Response)
+//    {
+//        QJsonObject jsonObject = message.toObject();
 
-        if (jsonObject.contains("result"))
-        {
-            QJsonObject resultObject = jsonObject.value("result").toObject();
-            populateInvoicesFromJson(resultObject.value("invoices").toArray());
-        }
-    }
+//        if (jsonObject.contains("result"))
+//        {
+//            QJsonObject resultObject = jsonObject.value("result").toObject();
+//            populateInvoicesFromJson(resultObject.value("invoices").toArray());
+//        }
+//    }
 }
 
-void InvoicesModel::populateInvoicesFromJson(QJsonArray jsonArray)
+void InvoicesModel::populateInvoicesFromJson()
 {
-    m_invoices.clear();
-    endResetModel();
+//    m_invoices.clear();
+//    endResetModel();
 
-    foreach (const QJsonValue &v, jsonArray)
-    {
-        beginInsertRows(QModelIndex(), rowCount(), rowCount());
+//    foreach (const QJsonValue &v, jsonArray)
+//    {
+//        beginInsertRows(QModelIndex(), rowCount(), rowCount());
 
-        QJsonObject invoiceJsonObject = v.toObject();
-        Invoice invoice;
-        invoice.setLabel(invoiceJsonObject.value("label").toString());
-        invoice.setHash(invoiceJsonObject.value("payment_hash").toString());
-        invoice.setMsatoshi(invoiceJsonObject.value("msatoshi").toInt());
+//        QJsonObject invoiceJsonObject = v.toObject();
+//        Invoice invoice;
+//        invoice.setLabel(invoiceJsonObject.value("label").toString());
+//        invoice.setHash(invoiceJsonObject.value("payment_hash").toString());
+//        invoice.setMsatoshi(invoiceJsonObject.value("msatoshi").toInt());
 
-        QString status = invoiceJsonObject.value("status").toString();
+//        QString status = invoiceJsonObject.value("status").toString();
 
-        if (status.toLower() == "paid") invoice.setStatus(InvoiceTypes::InvoiceStatus::PAID);
-        else if (status.toLower() == "unpaid") invoice.setStatus(InvoiceTypes::InvoiceStatus::UNPAID);
-        else if (status.toLower() == "expired") invoice.setStatus(InvoiceTypes::InvoiceStatus::EXPIRED);
+//        if (status.toLower() == "paid") invoice.setStatus(InvoiceTypes::InvoiceStatus::PAID);
+//        else if (status.toLower() == "unpaid") invoice.setStatus(InvoiceTypes::InvoiceStatus::UNPAID);
+//        else if (status.toLower() == "expired") invoice.setStatus(InvoiceTypes::InvoiceStatus::EXPIRED);
 
-        invoice.setStatusString(status);
+//        invoice.setStatusString(status);
 
-        invoice.setPayIndex(invoiceJsonObject.value("pay_index").toInt());
-        invoice.setMsatoshiReceived(invoiceJsonObject.value("msatoshi_received").toInt());
-        invoice.setPaidTimestamp(invoiceJsonObject.value("paid_timestamp").toInt()); // TODO: Fix this
-        invoice.setPaidAtTimestamp(invoiceJsonObject.value("paid_at").toInt());
-        invoice.setExpiryTime(invoiceJsonObject.value("expiry_time").toInt());
-        invoice.setExpiresAtTime(invoiceJsonObject.value("expires_at").toInt());
-        invoice.setBolt11(invoiceJsonObject.value("bolt11").toString());
+//        invoice.setPayIndex(invoiceJsonObject.value("pay_index").toInt());
+//        invoice.setMsatoshiReceived(invoiceJsonObject.value("msatoshi_received").toInt());
+//        invoice.setPaidTimestamp(invoiceJsonObject.value("paid_timestamp").toInt()); // TODO: Fix this
+//        invoice.setPaidAtTimestamp(invoiceJsonObject.value("paid_at").toInt());
+//        invoice.setExpiryTime(invoiceJsonObject.value("expiry_time").toInt());
+//        invoice.setExpiresAtTime(invoiceJsonObject.value("expires_at").toInt());
+//        invoice.setBolt11(invoiceJsonObject.value("bolt11").toString());
 
-        m_invoices.append(invoice);
+//        m_invoices.append(invoice);
 
-        endInsertRows();
-    }
+//        endInsertRows();
+//    }
 }
 
 void InvoicesModel::addInvoice(QString label, QString description, QString amountInMsatoshi, int expiryInSeconds)
 {
-    QJsonObject paramsObject;
-    paramsObject.insert("label", label);
-    paramsObject.insert("description", description.simplified());
-    paramsObject.insert("msatoshi", amountInMsatoshi);
-    paramsObject.insert("expiry", QString::number(expiryInSeconds));
+//    QJsonObject paramsObject;
+//    paramsObject.insert("label", label);
+//    paramsObject.insert("description", description.simplified());
+//    paramsObject.insert("msatoshi", amountInMsatoshi);
+//    paramsObject.insert("expiry", QString::number(expiryInSeconds));
 
-    QJsonRpcMessage message = QJsonRpcMessage::createRequest("invoice", paramsObject);
-    SEND_MESSAGE_CONNECT_SLOT(message, &InvoicesModel::addInvoiceRequestFinished)
+//    QJsonRpcMessage message = QJsonRpcMessage::createRequest("invoice", paramsObject);
+//    SEND_MESSAGE_CONNECT_SLOT(message, &InvoicesModel::addInvoiceRequestFinished)
 }
 
 void InvoicesModel::addInvoiceRequestFinished()
 {
-    GET_MESSAGE_DISCONNECT_SLOT(message, &InvoicesModel::addInvoiceRequestFinished)
-    if (message.type() == QJsonRpcMessage::Error)
-    {
-        emit errorString(message.toObject().value("error").toObject().value("message").toString());
-    }
+//    GET_MESSAGE_DISCONNECT_SLOT(message, &InvoicesModel::addInvoiceRequestFinished)
+//    if (message.type() == QJsonRpcMessage::Error)
+//    {
+//        emit errorString(message.toObject().value("error").toObject().value("message").toString());
+//    }
 
-    if (message.type() == QJsonRpcMessage::Response)
-    {
-        QJsonObject jsonObject = message.toObject();
+//    if (message.type() == QJsonRpcMessage::Response)
+//    {
+//        QJsonObject jsonObject = message.toObject();
 
-        QString bolt11 = jsonObject.value("result").toObject().value("bolt11").toString();
+//        QString bolt11 = jsonObject.value("result").toObject().value("bolt11").toString();
 
-        if (bolt11.length() > 0)
-        {
-            updateInvoices();
-            emit invoiceAdded(bolt11);
-        }
+//        if (bolt11.length() > 0)
+//        {
+//            updateInvoices();
+//            emit invoiceAdded(bolt11);
+//        }
 
-        if (jsonObject.contains("result"))
-        {
-            QJsonObject resultObject = jsonObject.value("result").toObject();
-            if (resultObject.contains("id"))
-            {
-                // TODO: notify GUI that we've connected
-                updateInvoices();
-            }
-        }
-    }
+//        if (jsonObject.contains("result"))
+//        {
+//            QJsonObject resultObject = jsonObject.value("result").toObject();
+//            if (resultObject.contains("id"))
+//            {
+//                // TODO: notify GUI that we've connected
+//                updateInvoices();
+//            }
+//        }
+//    }
 }
 
 void InvoicesModel::waitInvoice(QString label)
 {
-    QJsonObject paramsObject;
-    paramsObject.insert("label", label);
+//    QJsonObject paramsObject;
+//    paramsObject.insert("label", label);
 
-    QJsonRpcMessage message = QJsonRpcMessage::createRequest("waitinvoice", paramsObject);
-    SEND_MESSAGE_CONNECT_SLOT(message, &InvoicesModel::waitInvoiceRequestFinished)
+//    QJsonRpcMessage message = QJsonRpcMessage::createRequest("waitinvoice", paramsObject);
+//    SEND_MESSAGE_CONNECT_SLOT(message, &InvoicesModel::waitInvoiceRequestFinished)
 }
 
 void InvoicesModel::waitInvoiceRequestFinished()
 {
-    GET_MESSAGE_DISCONNECT_SLOT(message, &InvoicesModel::waitInvoiceRequestFinished)
-    if (message.type() == QJsonRpcMessage::Error)
-    {
-        emit errorString(message.toObject().value("error").toObject().value("message").toString());
-    }
+//    GET_MESSAGE_DISCONNECT_SLOT(message, &InvoicesModel::waitInvoiceRequestFinished)
+//    if (message.type() == QJsonRpcMessage::Error)
+//    {
+//        emit errorString(message.toObject().value("error").toObject().value("message").toString());
+//    }
 
-    if (message.type() == QJsonRpcMessage::Response)
-    {
-        QJsonObject jsonObject = message.toObject();
+//    if (message.type() == QJsonRpcMessage::Response)
+//    {
+//        QJsonObject jsonObject = message.toObject();
 
-        if (jsonObject.contains("result"))
-        {
-            QJsonObject resultObject = jsonObject.value("result").toObject();
-            if (resultObject.contains("status"))
-            {
-                // Update the balance and everything else
-                LightningModel::instance()->updateModels();
-                //updateInvoices();
-                emit (invoiceStatusChanged(resultObject.value("label").toString(),
-                                           resultObject.value("status").toString()));
-            }
-        }
-    }
+//        if (jsonObject.contains("result"))
+//        {
+//            QJsonObject resultObject = jsonObject.value("result").toObject();
+//            if (resultObject.contains("status"))
+//            {
+//                // Update the balance and everything else
+//                LightningModel::instance()->updateModels();
+//                //updateInvoices();
+//                emit (invoiceStatusChanged(resultObject.value("label").toString(),
+//                                           resultObject.value("status").toString()));
+//            }
+//        }
+//    }
 }
 
 void InvoicesModel::deleteInvoice(QString label, QString status)
 {
-    QJsonObject paramsObject;
-    paramsObject.insert("label", label);
-    paramsObject.insert("status", status);
+//    QJsonObject paramsObject;
+//    paramsObject.insert("label", label);
+//    paramsObject.insert("status", status);
 
-    QJsonRpcMessage message = QJsonRpcMessage::createRequest("delinvoice", paramsObject);
-    SEND_MESSAGE_CONNECT_SLOT(message, &InvoicesModel::deleteInvoiceRequestFinished)
+//    QJsonRpcMessage message = QJsonRpcMessage::createRequest("delinvoice", paramsObject);
+//    SEND_MESSAGE_CONNECT_SLOT(message, &InvoicesModel::deleteInvoiceRequestFinished)
 }
 
 void InvoicesModel::deleteInvoiceRequestFinished()
 {
-    GET_MESSAGE_DISCONNECT_SLOT(message, &InvoicesModel::deleteInvoiceRequestFinished)
-    if (message.type() == QJsonRpcMessage::Error)
-    {
-        emit errorString(message.toObject().value("error").toObject().value("message").toString());
-    }
+//    GET_MESSAGE_DISCONNECT_SLOT(message, &InvoicesModel::deleteInvoiceRequestFinished)
+//    if (message.type() == QJsonRpcMessage::Error)
+//    {
+//        emit errorString(message.toObject().value("error").toObject().value("message").toString());
+//    }
 
 
-    if (message.type() == QJsonRpcMessage::Response)
-    {
-        QJsonObject jsonObject = message.toObject();
+//    if (message.type() == QJsonRpcMessage::Response)
+//    {
+//        QJsonObject jsonObject = message.toObject();
 
-        if (jsonObject.contains("result"))
-        {
-            updateInvoices();
-        }
-    }
+//        if (jsonObject.contains("result"))
+//        {
+//            updateInvoices();
+//        }
+//    }
 }
 
 Invoice::Invoice()

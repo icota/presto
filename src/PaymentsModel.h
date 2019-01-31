@@ -4,16 +4,12 @@
 #include <QObject>
 #include <QAbstractItemModel>
 
-#include "./3rdparty/qjsonrpc/src/qjsonrpcsocket.h"
-#include "./3rdparty/qjsonrpc/src/qjsonrpcmessage.h"
-
 class Payment
 {
 public:
     Payment()
     {}
 
-    // Copied over from c-lightning
     enum PaymentStatus {
         PAYMENT_PENDING = 0,
         PAYMENT_COMPLETE = 1,
@@ -70,7 +66,7 @@ public:
         PaymentStatusStringRole
     };
 
-    PaymentsModel(QJsonRpcSocket* rpcSocket = 0);
+    PaymentsModel();
 
     QHash<int, QByteArray> roleNames() const;
 
@@ -101,11 +97,10 @@ signals:
     void errorString(QString error);
 
 private:
-    void populatePaymentsFromJson(QJsonArray jsonObject);
+    void populatePaymentsFromJson();
 
 private:
     QList<Payment> m_payments;
-    QJsonRpcSocket* m_rpcSocket;
 
     int m_maxFeePercent;
     QString m_lastBolt11DecodeAttempt;

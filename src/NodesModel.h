@@ -3,9 +3,6 @@
 
 #include <QObject>
 
-#include "./3rdparty/qjsonrpc/src/qjsonrpcsocket.h"
-#include "./3rdparty/qjsonrpc/src/qjsonrpcmessage.h"
-
 class NodeAddress
 {
     public:
@@ -64,7 +61,7 @@ class NodesModel : public QObject
 {
     Q_OBJECT
 public:
-    NodesModel(QJsonRpcSocket *rpcSocket);
+    NodesModel();
     void updateNodes();
 
     QList<Node> getNodes() const;
@@ -73,11 +70,10 @@ private slots:
     void updateNodesRequestFinished();
 
 private:
-    void populateNodesFromJson(QJsonArray jsonArray);
+    void populateNodesFromJson();
 
 private:
     QList<Node> m_nodes;
-    QJsonRpcSocket* m_rpcSocket;
 };
 
 #endif // NODESMODEL_H

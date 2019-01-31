@@ -4,9 +4,6 @@
 #include <QObject>
 #include <QAbstractItemModel>
 
-#include "./3rdparty/qjsonrpc/src/qjsonrpcsocket.h"
-#include "./3rdparty/qjsonrpc/src/qjsonrpcmessage.h"
-
 namespace InvoiceTypes
 {
     Q_NAMESPACE
@@ -93,7 +90,7 @@ public:
         Bolt11Role
     };
 
-    InvoicesModel(QJsonRpcSocket* rpcSocket = 0);
+    InvoicesModel();
 
     QHash<int, QByteArray> roleNames() const;
 
@@ -114,11 +111,10 @@ private slots:
     void deleteInvoiceRequestFinished();
 
 private:
-    void populateInvoicesFromJson(QJsonArray jsonArray);
+    void populateInvoicesFromJson();
 
 private:
     QList<Invoice> m_invoices;
-    QJsonRpcSocket* m_rpcSocket;
 
 public slots:
     void addInvoice(QString label, QString description, QString amountInMsatoshi, int expiryInSeconds);

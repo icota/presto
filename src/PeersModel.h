@@ -4,9 +4,6 @@
 #include <QObject>
 #include <QAbstractItemModel>
 
-#include "./3rdparty/qjsonrpc/src/qjsonrpcsocket.h"
-#include "./3rdparty/qjsonrpc/src/qjsonrpcmessage.h"
-
 class Peer
 {
 public:
@@ -94,8 +91,7 @@ public:
     QHash<int, QByteArray> roleNames() const;
 
 
-    PeersModel(QJsonRpcSocket* rpcSocket = 0);
-    void populatePeersFromJson(QJsonArray jsonArray);
+    PeersModel();
 
     int rowCount(const QModelIndex & parent = QModelIndex()) const;
 
@@ -126,7 +122,6 @@ private slots:
 
 private:
     QMap<QString, Peer> m_peers;
-    QJsonRpcSocket* m_rpcSocket;
 };
 
 
